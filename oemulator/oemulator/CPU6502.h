@@ -1,7 +1,12 @@
 #pragma once
+#include <vector>
+#include <iostream>
 
 class CPU6502 {
 public:
+	//constructor
+	CPU6502();
+
 	//flags
 	bool C; //carry flag. 1 when overflow or underflow
 	bool Z; //zero flag. 1 when result is zero
@@ -25,7 +30,17 @@ public:
 	//the number of cpu cycles we have done
 	int cycles = 0;
 
+	//0000 - 07FF = RAM
+	//0800 - 1FFF = mirrors of RAM
+	//2000 - 2007 = PPU registers accessable from the CPU
+	//2008 - 3FFF = mirrors of those same 8 bytes over and over again
+	//4000 - 401F = sound channels, joypads, and other IO
+	//6000 - 7FFF = cartridge PRG - RAM(if present), or PRG - ROM depending on mapper
+	//8000 - FFFF = cartridge memory, usually ROM.
 	unsigned char memory[65536];
+
+	void loadMemory(std::vector<unsigned char> rom, int offset);
+	void loadMemory(unsigned char rom[], int romSize, int offset);
 
 	//performes one cpu step
 	void step();
@@ -36,6 +51,9 @@ private:
 
 	//various functions for doing ops
 	void NOP(); //the NOP op
+
+	//unimplemented op
+	void unimplementedOP();
 
 	//addressing modes
 	//read
@@ -62,4 +80,6 @@ private:
 										//of the least significant byte of 16 bit address. The Y register 
 										//is dynamically added to this value to generated the actual 
 										//target address for operation.
+
+
 };

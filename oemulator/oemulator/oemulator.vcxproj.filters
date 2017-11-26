@@ -13,5 +13,24 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\NES emulator">
+      <UniqueIdentifier>{9fc138c3-bcfe-4b75-903b-6b04d096dea4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\NES emulator">
+      <UniqueIdentifier>{c3956b1a-597d-4ff4-9c43-55784211d148}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CPU6502.cpp">
+      <Filter>Source Files\NES emulator</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CPU6502.h">
+      <Filter>Header Files\NES emulator</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
