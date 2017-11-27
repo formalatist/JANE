@@ -119,9 +119,11 @@
   <ItemGroup>
     <ClCompile Include="CPU6502.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ROMLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPU6502.h" />
+    <ClInclude Include="ROMLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

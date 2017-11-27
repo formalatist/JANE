@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <iostream>
 #include "CPU6502.h"
+#include "ROMLoader.h"
+
+bool running = true;
 
 long getFileSize(FILE *file)
 {
@@ -46,11 +49,18 @@ int main(int argc, char** argv) {
 
 	//create the cpu
 	CPU6502 cpu = CPU6502();
-	unsigned char prgROM[16384];
-	cpu.loadMemory(prgROM, 16384, 0x8000);
-	cpu.loadMemory(prgROM, 16384, 0xc000);
-	cpu.PC = cpu.memory[0xfffc] << 8 | cpu.memory[0xfffd];
-	cpu.step();
+	ROMLoader loader = ROMLoader(&cpu);
+	loader.loadROM(fileBuffer, fileSize);
+	//clear ppu registers
+	loader.clearPPUReg();
+	std::cout << "Starting PC at: 0x" << std::hex << cpu.PC << std::endl;
+	for (int i = 0; i < 50; i++)
+	{	
+		cpu.step();
+	}
+	std::cout << "Total unique ops: " << std::dec << cpu.numImplementedOps << std::endl;
+	std::cout << "Done!" << std::endl;
+	std::cout << "PC: " << std::hex << cpu.PC << std::endl;
 
 	std::cin.get();
 	delete[] fileBuffer;

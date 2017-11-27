@@ -25,782 +25,1488 @@ void CPU6502::loadMemory(unsigned char rom[], int romSize, int offset)
 
 void CPU6502::step()
 {
+	if (HALT) {
+		return;
+	}
+	numSteps++;
 	executeOP();
 }
 
 void CPU6502::executeOP()
 {
+	/*
+	if (usedOPs[memory[PC]]) {
+		std::cout << "Executing new op: 0x" << std::hex << (int)memory[PC] << std::endl;
+		std::cout << "PC: 0x" << std::hex << PC << std::endl;
+		usedOPs[memory[PC]] = false;
+		numImplementedOps++;
+	}
+	*/
+	if (printCallLog) {
+		/*
+		std::cout << "Executing op: 0x" << std::hex << (int)memory[PC] << std::endl;
+		std::cout << "PC: 0x" << std::hex << PC << std::endl;
+		std::cout << "SP: 0x" << std::hex << (int)SP 
+			<< "  SP points to: " << std::hex << (int)memory[SP] << "  " << (int)memory[SP + 1] << std::endl;
+		std::cout << "Steps: " << numSteps << std::endl;
+		std::cout << "\n" << std::endl;
+		*/
+		std::cout << "A: " << (int)A << " X: " << (int)X << " Y: " << (int)Y << " SP: "
+			<< std::hex << (int)SP << " P: " << (int)N << (int)V << (int)B << (int)D << (int)IntDisable
+			<< (int)Z << (int)C << "	$" << std::hex << PC << ":" << (int)memory[PC]
+			<< "   " << (int)memory[PC + 1] << std::endl;
+	}
+	
 	switch (memory[PC])
 	{
-	case 0x0:
-		unimplementedOP();
+	case 0x0: //BRK force interrupt, implied
+	{
+		//NOTE: we save PC then flags to stack. so the stack is [flags | PCLO | PCHI]
+		push(PC);
+		pushStatus();
+		PC = memory[0xfffe] | (memory[0xffff] << 8);
+		B = 1;
+		cycles += 7;
 		break;
+	}
 	case 0x1:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x2:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x3:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x4:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x5:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x6:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x7:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x8:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x9:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xa:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xb:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xc:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xd:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xe:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xf:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x10:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x11:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x12:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x13:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x14:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x15:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x16:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x17:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x18:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x19:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x1a:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x1b:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x1c:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x1d:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x1e:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x1f:
+	{
 		unimplementedOP();
 		break;
-	case 0x20:
-		unimplementedOP();
+	}
+	case 0x20: //JSR jump to subroutine, absolute
+	{
+		//TODO this might be the wrong PC to push
+		push(PC + 2);
+		PC = readWord();
+		cycles += 6;
 		break;
+	}
 	case 0x21:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x22:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x23:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x24:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x25:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x26:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x27:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x28:
+	{
 		unimplementedOP();
 		break;
-	case 0x29:
-		unimplementedOP();
+	}
+	case 0x29: //AND logical and, immediate
+	{
+		byte val = readImmediate() & A;
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 2;
+
 		break;
+	}
 	case 0x2a:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x2b:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x2c:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x2d:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x2e:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x2f:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x30:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x31:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x32:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x33:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x34:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x35:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x36:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x37:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x38:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x39:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x3a:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x3b:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x3c:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x3d:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x3e:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x3f:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x40:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x41:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x42:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x43:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x44:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x45:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x46:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x47:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x48:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x49:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x4a:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x4b:
+	{
 		unimplementedOP();
 		break;
-	case 0x4c:
-		unimplementedOP();
+	}
+	case 0x4c: //JMP jump
+	{
+		//TODO the original 6502 has a bug when getting adresses from ends of pages
+		//IE 0xXXFF. This might need to be emulated
+		PC = readWord();
+		cycles += 3;
 		break;
+	}
 	case 0x4d:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x4e:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x4f:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x50:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x51:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x52:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x53:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x54:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x55:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x56:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x57:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x58:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x59:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x5a:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x5b:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x5c:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x5d:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x5e:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x5f:
+	{
 		unimplementedOP();
 		break;
-	case 0x60:
-		unimplementedOP();
+	}
+	case 0x60: //RTS return from subroutine
+	{
+		PC = pullWord();
+		PC++;
+		cycles += 6;
 		break;
+	}
 	case 0x61:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x62:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x63:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x64:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x65:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x66:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x67:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x68:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x69:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x6a:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x6b:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x6c:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x6d:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x6e:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x6f:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x70:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x71:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x72:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x73:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x74:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x75:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x76:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x77:
+	{
 		unimplementedOP();
 		break;
-	case 0x78:
-		unimplementedOP();
+	}
+	case 0x78: //SEI - Set interrupt disable, implied
+	{
+		IntDisable = 1;
+		PC++;
+		cycles += 2;
 		break;
+	}
 	case 0x79:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x7a:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x7b:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x7c:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x7d:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x7e:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x7f:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x80:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x81:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x82:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x83:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x84:
+	{
 		unimplementedOP();
 		break;
-	case 0x85:
-		unimplementedOP();
+	}
+	case 0x85: //STA store accumulator, zero page
+	{
+		byte addr = readByte();
+		memory[addr] = A;
+		cycles += 3;
 		break;
+	}
 	case 0x86:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x87:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x88:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x89:
+	{
 		unimplementedOP();
 		break;
-	case 0x8a:
-		unimplementedOP();
+	}
+	case 0x8a: //TXA transfer X to Accumulator
+	{
+		A = X;
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
+		PC++;
+		cycles += 2;
 		break;
+	}
 	case 0x8b:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x8c:
+	{
 		unimplementedOP();
 		break;
-	case 0x8d:
-		unimplementedOP();
+	}
+	case 0x8d: //STA store accumulator, absolute
+	{
+		int addr = readWord();
+		writeToMemory(addr, A);
+		cycles += 4;
 		break;
+	}
 	case 0x8e:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x8f:
+	{
 		unimplementedOP();
 		break;
-	case 0x90:
-		unimplementedOP();
+	}
+	case 0x90: //BCC branch if carry clear
+	{
+		byte val = readImmediate();
+		if (!C) {
+			byte PCH = (PC & 0xff00) >> 8;
+			//treat the value as a signed char
+			if (val & 0x80 == 0x80) { //val is negative
+									  //invert bits
+				val = ~val;
+				//add 1
+				val++;
+				PC -= val;
+			}
+			else { // val is positive
+				PC += val;
+			}
+			cycles += 3;
+			if (PCH != (PC & 0xff00) >> 8) { //new page
+				cycles += 2;
+			}
+		}
+		else {
+			cycles += 2;
+		}
 		break;
+	}
 	case 0x91:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x92:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x93:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x94:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x95:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x96:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x97:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x98:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x99:
+	{
 		unimplementedOP();
 		break;
-	case 0x9a:
-		unimplementedOP();
+	}
+	case 0x9a: //TXS Transfer x to stack pointer
+	{
+		pushByte(X);
+		PC++;
+		cycles += 2;
+
 		break;
+	}
 	case 0x9b:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x9c:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x9d:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x9e:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0x9f:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xa0:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xa1:
+	{
 		unimplementedOP();
 		break;
-	case 0xa2:
-		unimplementedOP();
+	}
+	case 0xa2: //LDX load x register
+	{
+		byte val = readImmediate();
+		X = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 2;
+
 		break;
+	}
 	case 0xa3:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xa4:
+	{
 		unimplementedOP();
 		break;
-	case 0xa5:
-		unimplementedOP();
+	}
+	case 0xa5: //LDA load accumulator, zero page
+	{
+		byte val = readZeroPage();
+		A = val;
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
+		cycles += 3;
+
 		break;
+	}
 	case 0xa6:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xa7:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xa8:
+	{
 		unimplementedOP();
 		break;
-	case 0xa9:
-		unimplementedOP();
+	}
+	case 0xa9: //LDA load accumulator, immediate
+	{
+		byte val = readImmediate();
+		A = val;
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
+		cycles += 2;
 		break;
+	}
 	case 0xaa:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xab:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xac:
+	{
 		unimplementedOP();
 		break;
-	case 0xad:
-		unimplementedOP();
+	}
+	case 0xad: //LDA load accumulator, absolute
+	{
+		byte val = readAbsolute();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 4;
+
 		break;
+	}
 	case 0xae:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xaf:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xb0:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xb1:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xb2:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xb3:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xb4:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xb5:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xb6:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xb7:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xb8:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xb9:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xba:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xbb:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xbc:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xbd:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xbe:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xbf:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xc0:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xc1:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xc2:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xc3:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xc4:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xc5:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xc6:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xc7:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xc8:
+	{
 		unimplementedOP();
 		break;
-	case 0xc9:
-		unimplementedOP();
+	}
+	case 0xc9: //CMP Compare Immediate
+	{
+		byte val = readImmediate();
+		byte result = A - val;
+		C = A >= val;
+		Z = A == val;
+		N = (result & 0x80) == 0x80;
+		cycles += 2;
 		break;
+	}
 	case 0xca:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xcb:
+	{
 		unimplementedOP();
 		break;
-	case 0xcc:
-		unimplementedOP();
+	}
+	case 0xcc: //CPY Compare Y register, Aboslute
+	{
+		unsigned char val = readAbsolute(); 
+		unsigned char result = Y - val;
+		Z = (result == 0); 
+		C = (Y >= val);
+		N = (result & 0x80) == 0x80; 
+		cycles += 4;
 		break;
+	}
 	case 0xcd:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xce:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xcf:
+	{
 		unimplementedOP();
 		break;
-	case 0xd0:
-		unimplementedOP();
+	}
+	case 0xd0: //BNE Branch of not equal
+	{
+		byte val = readRelative();
+		if (!Z) {
+			byte PCH = (PC & 0xff00) >> 8;
+			//treat the value as a signed char
+			if (val & 0x80 == 0x80) { //val is negative
+									  //invert bits
+				val = ~val;
+				//add 1
+				val++;
+				PC -= val;
+			}
+			else { // val is positive
+				PC += val;
+			}
+			cycles += 3;
+			if(PCH != (PC & 0xff00) >> 8) { //new page
+				cycles += 2;
+			}
+		}
+		else {
+			cycles += 2;
+		}
 		break;
+	}
 	case 0xd1:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xd2:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xd3:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xd4:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xd5:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xd6:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xd7:
+	{
 		unimplementedOP();
 		break;
-	case 0xd8:
-		unimplementedOP();
+	}
+	case 0xd8: //CLD clear decimal mode
+	{
+		//decimal mode not used by the nes. but the flag can be used to store info
+		D = 0;
+		PC++;
+		cycles += 2;
 		break;
+	}
 	case 0xd9:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xda:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xdb:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xdc:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xdd:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xde:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xdf:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xe0:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xe1:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xe2:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xe3:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xe4:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xe5:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xe6:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xe7:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xe8:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xe9:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xea:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xeb:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xec:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xed:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xee:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xef:
+	{
 		unimplementedOP();
 		break;
-	case 0xf0:
-		unimplementedOP();
+	}
+	case 0xf0: //BEQ Branch if equal. (counter to d0)
+	{
+		byte val = readRelative();
+		if (Z) {
+			byte PCH = (PC & 0xff00) >> 8;
+			//treat the value as a signed char
+			if(val & 0x80 == 0x80) { //val is negative
+				//invert bits
+				val = ~val;
+				//add 1
+				val++;
+				PC -= val;
+			} else { // val is positive
+				PC += val;
+			}
+			cycles += 3;
+			if (PCH != (PC & 0xff00) >> 8) { //new page
+				cycles += 2;
+			}
+		}
+		else {
+			cycles += 2;
+		}
 		break;
+	}
 	case 0xf1:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xf2:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xf3:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xf4:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xf5:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xf6:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xf7:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xf8:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xf9:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xfa:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xfb:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xfc:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xfd:
+	{
 		unimplementedOP();
 		break;
+	}
 	case 0xfe:
+	{
 		unimplementedOP();
 		break;
+	}
+
 	default:
+	{
 		NOP();
 		break;
 	}
+	}
+}
+
+void CPU6502::push(byte high, byte low)
+{
+	memory[(SP - 1) | 0x100] = high;
+	memory[(SP - 2) | 0x100] = low;
+	SP -= 2;
+}
+
+void CPU6502::pushByte(byte val)
+{
+	memory[SP - 1] = val;
+	SP--;
+}
+
+void CPU6502::push(int word)
+{
+	memory[(SP - 1) | 0x100] = (word & 0xff00) >> 8;
+	memory[(SP - 2) | 0x100] = word & 0xff;
+	SP -= 2;
+}
+
+void CPU6502::pushStatus()
+{
+	//TODO: this is not correct. ERROR: this is not correct way of storing the flag
+	byte statusByte = C & 0x1
+		| Z & 0x2
+		| IntDisable & 0x4
+		| B & 0x8
+		| V & 0x10
+		| N & 0x20;
+	memory[(SP - 1) | 0x100] = statusByte;
+	SP--;
+}
+
+int CPU6502::pullWord()
+{
+	int val = 0;
+	val = memory[SP | 0x100] | (memory[(SP + 1) | 0x100] << 8);
+	SP += 2;
+	return val & 0xffff;
 }
 
 void CPU6502::NOP()
@@ -811,12 +1517,18 @@ void CPU6502::NOP()
 
 void CPU6502::unimplementedOP()
 {
-	std::cout << "Unimplemented OP: 0x" << std::hex << memory[PC] << std::endl;
+	std::cout << "Unimplemented OP: 0x" << std::hex <<(int) memory[PC] << std::endl;
+	HALT = true;
+}
+
+void CPU6502::writeToMemory(int addr, byte val)
+{
+	memory[addr] = val;
 }
 
 unsigned char CPU6502::readImmediate()
 {
-	unsigned char val = memory[PC];
+	unsigned char val = memory[PC + 1];
 	PC += 2;
 	return val;
 }
@@ -901,6 +1613,21 @@ unsigned char CPU6502::readIndirectY()
 	int addr1 = memory[PC + 1] << 8 | memory[PC] + Y;
 	int addr2 = memory[addr1 + 1] << 8 | memory[addr1];
 	unsigned char val = memory[addr2];
+	PC += 2;
+	return val;
+}
+
+int CPU6502::readWord()
+{
+	int addr = 0;
+	addr = memory[PC + 1] | (memory[PC + 2] << 8);
+	PC += 3;
+	return addr & 0xffff;
+}
+
+byte CPU6502::readByte()
+{
+	byte val = memory[PC + 1];
 	PC += 2;
 	return val;
 }

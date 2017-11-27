@@ -2,6 +2,9 @@
 #include <vector>
 #include <iostream>
 
+//typedef for byte
+typedef unsigned char byte;
+
 class CPU6502 {
 public:
 	//constructor
@@ -22,7 +25,7 @@ public:
 	unsigned char Y = 0;
 
 	//8 bit stack pointer. Starts at ram adress 0x100 so can adress 0x100-0x1ff
-	unsigned char SP;
+	unsigned char SP = 0xFF;
 
 	//16bit program counter
 	unsigned int PC;
@@ -44,10 +47,25 @@ public:
 
 	//performes one cpu step
 	void step();
+	//set to true if the cpu should halt next step
+	bool HALT = false;
+	//for debugging
+	bool usedOPs[256];
+	bool printCallLog = true;
+	int numSteps = 0;
+	int numImplementedOps = 0;
 
 private:
 	//execute the op pointed to by PC
 	void executeOP();
+
+	//push and pull to the stack
+	void push(byte high, byte low);
+	void pushByte(byte val);
+	void push(int word);
+	void pushStatus();
+	int pullWord();
+
 
 	//various functions for doing ops
 	void NOP(); //the NOP op
@@ -55,8 +73,10 @@ private:
 	//unimplemented op
 	void unimplementedOP();
 
+	void writeToMemory(int addr, byte val);
+
 	//addressing modes
-	//read
+	//read the memory at these locations
 	//unsigned char readAccumulator(); not needed since we always have easy access to the A reg
 	unsigned char readImmediate();		//reads the next byte
 	unsigned char readZeroPage();		//reads the memoryaddress of the next byte
@@ -81,5 +101,6 @@ private:
 										//is dynamically added to this value to generated the actual 
 										//target address for operation.
 
-
+	int readWord();
+	byte readByte();
 };
