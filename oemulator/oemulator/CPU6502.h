@@ -100,6 +100,9 @@ private:
 										//of the least significant byte of 16 bit address. The Y register 
 										//is dynamically added to this value to generated the actual 
 										//target address for operation.
+	//get the addresses of the different modes without incrementing PC or actually reading the memory
+	byte zeroPageX();
+	int absoluteX();
 
 	int readWord();
 	byte readByte();

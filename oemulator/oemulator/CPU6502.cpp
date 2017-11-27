@@ -1,4 +1,6 @@
 #include "CPU6502.h"
+//FOR DEBUG
+#include <windows.h>
 
 CPU6502::CPU6502()
 {
@@ -51,6 +53,7 @@ void CPU6502::executeOP()
 		std::cout << "Steps: " << numSteps << std::endl;
 		std::cout << "\n" << std::endl;
 		*/
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10 + (numSteps % 2) * 5);
 		std::cout << "A: " << (int)A << " X: " << (int)X << " Y: " << (int)Y << " SP: "
 			<< std::hex << (int)SP << " P: " << (int)N << (int)V << (int)B << (int)D << (int)IntDisable
 			<< (int)Z << (int)C << "	$" << std::hex << PC << ":" << (int)memory[PC]
@@ -69,159 +72,173 @@ void CPU6502::executeOP()
 		cycles += 7;
 		break;
 	}
-	case 0x1:
+	case 0x1: //ORA logival inclusive OR indirect X
 	{
-		unimplementedOP();
+		byte val = A | readIndirectX();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 6;
+
 		break;
 	}
-	case 0x2:
+	case 0x5: //ORA logical inclusive OR, zero page
 	{
-		unimplementedOP();
+		byte val = A | readZeroPage();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 3;
+
 		break;
 	}
-	case 0x3:
+	case 0x6: //ASL Arithmetic shift left, zero page
 	{
-		unimplementedOP();
+		byte val = readZeroPage();
+		C = (val & 0x80) == 0x80;
+		val = (val << 1) & 0xff;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		writeToMemory(memory[PC + 1], val);
+		cycles += 5;
 		break;
 	}
-	case 0x4:
+	case 0x8: //PHP push procesor status, implied
 	{
-		unimplementedOP();
+		pushStatus();
+		PC++;
+		cycles += 3;
 		break;
 	}
-	case 0x5:
+	case 0x9: //ORA logical inclusive or, immediate
 	{
-		unimplementedOP();
+		byte val = A | readImmediate();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 2;
 		break;
 	}
-	case 0x6:
+	case 0xa: //ASL arithmetic shift left, accumulator
 	{
-		unimplementedOP();
+		byte val = (A << 1) & 0xff;
+		C = (A & 0x80) == 0x80;
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 2;
 		break;
 	}
-	case 0x7:
+	case 0xd: //ORA logical inclusive or, absolute
 	{
-		unimplementedOP();
+		byte val = A | readAbsolute();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0x8:
+	case 0xe: //Arithmetic shift left, absolute
 	{
-		unimplementedOP();
+		int addr = readWord();
+		byte val = (memory[addr] << 1) & 0xff;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		C = (memory[addr] & 0x80) == 0x80;
+		writeToMemory(addr, val);
+		cycles += 6;
 		break;
 	}
-	case 0x9:
+	case 0x10: //BPL branch if positive
 	{
-		unimplementedOP();
+		//NOTE: for all branches we incerment PC before we check the high byte with PCH, this will skew when we detect page changes
+		byte val = readImmediate();
+		if (!N) {
+			byte PCH = (PC & 0xff00) >> 8;
+			//treat the value as a signed char
+			if (val & 0x80 == 0x80) { //val is negative
+				//invert bits
+				val = ~val;
+				//add 1
+				val++;
+				PC -= val;
+			}
+			else { // val is positive
+				PC += val;
+			}
+			cycles += 3;
+			if (PCH != (PC & 0xff00) >> 8) { //new page
+				cycles += 2;
+			}
+		}
+		else {
+			cycles += 2;
+		}
 		break;
 	}
-	case 0xa:
+	case 0x11: //ORA logical inclusive or, indirct Y
 	{
-		unimplementedOP();
+		byte val = A | readIndirectY();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 5;
 		break;
 	}
-	case 0xb:
+	case 0x15: //ORA logical inclusive or, zeropage X
 	{
-		unimplementedOP();
+		byte val = A | readZeroPageX();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xc:
+	case 0x16: //ASL arithmetic shift left
 	{
-		unimplementedOP();
+		byte val = readZeroPageX();
+		C = (val & 0x80) == 0x80;
+		val = (val << 1) & 0xff;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		writeToMemory(zeroPageX(), val);
+		cycles += 6;
 		break;
 	}
-	case 0xd:
+	case 0x18: //CLC clear carry flag
 	{
-		unimplementedOP();
+		C = 0;
+		cycles += 2;
+		PC++;
 		break;
 	}
-	case 0xe:
+	case 0x19: //ORA logical inclusive or, absoluteY
 	{
-		unimplementedOP();
+		byte val = A | readAbsoluteY();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xf:
+	case 0x1d: //ORA logival incluive or, absoluteX
 	{
-		unimplementedOP();
+		byte val = A | readAbsoluteX();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0x10:
+	case 0x1e: //ASL arithmetic shift left, abosluteX
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0x11:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x12:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x13:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x14:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x15:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x16:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x17:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x18:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x19:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x1a:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x1b:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x1c:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x1d:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x1e:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x1f:
-	{
-		unimplementedOP();
+		byte val = readAbsoluteX();
+		C = (val & 0x80) == 0x80;
+		val = (val << 1) & 0xff;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		writeToMemory(absoluteX(), val);
+		cycles += 7;
 		break;
 	}
 	case 0x20: //JSR jump to subroutine, absolute
@@ -232,24 +249,19 @@ void CPU6502::executeOP()
 		cycles += 6;
 		break;
 	}
-	case 0x21:
+	case 0x21: //AND logical and, indirectX
 	{
-		unimplementedOP();
+		byte val = A & readIndirectX();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 6;
 		break;
 	}
-	case 0x22:
+	case 0x24: //BIT bit test, zeroPage
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0x23:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x24:
-	{
-		unimplementedOP();
+		//NOT DONE___________""""""""""""""""""""""""""""""""""""""""""""
+		cycles += 3;
 		break;
 	}
 	case 0x25:
@@ -1561,9 +1573,7 @@ unsigned char CPU6502::readRelative()
 {
 	unsigned char val = memory[PC + 1];
 	PC += 2;
-	//check if val is positive or negative
-	//TODO this is probably not correct since val is propably in twoscompliment?
-	return val & 0x80 ? -(val & 0x7f) : val & 0x7f;
+	return val;
 }
 
 unsigned char CPU6502::readAbsolute() 
@@ -1615,6 +1625,16 @@ unsigned char CPU6502::readIndirectY()
 	unsigned char val = memory[addr2];
 	PC += 2;
 	return val;
+}
+
+byte CPU6502::zeroPageX()
+{
+	return (memory[PC + 1] + X) & 0xff;
+}
+
+int CPU6502::absoluteX()
+{
+	return ((memory[PC + 2] << 8 | memory[PC + 1]) + X) & 0xffff;
 }
 
 int CPU6502::readWord()
