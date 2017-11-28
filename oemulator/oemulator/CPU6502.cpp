@@ -449,58 +449,58 @@ void CPU6502::executeOP()
 	}
 	case 0x41: //EOR exclusive or, indirectX
 	{
-		//NOT DONE YET!################################################!!!=____!_!_!_!
-		unimplementedOP();
+		byte val = A ^ readIndirectX();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 6;
 		break;
 	}
-	case 0x42:
+	case 0x45: //EOR exclusive or, zeroPage
 	{
-		unimplementedOP();
+		byte val = A ^ readZeroPage();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 3;
 		break;
 	}
-	case 0x43:
+	case 0x46: //LSR logical shift right, zeroPage
 	{
-		unimplementedOP();
+		byte val = readZeroPage();
+		C = val & 1;
+		val = (val >> 1) & 0xff;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		writeToMemory(zeroPage(), val);
+		cycles += 5;
 		break;
 	}
-	case 0x44:
+	case 0x48: //PHA push accumulator
 	{
-		unimplementedOP();
+		pushByte(A);
+		PC++;
+		cycles += 3;
 		break;
 	}
-	case 0x45:
+	case 0x49: //EOR exclusive or, immediate
 	{
-		unimplementedOP();
+		byte val = A ^ readImmediate();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 2;
 		break;
 	}
-	case 0x46:
+	case 0x4a: //LSR logical shift right, Accumulator
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0x47:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x48:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x49:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x4a:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x4b:
-	{
-		unimplementedOP();
+		byte val = A;
+		C = val & 1;
+		val = (val >> 1) & 0xff;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		A = val;
+		cycles += 5;
 		break;
 	}
 	case 0x4c: //JMP jump
@@ -511,99 +511,115 @@ void CPU6502::executeOP()
 		cycles += 3;
 		break;
 	}
-	case 0x4d:
+	case 0x4d: //EOR exclusive or, absolute
 	{
-		unimplementedOP();
+		byte val = A ^ readAbsolute();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0x4e:
+	case 0x4e: //LSR logical shift right, absolute
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0x4f:
-	{
-		unimplementedOP();
+		byte val = readAbsolute();
+		C = val & 1;
+		val = (val >> 1) & 0xff;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		writeToMemory(absolute(), val);
+		cycles += 6;
 		break;
 	}
 	case 0x50:
 	{
-		unimplementedOP();
+		byte val = readRelative();
+		if (!V) {
+			byte PCH = (PC & 0xff00) >> 8;
+			//treat the value as a signed char
+			if (val & 0x80 == 0x80) { //val is negative
+									  //invert bits
+				val = ~val;
+				//add 1
+				val++;
+				PC -= val;
+			}
+			else { // val is positive
+				PC += val;
+			}
+			cycles += 3;
+			if (PCH != (PC & 0xff00) >> 8) { //new page
+				cycles += 2;
+			}
+		}
+		else {
+			cycles += 2;
+		}
 		break;
 	}
-	case 0x51:
+	case 0x51: //EOR exclusive or, indirectY
 	{
-		unimplementedOP();
+		byte val = A ^ readIndirectY();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 5;
 		break;
 	}
-	case 0x52:
+	case 0x55: //EOR exclusive or, zeroPageX
 	{
-		unimplementedOP();
+		byte val = A ^ readZeroPageX();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0x53:
+	case 0x56: //LSR logical shift right, zeroPageX
 	{
-		unimplementedOP();
+		byte val = readZeroPageX();
+		C = val & 1;
+		val = (val >> 1) & 0xff;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		writeToMemory(zeroPageX(), val);
+		cycles += 6;
 		break;
 	}
-	case 0x54:
+	case 0x58: //CLI clear interrupt disable
 	{
-		unimplementedOP();
+		IntDisable = 0;
+		PC++;
+		cycles += 2;
 		break;
 	}
-	case 0x55:
+	case 0x59: //EOR exclusive or, absoluteY
 	{
-		unimplementedOP();
+		byte val = A ^ readAbsoluteY();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0x56:
+	case 0x5d: //EOR exclusive or, absoluteX
 	{
-		unimplementedOP();
+		byte val = A ^ readAbsoluteX();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0x57:
+	case 0x5e: //LSR logical shift right, absolueX
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0x58:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x59:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x5a:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x5b:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x5c:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x5d:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x5e:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x5f:
-	{
-		unimplementedOP();
+		byte val = readAbsoluteX();
+		C = val & 1;
+		val = (val >> 1) & 0xff;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		writeToMemory(absoluteX(), val);
+		cycles += 7;
 		break;
 	}
 	case 0x60: //RTS return from subroutine
@@ -613,8 +629,9 @@ void CPU6502::executeOP()
 		cycles += 6;
 		break;
 	}
-	case 0x61:
+	case 0x61: //ADC add with carry, indirectX
 	{
+
 		unimplementedOP();
 		break;
 	}
@@ -1687,6 +1704,11 @@ byte CPU6502::zeroPage()
 byte CPU6502::zeroPageX()
 {
 	return (memory[PC + 1] + X) & 0xff;
+}
+
+int CPU6502::absolute()
+{
+	return (memory[PC + 2] << 8 | memory[PC + 1]) & 0xffff;
 }
 
 int CPU6502::absoluteX()
