@@ -260,28 +260,39 @@ void CPU6502::executeOP()
 	}
 	case 0x24: //BIT bit test, zeroPage
 	{
-		//NOT DONE___________""""""""""""""""""""""""""""""""""""""""""""
+		byte val = readZeroPage();
+		Z = (A & val) == 0;
+		V = (val & 0x40) == 0x40;
+		N = (val & 0x80) == 0x80;
 		cycles += 3;
 		break;
 	}
-	case 0x25:
+	case 0x25: //AND logical and, zeroPage
 	{
-		unimplementedOP();
+		byte val = A & readZeroPage();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 3;
 		break;
 	}
-	case 0x26:
+	case 0x26: //ROL Rotate left, zeroPage
 	{
-		unimplementedOP();
+		byte val = readZeroPage();
+		bool tempC = C;
+		C = (val & 0x80) == 0x80;
+		val = ((val << 1) | tempC) & 0xff;
+		N = (val & 0x80) == 0x80;
+		Z = val == 0;
+		writeToMemory(zeroPage(), val);
+		cycles += 5;
 		break;
 	}
-	case 0x27:
+	case 0x28: //PLP pull processor status
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0x28:
-	{
-		unimplementedOP();
+		pullStatus();
+		PC++;
+		cycles += 4;
 		break;
 	}
 	case 0x29: //AND logical and, immediate
@@ -294,123 +305,151 @@ void CPU6502::executeOP()
 
 		break;
 	}
-	case 0x2a:
+	case 0x2a: //ROL rotate left, Accumulator
 	{
-		unimplementedOP();
+		bool tempC = C;
+		C = (A & 0x80) == 0x80;
+		A = ((A << 1) | tempC) & 0xff;
+		N = (A & 0x80) == 0x80;
+		Z = A == 0;
+		cycles += 2;
 		break;
 	}
-	case 0x2b:
+	case 0x2c: //BIT bit test, absolute
 	{
-		unimplementedOP();
+		byte val = readAbsolute();
+		Z = (A & val) == 0;
+		N = (val & 0x80) == 0x80;
+		V = (val & 0x40) == 0x40;
+		cycles += 4;
 		break;
 	}
-	case 0x2c:
+	case 0x2d: //AND logical and, absolute
 	{
-		unimplementedOP();
+		byte val = A & readAbsolute();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0x2d:
+	case 0x2e: //ROL rotate left, Absolute
 	{
-		unimplementedOP();
+		int addr = readWord();
+		byte val = memory[addr];
+		bool tempC = C;
+		C = (val & 0x80) == 0x80;
+		val = ((val << 1) | tempC) & 0xff;
+		N = (val & 0x80) == 0x80;
+		Z = val == 0;
+		writeToMemory(addr, val);
+		cycles += 6;
 		break;
 	}
-	case 0x2e:
+	case 0x30: //BMI Branch if minus
 	{
-		unimplementedOP();
+		byte val = readRelative();
+		if (N) {
+			byte PCH = (PC & 0xff00) >> 8;
+			//treat the value as a signed char
+			if (val & 0x80 == 0x80) { //val is negative
+									  //invert bits
+				val = ~val;
+				//add 1
+				val++;
+				PC -= val;
+			}
+			else { // val is positive
+				PC += val;
+			}
+			cycles += 3;
+			if (PCH != (PC & 0xff00) >> 8) { //new page
+				cycles += 2;
+			}
+		}
+		else {
+			cycles += 2;
+		}
 		break;
 	}
-	case 0x2f:
+	case 0x31: //AND logical and, indirectY
 	{
-		unimplementedOP();
+		byte val = A & readIndirectY();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 5;
 		break;
 	}
-	case 0x30:
+	case 0x35: //AND logical and, ZeroPageX
 	{
-		unimplementedOP();
+		byte val = A & readZeroPageX();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0x31:
+	case 0x36: //ROL rotate left, zeroPageX
 	{
-		unimplementedOP();
+		byte val = readZeroPageX();
+		bool tempC = C;
+		C = (val & 0x80) == 0x80;
+		val = ((val << 1) | tempC) & 0xff;
+		N = (val & 0x80) == 0x80;
+		Z = val == 0;
+		writeToMemory(zeroPageX(), val);
+		cycles += 6;
 		break;
 	}
-	case 0x32:
+	case 0x38: //SEC set carry flag
 	{
-		unimplementedOP();
+		C = 1;
+		PC++;
+		cycles += 2;
 		break;
 	}
-	case 0x33:
+	case 0x39: //AND logical and, AbosluteY
 	{
-		unimplementedOP();
+		byte val = A & readAbsoluteY();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0x34:
+	case 0x3d: //AND logical and, abosluteX
 	{
-		unimplementedOP();
+		byte val = A & readAbsoluteX();
+		A = val;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0x35:
+	case 0x3e: //ROL rotate left, AbosluteX
 	{
-		unimplementedOP();
+		byte val = readAbsoluteX();
+		bool tempC = C;
+		C = (val & 0x80) == 0x80;
+		val = ((val << 1) | tempC) & 0xff;
+		N = (val & 0x80) == 0x80;
+		Z = val == 0;
+		writeToMemory(absoluteX(), val);
+		cycles += 6;
 		break;
 	}
-	case 0x36:
+	case 0x40: //RTO return from interrupt
 	{
-		unimplementedOP();
+		pullStatus();
+		PC = pullWord();
+		PC++; //TODO: this might not be required
+		cycles += 6;
 		break;
 	}
-	case 0x37:
+	case 0x41: //EOR exclusive or, indirectX
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0x38:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x39:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x3a:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x3b:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x3c:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x3d:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x3e:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x3f:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x40:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x41:
-	{
+		//NOT DONE YET!################################################!!!=____!_!_!_!
 		unimplementedOP();
 		break;
 	}
@@ -1502,15 +1541,28 @@ void CPU6502::push(int word)
 
 void CPU6502::pushStatus()
 {
-	//TODO: this is not correct. ERROR: this is not correct way of storing the flag
-	byte statusByte = C & 0x1
-		| Z & 0x2
-		| IntDisable & 0x4
-		| B & 0x8
-		| V & 0x10
-		| N & 0x20;
+	//TODO: this might not be correct
+	byte statusByte = C 
+		| Z << 1
+		| IntDisable << 2
+		| B << 3
+		| V << 4
+		| N << 5;
 	memory[(SP - 1) | 0x100] = statusByte;
 	SP--;
+}
+
+void CPU6502::pullStatus()
+{
+	//TODO: this might not be correct
+	byte sByte = memory[SP | 0x100];
+	SP++;
+	C |= sByte & 0x1;
+	Z |= sByte & 0x2;
+	IntDisable |= sByte & 0x4;
+	B |= sByte & 0x8;
+	V |= sByte & 0x10;
+	N |= sByte & 0x20;
 }
 
 int CPU6502::pullWord()
@@ -1625,6 +1677,11 @@ unsigned char CPU6502::readIndirectY()
 	unsigned char val = memory[addr2];
 	PC += 2;
 	return val;
+}
+
+byte CPU6502::zeroPage()
+{
+	return memory[PC + 1] & 0xff;
 }
 
 byte CPU6502::zeroPageX()

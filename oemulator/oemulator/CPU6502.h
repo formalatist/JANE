@@ -64,6 +64,7 @@ private:
 	void pushByte(byte val);
 	void push(int word);
 	void pushStatus();
+	void pullStatus();
 	int pullWord();
 
 
@@ -101,6 +102,7 @@ private:
 										//is dynamically added to this value to generated the actual 
 										//target address for operation.
 	//get the addresses of the different modes without incrementing PC or actually reading the memory
+	byte zeroPage();
 	byte zeroPageX();
 	int absoluteX();
 
