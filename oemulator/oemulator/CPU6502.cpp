@@ -631,118 +631,161 @@ void CPU6502::executeOP()
 	}
 	case 0x61: //ADC add with carry, indirectX
 	{
-
-		unimplementedOP();
+		byte M = readIndirectX();
+		byte val = A + M + C;
+		A = val & 0xff;
+		Z = A == 0;
+		C = val > 0xff;
+		N = (val & 0x80) == 0x80;
+		V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+		cycles += 6;
 		break;
 	}
-	case 0x62:
+	case 0x65: //ADC add with carry, zeroPAge
 	{
-		unimplementedOP();
+		byte M = readZeroPage();
+		byte val = A + M + C;
+		A = val & 0xff;
+		Z = A == 0;
+		C = val > 0xff;
+		N = (val & 0x80) == 0x80;
+		V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+		cycles += 3;
 		break;
 	}
-	case 0x63:
+	case 0x66: //ROR rotate right, zeroPAge
 	{
-		unimplementedOP();
+		byte val = readZeroPage();
+		bool tempC = C;
+		C = val & 1;
+		val = (val >> 1) | tempC;
+		N = (val & 0x80) == 0x80;
+		writeToMemory(zeroPage(), val);
+		cycles += 5;
 		break;
 	}
-	case 0x64:
+	case 0x68: //PLA pull accumulator
 	{
-		unimplementedOP();
+		A = pullByte();
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0x65:
+	case 0x69: //ADC add with carry, immediate
 	{
-		unimplementedOP();
+		byte M = readImmediate();
+		byte val = A + M + C;
+		A = val & 0xff;
+		Z = A == 0;
+		C = val > 0xff;
+		N = (val & 0x80) == 0x80;
+		V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+		cycles += 2;
 		break;
 	}
-	case 0x66:
+	case 0x6a: //ROR rotate right
 	{
-		unimplementedOP();
+		byte val = A;
+		bool tempC = C;
+		C = val & 1;
+		val = (val >> 1) | tempC;
+		N = (val & 0x80) == 0x80;
+		Z = A == 0;
+		A = val & 0xff;
+		cycles += 2;
 		break;
 	}
-	case 0x67:
+	case 0x6c: //JMP jump, indirect
 	{
-		unimplementedOP();
+		PC = readIndirect();
+		cycles += 5;
 		break;
 	}
-	case 0x68:
+	case 0x6d: //ADC add with carry, absolute
 	{
-		unimplementedOP();
+		byte M = readAbsolute();
+		byte val = A + M + C;
+		A = val & 0xff;
+		Z = A == 0;
+		C = val > 0xff;
+		N = (val & 0x80) == 0x80;
+		V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0x69:
+	case 0x6e: //ROR rotate right, absolute
 	{
-		unimplementedOP();
+		byte val = readAbsolute();
+		bool tempC = C;
+		C = val & 1;
+		val = (val >> 1) | tempC;
+		N = (val & 0x80) == 0x80;
+		Z = A == 0; //this might not be correct for this instruction
+		writeToMemory(absolute(), val);
+		cycles += 2;
 		break;
 	}
-	case 0x6a:
+	case 0x70: //BVS branch if overflow set
 	{
-		unimplementedOP();
+		byte val = readRelative();
+		if (V) {
+			byte PCH = (PC & 0xff00) >> 8;
+			//treat the value as a signed char
+			if (val & 0x80 == 0x80) { //val is negative
+									  //invert bits
+				val = ~val;
+				//add 1
+				val++;
+				PC -= val;
+			}
+			else { // val is positive
+				PC += val;
+			}
+			cycles += 3;
+			if (PCH != (PC & 0xff00) >> 8) { //new page
+				cycles += 2;
+			}
+		}
+		else {
+			cycles += 2;
+		}
 		break;
 	}
-	case 0x6b:
+	case 0x71: //ADC add with carry, indirectY
 	{
-		unimplementedOP();
+		byte M = readIndirectY();
+		byte val = A + M + C;
+		A = val & 0xff;
+		Z = A == 0;
+		C = val > 0xff;
+		N = (val & 0x80) == 0x80;
+		V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+		cycles += 5;
 		break;
 	}
-	case 0x6c:
+	case 0x75: //ADC add with carry, zeroPageX
 	{
-		unimplementedOP();
+		byte M = readZeroPageX();
+		byte val = A + M + C;
+		A = val & 0xff;
+		Z = A == 0;
+		C = val > 0xff;
+		N = (val & 0x80) == 0x80;
+		V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0x6d:
+	case 0x76: //ROR rotate right, zeroPageX
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0x6e:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x6f:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x70:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x71:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x72:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x73:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x74:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x75:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x76:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x77:
-	{
-		unimplementedOP();
+		byte val = readZeroPageX();
+		bool tempC = C;
+		C = val & 1;
+		val = (val >> 1) | tempC;
+		N = (val & 0x80) == 0x80;
+		Z = A == 0; //this might not be correct for this instruction
+		writeToMemory(zeroPageX(), val);
+		cycles += 6;
 		break;
 	}
 	case 0x78: //SEI - Set interrupt disable, implied
@@ -752,91 +795,77 @@ void CPU6502::executeOP()
 		cycles += 2;
 		break;
 	}
-	case 0x79:
+	case 0x79: //ADC add with carry, absoluteY
 	{
-		unimplementedOP();
+		byte M = readAbsoluteY();
+		byte val = A + M + C;
+		A = val & 0xff;
+		Z = A == 0;
+		C = val > 0xff;
+		N = (val & 0x80) == 0x80;
+		V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0x7a:
+	case 0x7d: //ADC add with carry, absoluteX
 	{
-		unimplementedOP();
+		byte M = readAbsoluteX();
+		byte val = A + M + C;
+		A = val & 0xff;
+		Z = A == 0;
+		C = val > 0xff;
+		N = (val & 0x80) == 0x80;
+		V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0x7b:
+	case 0x7e: //ROR rotate right, absoluteX
 	{
-		unimplementedOP();
+		byte val = readAbsoluteX();
+		bool tempC = C;
+		C = val & 1;
+		val = (val >> 1) | tempC;
+		N = (val & 0x80) == 0x80;
+		Z = A == 0; //this might not be correct for this instruction
+		writeToMemory(absoluteX(), val);
+		cycles += 7;
 		break;
 	}
-	case 0x7c:
+	case 0x81: //STA store accumulator, indirectX
 	{
-		unimplementedOP();
+		writeToMemory(indirectX(), A);
+		PC += 2;
+		cycles += 6;
 		break;
 	}
-	case 0x7d:
+	case 0x84: //STY store Y register, zeroPAge
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0x7e:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x7f:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x80:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x81:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x82:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x83:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x84:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x85: //STA store accumulator, zero page
-	{
-		byte addr = readByte();
-		memory[addr] = A;
+		writeToMemory(zeroPage(), Y);
+		PC += 2;
 		cycles += 3;
 		break;
 	}
-	case 0x86:
+	case 0x85: //STA store accumulator, zeroPage
 	{
-		unimplementedOP();
+		writeToMemory(zeroPage(), A);
+		PC += 2;
+		cycles += 3;
 		break;
 	}
-	case 0x87:
+	case 0x86: //STX store X register, zeroPage
 	{
-		unimplementedOP();
+		writeToMemory(zeroPage(), X);
+		PC += 2;
+		cycles += 3;
 		break;
 	}
-	case 0x88:
+	case 0x88: //DEY decrement Y register
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0x89:
-	{
-		unimplementedOP();
+		Y = (Y - 1) & 0xff;
+		Z = Y == 0;
+		N = (Y & 0x80) == 0x80;
+		PC++;
+		cycles += 2;
 		break;
 	}
 	case 0x8a: //TXA transfer X to Accumulator
@@ -848,31 +877,25 @@ void CPU6502::executeOP()
 		cycles += 2;
 		break;
 	}
-	case 0x8b:
+	case 0x8c: //STY store Y register, absolute
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0x8c:
-	{
-		unimplementedOP();
+		writeToMemory(absolute(), Y);
+		PC += 3;
+		cycles += 4;
 		break;
 	}
 	case 0x8d: //STA store accumulator, absolute
 	{
-		int addr = readWord();
-		writeToMemory(addr, A);
+		writeToMemory(absolute(), A);
+		PC += 3;
 		cycles += 4;
 		break;
 	}
-	case 0x8e:
+	case 0x8e: //STX store X register, absolute
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0x8f:
-	{
-		unimplementedOP();
+		writeToMemory(absolute(), X);
+		PC += 3;
+		cycles += 4;
 		break;
 	}
 	case 0x90: //BCC branch if carry clear
@@ -901,85 +924,67 @@ void CPU6502::executeOP()
 		}
 		break;
 	}
-	case 0x91:
+	case 0x91: //STA store accumulator, indirectY
 	{
-		unimplementedOP();
+		writeToMemory(indirectY(), A);
+		PC += 2;
+		cycles += 6;
 		break;
 	}
-	case 0x92:
+	case 0x94: //STY store Y register, zeroPageX
 	{
-		unimplementedOP();
+		writeToMemory(zeroPageX(), Y);
+		PC += 2;
+		cycles += 4;
 		break;
 	}
-	case 0x93:
+	case 0x95: //STA store accumulator, zeroPageX
 	{
-		unimplementedOP();
+		writeToMemory(zeroPageX(), A);
+		PC += 2;
+		cycles += 4;
 		break;
 	}
-	case 0x94:
+	case 0x96: //STX store X register, zeroPageY
 	{
-		unimplementedOP();
+		writeToMemory(zeroPageY(), X);
+		PC += 2;
+		cycles += 4;
 		break;
 	}
-	case 0x95:
+	case 0x98: //TYA transfer Y to accumulator
 	{
-		unimplementedOP();
+		A = Y;
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
+		PC++;
+		cycles += 2;
 		break;
 	}
-	case 0x96:
+	case 0x99: //STA store accumulator, absoluteY
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0x97:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x98:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x99:
-	{
-		unimplementedOP();
+		writeToMemory(absoluteY(), A);
+		PC += 3;
+		cycles += 5;
 		break;
 	}
 	case 0x9a: //TXS Transfer x to stack pointer
 	{
+		//TODO this might be to move X into the stackpointer iteself and not the addres of the SP
 		pushByte(X);
 		PC++;
 		cycles += 2;
 
 		break;
 	}
-	case 0x9b:
+	case 0x9d: //STA store accumulator, absoluteX
 	{
-		unimplementedOP();
+		writeToMemory(absoluteX(), A);
+		PC += 3;
+		cycles += 5;
 		break;
 	}
-	case 0x9c:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x9d:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x9e:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0x9f:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xa0:
+	case 0xa0: //LDY load Y register, immediate
 	{
 		unimplementedOP();
 		break;
@@ -1590,6 +1595,13 @@ int CPU6502::pullWord()
 	return val & 0xffff;
 }
 
+byte CPU6502::pullByte()
+{
+	byte val = memory[SP | 0x100];
+	SP++;
+	return val & 0xff;
+}
+
 void CPU6502::NOP()
 {
 	//only increments the PC
@@ -1669,7 +1681,7 @@ unsigned char CPU6502::readAbsoluteY()
 	return val;
 }
 
-unsigned char CPU6502::readIndirect()
+int CPU6502::readIndirect()
 {
 	int addr = memory[PC + 2] << 8 | memory[PC + 1];
 	int val = memory[addr + 1] << 8 | memory[addr];
@@ -1682,7 +1694,7 @@ unsigned char CPU6502::readIndirectX()
 	int addr1 = (memory[PC + 1] + X) & 0xff;
 	int addr2 = memory[addr1 + 1] << 8 | memory[addr1];
 	//TODO: addr2 + 1 might have to wrap around and it might not.
-	unsigned char val = memory[addr2 + 1] << 8 | memory[addr2];
+	unsigned char val = memory[addr2];
 	PC += 2;
 	return val;
 }
@@ -1690,8 +1702,8 @@ unsigned char CPU6502::readIndirectX()
 unsigned char CPU6502::readIndirectY()
 {
 	int addr1 = memory[PC + 1] << 8 | memory[PC] + Y;
-	int addr2 = memory[addr1 + 1] << 8 | memory[addr1];
-	unsigned char val = memory[addr2];
+	//Wrong int addr2 = memory[addr1 + 1] << 8 | memory[addr1];
+	unsigned char val = memory[addr1];
 	PC += 2;
 	return val;
 }
@@ -1706,6 +1718,11 @@ byte CPU6502::zeroPageX()
 	return (memory[PC + 1] + X) & 0xff;
 }
 
+byte CPU6502::zeroPageY()
+{
+	return (memory[PC + 1] + Y) & 0xff;
+}
+
 int CPU6502::absolute()
 {
 	return (memory[PC + 2] << 8 | memory[PC + 1]) & 0xffff;
@@ -1714,6 +1731,22 @@ int CPU6502::absolute()
 int CPU6502::absoluteX()
 {
 	return ((memory[PC + 2] << 8 | memory[PC + 1]) + X) & 0xffff;
+}
+
+int CPU6502::absoluteY()
+{
+	return ((memory[PC + 2] << 8 | memory[PC + 1]) + X) & 0xffff;
+}
+
+int CPU6502::indirectX()
+{
+	int addr1 = (memory[PC + 1] + X) & 0xff;
+	return  memory[addr1 + 1] << 8 | memory[addr1];
+}
+
+int CPU6502::indirectY()
+{
+	return memory[PC + 1] << 8 | memory[PC] + Y;
 }
 
 int CPU6502::readWord()

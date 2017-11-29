@@ -64,8 +64,10 @@ private:
 	void pushByte(byte val);
 	void push(int word);
 	void pushStatus();
+
 	void pullStatus();
 	int pullWord();
+	byte pullByte();
 
 
 	//various functions for doing ops
@@ -87,7 +89,7 @@ private:
 	unsigned char readAbsolute();		//reads memoryaddress of the two next bytes
 	unsigned char readAbsoluteX();		//reads the memoryaddress of the two next bytes + X
 	unsigned char readAbsoluteY();		//reads the memoryaddress of the two next bytes + Y
-	unsigned char readIndirect();		//only used by JMP. The instruction contains a 16 bit 
+	int readIndirect();		//only used by JMP. The instruction contains a 16 bit 
 										//address which identifies the location of the least significant 
 										//byte of another 16 bit memory address which is the real target 
 										//of the instruction.
@@ -104,7 +106,10 @@ private:
 	//get the addresses of the different modes without incrementing PC or actually reading the memory
 	byte zeroPage();
 	byte zeroPageX();
+	int absolute();
 	int absoluteX();
+	int indirectX();
+	int indirectY();
 
 	int readWord();
 	byte readByte();
