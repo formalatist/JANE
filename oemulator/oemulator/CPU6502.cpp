@@ -986,101 +986,103 @@ void CPU6502::executeOP()
 	}
 	case 0xa0: //LDY load Y register, immediate
 	{
-		unimplementedOP();
+		Y = readImmediate();
+		Z = Y == 0;
+		N = (Y & 0x80) == 0x80;
+		cycles += 2;
 		break;
 	}
-	case 0xa1:
+	case 0xa1: //LDA load accumulator, indirectX
 	{
-		unimplementedOP();
+		A = readIndirectX();
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
+		cycles += 6;
 		break;
 	}
 	case 0xa2: //LDX load x register
 	{
-		byte val = readImmediate();
-		X = val;
-		Z = val == 0;
-		N = (val & 0x80) == 0x80;
+		X = readImmediate();
+		Z = X == 0;
+		N = (X & 0x80) == 0x80;
 		cycles += 2;
 
 		break;
 	}
-	case 0xa3:
+	case 0xa4: //LDY load Y register, zeroPage
 	{
-		unimplementedOP();
+		Y = readZeroPage();
+		Z = Y == 0;
+		N = (Y & 0x80) == 0x80;
+		cycles += 3;
 		break;
 	}
-	case 0xa4:
+	case 0xa5: //LDA load accumulator, zeroPage
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0xa5: //LDA load accumulator, zero page
-	{
-		byte val = readZeroPage();
-		A = val;
+		A = readZeroPage();
 		Z = A == 0;
 		N = (A & 0x80) == 0x80;
 		cycles += 3;
 
 		break;
 	}
-	case 0xa6:
+	case 0xa6: //LDX load X register, zeroPage
 	{
-		unimplementedOP();
+		X = readZeroPage();
+		Z = X == 0;
+		N = (X & 0x80) == 0x80;
+		cycles += 3;
 		break;
 	}
-	case 0xa7:
+	case 0xa8: //TAY ytansfer accumulator to Y
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0xa8:
-	{
-		unimplementedOP();
+		Y = A;
+		Z = Y == 0;
+		N = (Y & 0x80) == 0x80;
+		PC++;
+		cycles += 2;
 		break;
 	}
 	case 0xa9: //LDA load accumulator, immediate
 	{
-		byte val = readImmediate();
-		A = val;
+		A = readImmediate();
 		Z = A == 0;
 		N = (A & 0x80) == 0x80;
 		cycles += 2;
 		break;
 	}
-	case 0xaa:
+	case 0xaa: //TAX transfer accumulator to X
 	{
-		unimplementedOP();
+		X = A;
+		Z = X == 0;
+		N = (X & 0x80) == 0x80;
+		cycles += 2;
+		PC++;
 		break;
 	}
-	case 0xab:
+	case 0xac: //LDY load Y register, absolute
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0xac:
-	{
-		unimplementedOP();
+		Y = readAbsolute();
+		Z = Y == 0;
+		N = (Y & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
 	case 0xad: //LDA load accumulator, absolute
 	{
-		byte val = readAbsolute();
-		A = val;
-		Z = val == 0;
-		N = (val & 0x80) == 0x80;
+		A = readAbsolute();
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
 		cycles += 4;
 
 		break;
 	}
-	case 0xae:
+	case 0xae: //LDX load X register, absolute
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0xaf:
-	{
-		unimplementedOP();
+		X = readAbsolute();
+		Z = X == 0;
+		N = (X & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
 	case 0xb0:
