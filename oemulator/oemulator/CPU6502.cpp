@@ -1085,129 +1085,163 @@ void CPU6502::executeOP()
 		cycles += 4;
 		break;
 	}
-	case 0xb0:
+	case 0xb0: //BCS branch if carry set, relative
 	{
-		unimplementedOP();
+		byte val = readRelative();
+		if (C) {
+			byte PCH = (PC & 0xff00) >> 8;
+			//treat the value as a signed char
+			if (val & 0x80 == 0x80) { //val is negative
+									  //invert bits
+				val = ~val;
+				//add 1
+				val++;
+				PC -= val;
+			}
+			else { // val is positive
+				PC += val;
+			}
+			cycles += 3;
+			if (PCH != (PC & 0xff00) >> 8) { //new page
+				cycles += 2;
+			}
+		}
+		else {
+			cycles += 2;
+		}
 		break;
 	}
-	case 0xb1:
+	case 0xb1: //LDA load accumulator, indirectY
 	{
-		unimplementedOP();
+		A = readIndirectY();
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
+		cycles += 5;
 		break;
 	}
-	case 0xb2:
+	case 0xb4: //LDY load Y register, zeroPageX
 	{
-		unimplementedOP();
+		Y = readZeroPageX();
+		Z = Y == 0;
+		N = (Y & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xb3:
+	case 0xb5: //LDA load accumulator, zeroPageX
 	{
-		unimplementedOP();
+		A = readZeroPageX();
+		Z = A == Z;
+		N = (A & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xb4:
+	case 0xb6: //LDX load X register, zeroPageY
 	{
-		unimplementedOP();
+		X = readZeroPageY();
+		Z = X == 0;
+		N = (X & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xb5:
+	case 0xb8: //CLV clear overflow flag
 	{
-		unimplementedOP();
+		V = 0;
+		cycles += 2;
 		break;
 	}
-	case 0xb6:
+	case 0xb9: //LDA load accumulator, absoluteY
 	{
-		unimplementedOP();
+		A = readAbsoluteY();
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xb7:
+	case 0xba: //TSX transger stack pointer to X
 	{
-		unimplementedOP();
+		X = SP;
+		Z = X == 0;
+		N = (X & 0x80) == 0x80;
+		PC++;
+		cycles += 2;
 		break;
 	}
-	case 0xb8:
+	case 0xbc: //LDY load Y register, absoluteX
 	{
-		unimplementedOP();
+		Y = readAbsoluteY();
+		Z = Y == 0;
+		N = (Y & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xb9:
+	case 0xbd: //LDA load accumulator, abosluteX
 	{
-		unimplementedOP();
+		A = readAbsoluteX();
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xba:
+	case 0xbe: //LDX load X register, absoluteY
 	{
-		unimplementedOP();
+		X = readAbsoluteY();
+		Z = X == 0;
+		N = (X & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xbb:
+	case 0xc0: //CPY compare Y register, immediate
 	{
-		unimplementedOP();
+		byte val = readImmediate();
+		C = Y >= val;
+		Z = Y == val;
+		N = ((Y - val) & 0x80) == 0x80;
+		cycles += 2;
 		break;
 	}
-	case 0xbc:
+	case 0xc1: //CMP compare, indirectX
 	{
-		unimplementedOP();
+		byte val = readIndirectX();
+		C = A >= val;
+		Z = A == val;
+		N = ((A - val) & 0x80) == 0x80;
+		cycles += 6;
 		break;
 	}
-	case 0xbd:
+	case 0xc4: //CPY compare Y register, zeroPage
 	{
-		unimplementedOP();
+		byte val = readZeroPage();
+		C = Y >= val;
+		Z = Y == val;
+		N = ((Y - val) & 0x80) == 0x80;
+		cycles += 3;
 		break;
 	}
-	case 0xbe:
+	case 0xc5: //CMP compare, zeroPage
 	{
-		unimplementedOP();
+		byte val = readZeroPage();
+		C = A >= val;
+		Z = A == val;
+		N = ((A - val) & 0x80) == 0x80;
+		cycles += 3;
 		break;
 	}
-	case 0xbf:
+	case 0xc6: //DEC decrement memory, zeroPage
 	{
-		unimplementedOP();
+		byte val = readZeroPage() - 1;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		writeToMemory(zeroPage(), val);
+		cycles += 5;
 		break;
 	}
-	case 0xc0:
+	case 0xc8: //INY increment Y register
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0xc1:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xc2:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xc3:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xc4:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xc5:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xc6:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xc7:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xc8:
-	{
-		unimplementedOP();
+		Y = Y + 1;
+		Z = Y == 0;
+		N = (Y & 0x80) == 0x80;
+		cycles += 2;
+		PC++;
 		break;
 	}
 	case 0xc9: //CMP Compare Immediate
@@ -1220,39 +1254,41 @@ void CPU6502::executeOP()
 		cycles += 2;
 		break;
 	}
-	case 0xca:
+	case 0xca: //DEX decrement X register
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0xcb:
-	{
-		unimplementedOP();
+		X = X - 1;
+		Z = X == 0;
+		N = (X & 0x80) == 0x80;
+		cycles += 2;
+		PC++;
 		break;
 	}
 	case 0xcc: //CPY Compare Y register, Aboslute
 	{
-		unsigned char val = readAbsolute(); 
-		unsigned char result = Y - val;
+		byte val = readAbsolute(); 
+		byte result = Y - val;
 		Z = (result == 0); 
 		C = (Y >= val);
 		N = (result & 0x80) == 0x80; 
 		cycles += 4;
 		break;
 	}
-	case 0xcd:
+	case 0xcd: //CMP comare, aboslute
 	{
-		unimplementedOP();
+		byte val = readAbsolute();
+		C = A >= val;
+		Z = A == val;
+		N = ((A - val) & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xce:
+	case 0xce: //DEC decrement memory, absolute
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0xcf:
-	{
-		unimplementedOP();
+		byte val = readAbsolute() - 1;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		writeToMemory(absolute(), val);
+		cycles += 6;
 		break;
 	}
 	case 0xd0: //BNE Branch of not equal
@@ -1281,39 +1317,31 @@ void CPU6502::executeOP()
 		}
 		break;
 	}
-	case 0xd1:
+	case 0xd1: //CMP indirectY
 	{
-		unimplementedOP();
+		byte val = readIndirectY();
+		C = A >= val;
+		Z = A == val;
+		N = ((A - val) & 0x80) == 0x80;
+		cycles += 5;
 		break;
 	}
-	case 0xd2:
+	case 0xd5: //CMP compare, zeroPageX
 	{
-		unimplementedOP();
+		byte val = readZeroPageX();
+		C = A >= val;
+		Z = A == val;
+		N = ((A - val) & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xd3:
+	case 0xd6: //DEC decrement memory, zeroPageX
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0xd4:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xd5:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xd6:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xd7:
-	{
-		unimplementedOP();
+		byte val = readZeroPageX() - 1;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		writeToMemory(zeroPageX(), val);
+		cycles += 6;
 		break;
 	}
 	case 0xd8: //CLD clear decimal mode
@@ -1324,39 +1352,31 @@ void CPU6502::executeOP()
 		cycles += 2;
 		break;
 	}
-	case 0xd9:
+	case 0xd9: //CMP compare, absoluteY
 	{
-		unimplementedOP();
+		byte val = readAbsoluteY();
+		C = A >= val;
+		Z = A == val;
+		N = ((A - val) & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xda:
+	case 0xdd: //CMP compare, absoluteX
 	{
-		unimplementedOP();
+		byte val = readAbsoluteX();
+		C = A >= val;
+		Z = A == val;
+		N = ((A - val) & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xdb:
+	case 0xde: //DEC decrement memory, absoluteX
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0xdc:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xdd:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xde:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xdf:
-	{
-		unimplementedOP();
+		byte val = readAbsoluteX() - 1;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		writeToMemory(absoluteX(), val);
+		cycles += 7;
 		break;
 	}
 	case 0xe0:

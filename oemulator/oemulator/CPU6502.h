@@ -106,8 +106,10 @@ private:
 	//get the addresses of the different modes without incrementing PC or actually reading the memory
 	byte zeroPage();
 	byte zeroPageX();
+	byte zeroPageY();
 	int absolute();
 	int absoluteX();
+	int absoluteY();
 	int indirectX();
 	int indirectY();
 
