@@ -1379,84 +1379,113 @@ void CPU6502::executeOP()
 		cycles += 7;
 		break;
 	}
-	case 0xe0:
+	case 0xe0: //CPX compare X register, immediate
 	{
-		unimplementedOP();
+		byte val = readImmediate();
+		C = X >= val;
+		Z = X == val;
+		N = ((X - val) & 0x80) == 0x80;
+		cycles += 2;
 		break;
 	}
-	case 0xe1:
+	case 0xe1: //SBC subtract with carry, indirectX
 	{
-		unimplementedOP();
+		//TODO: check this, might be wrong way to do SBC
+		byte M = readIndirectX();
+		short val = A - M - (1 - C);
+		A = val & 0xff;
+		C = val > 0xff | val < 0;
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
+		V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+		cycles += 6;
 		break;
 	}
-	case 0xe2:
+	case 0xe4: //CPX compare X register, zeroPage
 	{
-		unimplementedOP();
+		byte val = readZeroPage();
+		C = X >= val;
+		Z = X == val;
+		N = ((X - val) & 0x80) == 0x80;
+		cycles += 3;
 		break;
 	}
-	case 0xe3:
+	case 0xe5: //SBC subtract with carry, zeroPage
 	{
-		unimplementedOP();
+		byte M = readZeroPage();
+		short val = A - M - (1 - C);
+		A = val & 0xff;
+		C = val > 0xff | val < 0;
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
+		V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+		cycles += 3;
 		break;
 	}
-	case 0xe4:
+	case 0xe6: //INC increment memory, zeroPage
 	{
-		unimplementedOP();
+		byte val = (readZeroPage() + 1) & 0xff;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		writeToMemory(zeroPage(), val);
+		cycles += 5;
 		break;
 	}
-	case 0xe5:
+	case 0xe8: //INX increment X register
 	{
-		unimplementedOP();
+		X = X + 1;
+		Z = X == 0;
+		N = (X & 0x80) == 0x80;
+		cycles += 2;
+		PC++;
 		break;
 	}
-	case 0xe6:
+	case 0xe9: //SBC, subtract with carry, Immediate
 	{
-		unimplementedOP();
+		byte M = readImmediate();
+		short val = A - M - (1 - C);
+		A = val & 0xff;
+		C = val > 0xff | val < 0;
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
+		V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+		cycles += 2;
 		break;
 	}
-	case 0xe7:
+	case 0xea: //NOP
 	{
-		unimplementedOP();
+		NOP();
+		cycles += 2;
 		break;
 	}
-	case 0xe8:
+	case 0xec: //CPX compare X register, absolute
 	{
-		unimplementedOP();
+		byte val = readAbsolute();
+		C = X >= val;
+		Z = X == val;
+		N = ((X - val) & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xe9:
+	case 0xed: //SBC subtract with carry, absolute
 	{
-		unimplementedOP();
+		byte M = readAbsolute();
+		short val = A - M - (1 - C);
+		A = val & 0xff;
+		C = val > 0xff | val < 0;
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
+		V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xea:
+	case 0xee: //INC increment memory, absolute
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0xeb:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xec:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xed:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xee:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xef:
-	{
-		unimplementedOP();
+		byte val = readAbsolute() + 1;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		writeToMemory(absolute(), val);
+		cycles += 6;
 		break;
 	}
 	case 0xf0: //BEQ Branch if equal. (counter to d0)
@@ -1484,74 +1513,77 @@ void CPU6502::executeOP()
 		}
 		break;
 	}
-	case 0xf1:
+	case 0xf1: //SBC subtract with carry, indirectY
 	{
-		unimplementedOP();
+		byte M = readIndirectY();
+		short val = A - M - (1 - C);
+		A = val & 0xff;
+		C = val > 0xff | val < 0;
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
+		V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+		cycles += 5;
 		break;
 	}
-	case 0xf2:
+	case 0xf5: //SBC subtract with carry, zeroPageX
 	{
-		unimplementedOP();
+		byte M = readZeroPageX();
+		short val = A - M - (1 - C);
+		A = val & 0xff;
+		C = val > 0xff | val < 0;
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
+		V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xf3:
+	case 0xf6: //INC increment memory, zeroPageX
 	{
-		unimplementedOP();
+		byte val = readZeroPageX() + 1;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		writeToMemory(zeroPageX(), val);
+		cycles += 6;
 		break;
 	}
-	case 0xf4:
+	case 0xf8: //SED set decimal flag
 	{
-		unimplementedOP();
+		D = 1;
+		PC++;
+		cycles += 2;
 		break;
 	}
-	case 0xf5:
+	case 0xf9: //SBC subtract with carry, absoluteY
 	{
-		unimplementedOP();
+		byte M = readAbsoluteY();
+		short val = A - M - (1 - C);
+		A = val & 0xff;
+		C = val > 0xff | val < 0;
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
+		V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xf6:
+	case 0xfd: //SBC subtract with carry, absoluteX
 	{
-		unimplementedOP();
+		byte M = readAbsoluteX();
+		short val = A - M - (1 - C);
+		A = val & 0xff;
+		C = val > 0xff | val < 0;
+		Z = A == 0;
+		N = (A & 0x80) == 0x80;
+		V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+		cycles += 4;
 		break;
 	}
-	case 0xf7:
+	case 0xfe: //INC increment memory, absoluteX
 	{
-		unimplementedOP();
-		break;
-	}
-	case 0xf8:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xf9:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xfa:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xfb:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xfc:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xfd:
-	{
-		unimplementedOP();
-		break;
-	}
-	case 0xfe:
-	{
-		unimplementedOP();
+		byte val = readAbsoluteX() + 1;
+		Z = val == 0;
+		N = (val & 0x80) == 0x80;
+		writeToMemory(absoluteX(), val);
+		cycles += 7;
 		break;
 	}
 
