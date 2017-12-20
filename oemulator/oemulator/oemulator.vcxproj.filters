@@ -30,12 +30,18 @@
     <ClCompile Include="ROMLoader.cpp">
       <Filter>Source Files\NES emulator</Filter>
     </ClCompile>
+    <ClCompile Include="PPU.cpp">
+      <Filter>Source Files\NES emulator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPU6502.h">
       <Filter>Header Files\NES emulator</Filter>
     </ClInclude>
     <ClInclude Include="ROMLoader.h">
+      <Filter>Header Files\NES emulator</Filter>
+    </ClInclude>
+    <ClInclude Include="PPU.h">
       <Filter>Header Files\NES emulator</Filter>
     </ClInclude>
   </ItemGroup>
