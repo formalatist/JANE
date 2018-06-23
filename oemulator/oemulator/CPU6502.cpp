@@ -25,13 +25,16 @@ void CPU6502::loadMemory(unsigned char rom[], int romSize, int offset)
 	}
 }
 
-void CPU6502::step()
+int CPU6502::step()
 {
 	if (HALT) {
 		return;
 	}
 	numSteps++;
+	int cyclesBeforeOP = cycles;
 	executeOP();
+	//return the number of cycles it took to complete the OP
+	return cycles - cyclesBeforeOP;
 }
 
 void CPU6502::executeOP()

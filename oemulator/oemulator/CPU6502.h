@@ -10,6 +10,9 @@ public:
 	//constructor
 	CPU6502();
 
+	//number of cycles per second (6502 is a ~1.7MHz CPU)
+	const int CPUFrequency = 1789773;
+
 	//flags
 	bool C; //carry flag. 1 when overflow or underflow
 	bool Z; //zero flag. 1 when result is zero
@@ -45,8 +48,8 @@ public:
 	void loadMemory(std::vector<unsigned char> rom, int offset);
 	void loadMemory(unsigned char rom[], int romSize, int offset);
 
-	//performes one cpu step
-	void step();
+	//performes one cpu step, returns the number of cycles the step took
+	int step();
 	//set to true if the cpu should halt next step
 	bool HALT = false;
 	//for debugging
