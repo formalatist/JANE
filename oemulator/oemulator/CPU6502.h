@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <iostream>
+#include "NES.h"
 
 //typedef for byte
 typedef unsigned char byte;
@@ -8,7 +9,7 @@ typedef unsigned char byte;
 class CPU6502 {
 public:
 	//constructor
-	CPU6502();
+	CPU6502(NES& NES_);
 
 	//number of cycles per second (6502 is a ~1.7MHz CPU)
 	const int CPUFrequency = 1789773;
@@ -59,6 +60,9 @@ public:
 	int numImplementedOps = 0;
 
 private:
+	//reference to the NES that has created us
+	NES mNES;
+
 	//execute the op pointed to by PC
 	void executeOP();
 

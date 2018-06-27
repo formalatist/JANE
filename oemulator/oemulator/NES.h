@@ -14,7 +14,11 @@ public:
 	//do one whole frame
 	void stepFrame();
 
-private:
+	//the CPU and the PPU, they talk to eachother via the NES
+	//so they need to be public
 	CPU6502 cpu;
 	PPU ppu;
+
+private:
+	
 };
