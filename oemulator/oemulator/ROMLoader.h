@@ -1,16 +1,21 @@
 #pragma once
-#include "CPU6502.h"
+//#include "Memory.h"
+//#include "CPU6502.h"
+#include "NES.h"
+class Memory;
+class CPU6502;
 
+typedef unsigned char byte;
 class ROMLoader {
 public:
 	//constructor
-	ROMLoader(CPU6502* cpu_);
+	ROMLoader(Memory* memory_);
 
-	void loadROM(byte rom[], int size);
+	void loadROM(byte rom[], int size, CPU6502& cpu);
 
 	//in future the PPU might be setting these itself
 	void clearPPUReg();
 
 private:
-	CPU6502* cpu;
+	Memory* memory;
 };

@@ -2,10 +2,11 @@
 #include <vector>
 #include <iostream>
 #include "NES.h"
-#include "Memory.h"
 
 //typedef for byte
 typedef unsigned char byte;
+
+class Memory;
 
 class CPU6502 {
 public:

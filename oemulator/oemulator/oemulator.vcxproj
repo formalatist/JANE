@@ -82,6 +82,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>C:\Program Files %28x86%29\SDL-2.0.7\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ShowIncludes>true</ShowIncludes>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -119,11 +120,15 @@
   <ItemGroup>
     <ClCompile Include="CPU6502.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Memory.cpp" />
+    <ClCompile Include="NES.cpp" />
     <ClCompile Include="PPU.cpp" />
     <ClCompile Include="ROMLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPU6502.h" />
+    <ClInclude Include="Memory.h" />
+    <ClInclude Include="NES.h" />
     <ClInclude Include="PPU.h" />
     <ClInclude Include="ROMLoader.h" />
   </ItemGroup>

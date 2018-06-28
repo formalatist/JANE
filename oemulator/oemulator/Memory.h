@@ -2,9 +2,10 @@
 #include <vector>
 #include <iostream>
 
+class PPU;
+class CPU6502;
+
 #include "NES.h"
-#include "CPU6502.h"
-#include "PPU.h"
 
 typedef unsigned char byte;
 class Memory {

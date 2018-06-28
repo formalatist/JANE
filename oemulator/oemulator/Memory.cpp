@@ -53,3 +53,9 @@ void Memory::write(int addr, byte val)
 		std::cout << "Unhandeled write to address: " << addr << ". Value: " << val << std::endl;
 	}
 }
+
+byte Memory::read(int addr)
+{
+	//TODO: Temporary, we need to properly read PPU registers etc
+	return memory[addr];
+}

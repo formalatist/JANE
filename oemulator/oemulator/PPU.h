@@ -76,7 +76,7 @@ public:
 	byte buffer;
 
 	byte readRegister(int addr); //read register at addr, addr should be 0x2000-0x2007
-	byte writeRegiter(int addr, byte val); //write register
+	void writeRegiter(int addr, byte val); //write register
 
 	//which cycle we are on (0-340). 340 cycles per scanline (maybe?)
 	int cycle;

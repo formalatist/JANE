@@ -1,12 +1,12 @@
 #include "ROMLoader.h"
 #include <iostream>
 
-ROMLoader::ROMLoader(CPU6502 * cpu_)
+ROMLoader::ROMLoader(Memory* memory_)
 {
-	cpu = cpu_;
+	memory = memory_;
 }
 
-void ROMLoader::loadROM(byte rom[], int size)
+void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 {
 	const int headerSize = 16;
 	//iNES format
@@ -28,18 +28,18 @@ void ROMLoader::loadROM(byte rom[], int size)
 	}
 
 	//load the rom into the cpu
-	cpu->loadMemory(prgROM, 16384, 0x8000);
-	cpu->loadMemory(prgROM, 16384, 0xc000);
+	memory->loadMemory(prgROM, 16384, 0x8000);
+	memory->loadMemory(prgROM, 16384, 0xc000);
 
 	//set the PC to the init vector
-	std::cout << std::hex << (int)cpu->memory[0xfffc] << "  " << (cpu->memory[0xfffd] << 8) << std::endl;
-	cpu->PC = cpu->memory[0xfffc] | (cpu->memory[0xfffd] << 8);
+	std::cout << std::hex << (int)memory->memory[0xfffc] << "  " << (memory->memory[0xfffd] << 8) << std::endl;
+	cpu.PC = memory->read(0xfffc) | (memory->read(0xfffd) << 8);
 }
 
 void ROMLoader::clearPPUReg()
 {
 	for (int i = 0x2000; i < 0x2008; i++)
 	{
-		cpu->memory[i] = 0;
+		memory->write(i, 0);
 	}
 }

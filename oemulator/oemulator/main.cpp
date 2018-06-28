@@ -2,7 +2,6 @@
 #include <SDL.h>
 #include <stdio.h>
 #include <iostream>
-#include "CPU6502.h"
 #include "ROMLoader.h"
 #include "NES.h"
 
@@ -51,8 +50,8 @@ int main(int argc, char** argv) {
 	//create the cpu
 	//CPU6502 cpu = CPU6502();
 	NES nes = NES();
-	ROMLoader loader = ROMLoader(nes.cpu);
-	loader.loadROM(fileBuffer, fileSize);
+	ROMLoader loader = ROMLoader(nes.memory);
+	loader.loadROM(fileBuffer, fileSize, (*nes.cpu));
 	//clear ppu registers
 	loader.clearPPUReg();
 	std::cout << "Starting PC at: 0x" << std::hex << nes.cpu->PC << std::endl;

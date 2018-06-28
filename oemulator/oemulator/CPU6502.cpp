@@ -11,7 +11,7 @@ CPU6502::CPU6502()
 int CPU6502::step()
 {
 	if (HALT) {
-		return;
+		return 0;
 	}
 	numSteps++;
 	int cyclesBeforeOP = cycles;
@@ -1583,21 +1583,21 @@ void CPU6502::executeOP()
 
 void CPU6502::push(byte high, byte low)
 {
-	memory[(SP - 1) | 0x100] = high;
-	memory[(SP - 2) | 0x100] = low;
+	memory->write((SP - 1) | 0x100, high);
+	memory->write((SP - 2) | 0x100, low);
 	SP -= 2;
 }
 
 void CPU6502::pushByte(byte val)
 {
-	memory[SP - 1] = val;
+	memory->write(SP - 1, val);
 	SP--;
 }
 
 void CPU6502::push(int word)
 {
-	memory[(SP - 1) | 0x100] = (word & 0xff00) >> 8;
-	memory[(SP - 2) | 0x100] = word & 0xff;
+	memory->write((SP - 1) | 0x100, (word & 0xff00) >> 8);
+	memory->write((SP - 2) | 0x100, word & 0xff);
 	SP -= 2;
 }
 
@@ -1610,14 +1610,14 @@ void CPU6502::pushStatus()
 		| B << 3
 		| V << 4
 		| N << 5;
-	memory[(SP - 1) | 0x100] = statusByte;
+	memory->write((SP - 1) | 0x100, statusByte);
 	SP--;
 }
 
 void CPU6502::pullStatus()
 {
 	//TODO: this might not be correct
-	byte sByte = memory[SP | 0x100];
+	byte sByte = memory->read(SP | 0x100);
 	SP++;
 	C |= sByte & 0x1;
 	Z |= sByte & 0x2;
@@ -1630,14 +1630,14 @@ void CPU6502::pullStatus()
 int CPU6502::pullWord()
 {
 	int val = 0;
-	val = memory[SP | 0x100] | (memory[(SP + 1) | 0x100] << 8);
+	val = memory->read(SP | 0x100) | (memory->read((SP + 1) | 0x100) << 8);
 	SP += 2;
 	return val & 0xffff;
 }
 
 byte CPU6502::pullByte()
 {
-	byte val = memory[SP | 0x100];
+	byte val = memory->read(SP | 0x100);
 	SP++;
 	return val & 0xff;
 }
@@ -1650,152 +1650,158 @@ void CPU6502::NOP()
 
 void CPU6502::unimplementedOP()
 {
-	std::cout << "Unimplemented OP: 0x" << std::hex <<(int) memory[PC] << std::endl;
+	std::cout << "Unimplemented OP: 0x" << std::hex <<(int) memory->read(PC) << std::endl;
 	HALT = true;
 }
 
 
 unsigned char CPU6502::readImmediate()
 {
-	unsigned char val = memory[PC + 1];
+	unsigned char val = memory->read(PC + 1);
 	PC += 2;
 	return val;
 }
 
 unsigned char CPU6502::readZeroPage()
 {
-	unsigned char addr = memory[PC + 1];
-	unsigned char val = memory[addr & 0xff];
+	unsigned char addr = memory->read(PC + 1);
+	unsigned char val = memory->read(addr & 0xff);
 	PC += 2;
 	return val;
 }
 
 unsigned char CPU6502::readZeroPageX()
 {
-	unsigned char addr = memory[PC + 1];
-	unsigned char val = memory[(addr + X) & 0xff];
+	unsigned char addr = memory->read(PC + 1);
+	unsigned char val = memory->read((addr + X) & 0xff);
 	PC += 2;
 	return val;
 }
 
 unsigned char CPU6502::readZeroPageY()
 {
-	unsigned char addr = memory[PC + 1];
-	unsigned char val = memory[(addr + Y) & 0xff];
+	unsigned char addr = memory->read(PC + 1);
+	unsigned char val = memory->read((addr + Y) & 0xff);
 	PC += 2;
 	return val;
 }
 
 unsigned char CPU6502::readRelative()
 {
-	unsigned char val = memory[PC + 1];
+	unsigned char val = memory->read(PC + 1);
 	PC += 2;
 	return val;
 }
 
 unsigned char CPU6502::readAbsolute() 
 {
-	int addr = memory[PC + 2] << 8 | memory[PC + 1];
-	unsigned char val = memory[addr] & 0xff;
+	int addr = memory->read(PC + 2) << 8 | memory->read(PC + 1);
+	unsigned char val = memory->read(addr) & 0xff;
 	PC += 3;
 	return val;
 }
 
 unsigned char CPU6502::readAbsoluteX()
 {
-	int addr = memory[PC + 2] << 8 | memory[PC + 1];
-	unsigned char val = memory[addr + X] & 0xff;
+	int addr = memory->read(PC + 2) << 8 | memory->read(PC + 1);
+	unsigned char val = memory->read(addr + X) & 0xff;
 	PC += 3;
 	return val;
 }
 
 unsigned char CPU6502::readAbsoluteY()
 {
-	int addr = memory[PC + 2] << 8 | memory[PC + 1];
-	unsigned char val = memory[addr + Y] & 0xff;
+	int addr = memory->read(PC + 2) << 8 | memory->read(PC + 1);
+	unsigned char val = memory->read(addr + Y) & 0xff;
 	PC += 3;
 	return val;
 }
 
 int CPU6502::readIndirect()
 {
-	int addr = memory[PC + 2] << 8 | memory[PC + 1];
-	int val = memory[addr + 1] << 8 | memory[addr];
+	int addr = memory->read(PC + 2) << 8 | memory->read(PC + 1);
+	int val = memory->read(addr + 1) << 8 | memory->read(addr);
 	PC += 3;
 	return val;
 }
 
 unsigned char CPU6502::readIndirectX()
 {
-	int addr1 = (memory[PC + 1] + X) & 0xff;
-	int addr2 = memory[addr1 + 1] << 8 | memory[addr1];
+	int addr1 = (memory->read(PC + 1) + X) & 0xff;
+	int addr2 = memory->read(addr1 + 1) << 8 | memory->read(addr1);
 	//TODO: addr2 + 1 might have to wrap around and it might not.
-	unsigned char val = memory[addr2];
+	unsigned char val = memory->read(addr2);
 	PC += 2;
 	return val;
 }
 
 unsigned char CPU6502::readIndirectY()
 {
-	int addr1 = memory[PC + 1] << 8 | memory[PC] + Y;
-	//Wrong int addr2 = memory[addr1 + 1] << 8 | memory[addr1];
-	unsigned char val = memory[addr1];
+	int addr1 = memory->read(PC + 1) << 8 | memory->read(PC) + Y;
+	//Wrong int addr2 = memory->read(addr1 + 1] << 8 | memory->read(addr1);
+	unsigned char val = memory->read(addr1);
 	PC += 2;
 	return val;
 }
 
 byte CPU6502::zeroPage()
 {
-	return memory[PC + 1] & 0xff;
+	return memory->read(PC + 1) & 0xff;
 }
 
 byte CPU6502::zeroPageX()
 {
-	return (memory[PC + 1] + X) & 0xff;
+	return (memory->read(PC + 1) + X) & 0xff;
 }
 
 byte CPU6502::zeroPageY()
 {
-	return (memory[PC + 1] + Y) & 0xff;
+	return (memory->read(PC + 1) + Y) & 0xff;
 }
 
 int CPU6502::absolute()
 {
-	return (memory[PC + 2] << 8 | memory[PC + 1]) & 0xffff;
+	return (memory->read(PC + 2) << 8 | memory->read(PC + 1)) & 0xffff;
 }
 
 int CPU6502::absoluteX()
 {
-	return ((memory[PC + 2] << 8 | memory[PC + 1]) + X) & 0xffff;
+	return ((memory->read(PC + 2) << 8 | memory->read(PC + 1)) + X) & 0xffff;
 }
 
 int CPU6502::absoluteY()
 {
-	return ((memory[PC + 2] << 8 | memory[PC + 1]) + X) & 0xffff;
+	//this used to be:
+	//return ((memory->read(PC + 2) << 8 | memory->read(PC + 1)) + X) & 0xffff;
+	//but that doesnt seem right,								   /\ this X should be a Y
+	//because absolute with offsets (X or Y) is supposed to offset by the value in the corresponding
+	//register. Unless this is to account for some hardware bug that i have now forgotten
+	// -06.28.18
+	return ((memory->read(PC + 2) << 8 | memory->read(PC + 1)) + Y) & 0xffff;
 }
 
 int CPU6502::indirectX()
 {
-	int addr1 = (memory[PC + 1] + X) & 0xff;
-	return  memory[addr1 + 1] << 8 | memory[addr1];
+	int addr1 = (memory->read(PC + 1) + X) & 0xff;
+	return  memory->read(addr1 + 1) << 8 | memory->read(addr1);
 }
 
 int CPU6502::indirectY()
 {
-	return memory[PC + 1] << 8 | memory[PC] + Y;
+	return memory->read(PC + 1) << 8 | memory->read(PC) + Y;
 }
 
 int CPU6502::readWord()
 {
 	int addr = 0;
-	addr = memory[PC + 1] | (memory[PC + 2] << 8);
+	addr = memory->read(PC + 1) | (memory->read(PC + 2) << 8);
 	PC += 3;
 	return addr & 0xffff;
 }
 
 byte CPU6502::readByte()
 {
-	byte val = memory[PC + 1];
+	byte val = memory->read(PC + 1);
 	PC += 2;
 	return val;
 }
