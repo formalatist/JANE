@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include "NES.h"
+#include "Memory.h"
 
 //typedef for byte
 typedef unsigned char byte;
@@ -9,7 +10,7 @@ typedef unsigned char byte;
 class CPU6502 {
 public:
 	//constructor
-	CPU6502(NES& NES_);
+	CPU6502();
 
 	//number of cycles per second (6502 is a ~1.7MHz CPU)
 	const int CPUFrequency = 1789773;
@@ -44,10 +45,10 @@ public:
 	//4000 - 401F = sound channels, joypads, and other IO
 	//6000 - 7FFF = cartridge PRG - RAM(if present), or PRG - ROM depending on mapper
 	//8000 - FFFF = cartridge memory, usually ROM.
-	unsigned char memory[65536];
+	//unsigned char memory[65536];
 
-	void loadMemory(std::vector<unsigned char> rom, int offset);
-	void loadMemory(unsigned char rom[], int romSize, int offset);
+	//void loadMemory(std::vector<unsigned char> rom, int offset);
+	//void loadMemory(unsigned char rom[], int romSize, int offset);
 
 	//performes one cpu step, returns the number of cycles the step took
 	int step();
@@ -60,8 +61,8 @@ public:
 	int numImplementedOps = 0;
 
 private:
-	//reference to the NES that has created us
-	NES mNES;
+	//reference to the shared memory we are using
+	Memory* memory;
 
 	//execute the op pointed to by PC
 	void executeOP();
@@ -83,7 +84,7 @@ private:
 	//unimplemented op
 	void unimplementedOP();
 
-	void writeToMemory(int addr, byte val);
+	//void writeToMemory(int addr, byte val);
 
 	//addressing modes
 	//read the memory at these locations

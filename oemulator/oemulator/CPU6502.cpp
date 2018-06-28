@@ -2,29 +2,11 @@
 //FOR DEBUG
 #include <windows.h>
 
-CPU6502::CPU6502(NES& NES_)
+CPU6502::CPU6502()
 {
-	mNES = NES_;
 	//do nothign for now
 }
 
-void CPU6502::loadMemory(std::vector<unsigned char> rom, int offset)
-{
-	int memoryI = offset;
-	for (std::vector<unsigned char>::iterator i = rom.begin(); i != rom.end(); ++i)
-	{
-		memory[memoryI] = *i;
-		memoryI++;
-	}
-}
-
-void CPU6502::loadMemory(unsigned char rom[], int romSize, int offset)
-{
-	for (int i = 0; i < romSize; i++)
-	{
-		memory[i + offset] = rom[i];
-	}
-}
 
 int CPU6502::step()
 {
@@ -60,18 +42,18 @@ void CPU6502::executeOP()
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10 + (numSteps % 2) * 5);
 		std::cout << "A: " << (int)A << " X: " << (int)X << " Y: " << (int)Y << " SP: "
 			<< std::hex << (int)SP << " P: " << (int)N << (int)V << (int)B << (int)D << (int)IntDisable
-			<< (int)Z << (int)C << "	$" << std::hex << PC << ":" << (int)memory[PC]
-			<< "   " << (int)memory[PC + 1] << std::endl;
+			<< (int)Z << (int)C << "	$" << std::hex << PC << ":" << (int)memory->memory[PC]
+			<< "   " << (int)memory->memory[PC + 1] << std::endl;
 	}
 	
-	switch (memory[PC])
+	switch (memory->memory[PC])
 	{
 		case 0x0: //BRK force interrupt, implied
 		{
 			//NOTE: we save PC then flags to stack. so the stack is [flags | PCLO | PCHI]
 			push(PC);
 			pushStatus();
-			PC = memory[0xfffe] | (memory[0xffff] << 8);
+			PC = memory->memory[0xfffe] | (memory->memory[0xffff] << 8);
 			B = 1;
 			cycles += 7;
 			break;
@@ -103,7 +85,7 @@ void CPU6502::executeOP()
 			val = (val << 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			writeToMemory(memory[PC + 1], val);
+			memory->write(memory->memory[PC + 1], val);
 			cycles += 5;
 			break;
 		}
@@ -145,11 +127,11 @@ void CPU6502::executeOP()
 		case 0xe: //Arithmetic shift left, absolute
 		{
 			int addr = readWord();
-			byte val = (memory[addr] << 1) & 0xff;
+			byte val = (memory->memory[addr] << 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			C = (memory[addr] & 0x80) == 0x80;
-			writeToMemory(addr, val);
+			C = (memory->memory[addr] & 0x80) == 0x80;
+			memory->write(addr, val);
 			cycles += 6;
 			break;
 		}
@@ -205,7 +187,7 @@ void CPU6502::executeOP()
 			val = (val << 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			writeToMemory(zeroPageX(), val);
+			memory->write(zeroPageX(), val);
 			cycles += 6;
 			break;
 		}
@@ -241,7 +223,7 @@ void CPU6502::executeOP()
 			val = (val << 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			writeToMemory(absoluteX(), val);
+			memory->write(absoluteX(), val);
 			cycles += 7;
 			break;
 		}
@@ -288,7 +270,7 @@ void CPU6502::executeOP()
 			val = ((val << 1) | tempC) & 0xff;
 			N = (val & 0x80) == 0x80;
 			Z = val == 0;
-			writeToMemory(zeroPage(), val);
+			memory->write(zeroPage(), val);
 			cycles += 5;
 			break;
 		}
@@ -340,13 +322,13 @@ void CPU6502::executeOP()
 		case 0x2e: //ROL rotate left, Absolute
 		{
 			int addr = readWord();
-			byte val = memory[addr];
+			byte val = memory->memory[addr];
 			bool tempC = C;
 			C = (val & 0x80) == 0x80;
 			val = ((val << 1) | tempC) & 0xff;
 			N = (val & 0x80) == 0x80;
 			Z = val == 0;
-			writeToMemory(addr, val);
+			memory->write(addr, val);
 			cycles += 6;
 			break;
 		}
@@ -402,7 +384,7 @@ void CPU6502::executeOP()
 			val = ((val << 1) | tempC) & 0xff;
 			N = (val & 0x80) == 0x80;
 			Z = val == 0;
-			writeToMemory(zeroPageX(), val);
+			memory->write(zeroPageX(), val);
 			cycles += 6;
 			break;
 		}
@@ -439,7 +421,7 @@ void CPU6502::executeOP()
 			val = ((val << 1) | tempC) & 0xff;
 			N = (val & 0x80) == 0x80;
 			Z = val == 0;
-			writeToMemory(absoluteX(), val);
+			memory->write(absoluteX(), val);
 			cycles += 6;
 			break;
 		}
@@ -476,7 +458,7 @@ void CPU6502::executeOP()
 			val = (val >> 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			writeToMemory(zeroPage(), val);
+			memory->write(zeroPage(), val);
 			cycles += 5;
 			break;
 		}
@@ -531,7 +513,7 @@ void CPU6502::executeOP()
 			val = (val >> 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			writeToMemory(absolute(), val);
+			memory->write(absolute(), val);
 			cycles += 6;
 			break;
 		}
@@ -586,7 +568,7 @@ void CPU6502::executeOP()
 			val = (val >> 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			writeToMemory(zeroPageX(), val);
+			memory->write(zeroPageX(), val);
 			cycles += 6;
 			break;
 		}
@@ -622,7 +604,7 @@ void CPU6502::executeOP()
 			val = (val >> 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			writeToMemory(absoluteX(), val);
+			memory->write(absoluteX(), val);
 			cycles += 7;
 			break;
 		}
@@ -664,7 +646,7 @@ void CPU6502::executeOP()
 			C = val & 1;
 			val = (val >> 1) | tempC;
 			N = (val & 0x80) == 0x80;
-			writeToMemory(zeroPage(), val);
+			memory->write(zeroPage(), val);
 			cycles += 5;
 			break;
 		}
@@ -726,7 +708,7 @@ void CPU6502::executeOP()
 			val = (val >> 1) | tempC;
 			N = (val & 0x80) == 0x80;
 			Z = A == 0; //this might not be correct for this instruction
-			writeToMemory(absolute(), val);
+			memory->write(absolute(), val);
 			cycles += 2;
 			break;
 		}
@@ -788,7 +770,7 @@ void CPU6502::executeOP()
 			val = (val >> 1) | tempC;
 			N = (val & 0x80) == 0x80;
 			Z = A == 0; //this might not be correct for this instruction
-			writeToMemory(zeroPageX(), val);
+			memory->write(zeroPageX(), val);
 			cycles += 6;
 			break;
 		}
@@ -831,34 +813,34 @@ void CPU6502::executeOP()
 			val = (val >> 1) | tempC;
 			N = (val & 0x80) == 0x80;
 			Z = A == 0; //this might not be correct for this instruction
-			writeToMemory(absoluteX(), val);
+			memory->write(absoluteX(), val);
 			cycles += 7;
 			break;
 		}
 		case 0x81: //STA store accumulator, indirectX
 		{
-			writeToMemory(indirectX(), A);
+			memory->write(indirectX(), A);
 			PC += 2;
 			cycles += 6;
 			break;
 		}
 		case 0x84: //STY store Y register, zeroPAge
 		{
-			writeToMemory(zeroPage(), Y);
+			memory->write(zeroPage(), Y);
 			PC += 2;
 			cycles += 3;
 			break;
 		}
 		case 0x85: //STA store accumulator, zeroPage
 		{
-			writeToMemory(zeroPage(), A);
+			memory->write(zeroPage(), A);
 			PC += 2;
 			cycles += 3;
 			break;
 		}
 		case 0x86: //STX store X register, zeroPage
 		{
-			writeToMemory(zeroPage(), X);
+			memory->write(zeroPage(), X);
 			PC += 2;
 			cycles += 3;
 			break;
@@ -883,21 +865,21 @@ void CPU6502::executeOP()
 		}
 		case 0x8c: //STY store Y register, absolute
 		{
-			writeToMemory(absolute(), Y);
+			memory->write(absolute(), Y);
 			PC += 3;
 			cycles += 4;
 			break;
 		}
 		case 0x8d: //STA store accumulator, absolute
 		{
-			writeToMemory(absolute(), A);
+			memory->write(absolute(), A);
 			PC += 3;
 			cycles += 4;
 			break;
 		}
 		case 0x8e: //STX store X register, absolute
 		{
-			writeToMemory(absolute(), X);
+			memory->write(absolute(), X);
 			PC += 3;
 			cycles += 4;
 			break;
@@ -930,28 +912,28 @@ void CPU6502::executeOP()
 		}
 		case 0x91: //STA store accumulator, indirectY
 		{
-			writeToMemory(indirectY(), A);
+			memory->write(indirectY(), A);
 			PC += 2;
 			cycles += 6;
 			break;
 		}
 		case 0x94: //STY store Y register, zeroPageX
 		{
-			writeToMemory(zeroPageX(), Y);
+			memory->write(zeroPageX(), Y);
 			PC += 2;
 			cycles += 4;
 			break;
 		}
 		case 0x95: //STA store accumulator, zeroPageX
 		{
-			writeToMemory(zeroPageX(), A);
+			memory->write(zeroPageX(), A);
 			PC += 2;
 			cycles += 4;
 			break;
 		}
 		case 0x96: //STX store X register, zeroPageY
 		{
-			writeToMemory(zeroPageY(), X);
+			memory->write(zeroPageY(), X);
 			PC += 2;
 			cycles += 4;
 			break;
@@ -967,7 +949,7 @@ void CPU6502::executeOP()
 		}
 		case 0x99: //STA store accumulator, absoluteY
 		{
-			writeToMemory(absoluteY(), A);
+			memory->write(absoluteY(), A);
 			PC += 3;
 			cycles += 5;
 			break;
@@ -983,7 +965,7 @@ void CPU6502::executeOP()
 		}
 		case 0x9d: //STA store accumulator, absoluteX
 		{
-			writeToMemory(absoluteX(), A);
+			memory->write(absoluteX(), A);
 			PC += 3;
 			cycles += 5;
 			break;
@@ -1235,7 +1217,7 @@ void CPU6502::executeOP()
 			byte val = readZeroPage() - 1;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			writeToMemory(zeroPage(), val);
+			memory->write(zeroPage(), val);
 			cycles += 5;
 			break;
 		}
@@ -1291,7 +1273,7 @@ void CPU6502::executeOP()
 			byte val = readAbsolute() - 1;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			writeToMemory(absolute(), val);
+			memory->write(absolute(), val);
 			cycles += 6;
 			break;
 		}
@@ -1344,7 +1326,7 @@ void CPU6502::executeOP()
 			byte val = readZeroPageX() - 1;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			writeToMemory(zeroPageX(), val);
+			memory->write(zeroPageX(), val);
 			cycles += 6;
 			break;
 		}
@@ -1379,7 +1361,7 @@ void CPU6502::executeOP()
 			byte val = readAbsoluteX() - 1;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			writeToMemory(absoluteX(), val);
+			memory->write(absoluteX(), val);
 			cycles += 7;
 			break;
 		}
@@ -1431,7 +1413,7 @@ void CPU6502::executeOP()
 			byte val = (readZeroPage() + 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			writeToMemory(zeroPage(), val);
+			memory->write(zeroPage(), val);
 			cycles += 5;
 			break;
 		}
@@ -1488,7 +1470,7 @@ void CPU6502::executeOP()
 			byte val = readAbsolute() + 1;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			writeToMemory(absolute(), val);
+			memory->write(absolute(), val);
 			cycles += 6;
 			break;
 		}
@@ -1546,7 +1528,7 @@ void CPU6502::executeOP()
 			byte val = readZeroPageX() + 1;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			writeToMemory(zeroPageX(), val);
+			memory->write(zeroPageX(), val);
 			cycles += 6;
 			break;
 		}
@@ -1586,7 +1568,7 @@ void CPU6502::executeOP()
 			byte val = readAbsoluteX() + 1;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			writeToMemory(absoluteX(), val);
+			memory->write(absoluteX(), val);
 			cycles += 7;
 			break;
 		}
@@ -1672,28 +1654,6 @@ void CPU6502::unimplementedOP()
 	HALT = true;
 }
 
-void CPU6502::writeToMemory(int addr, byte val)
-{
-	//0000 - 07FF = RAM
-	//0800 - 1FFF = mirrors of RAM
-	//2000 - 2007 = PPU registers accessable from the CPU
-	//2008 - 3FFF = mirrors of those same 8 bytes over and over again
-	//4000 - 401F = sound channels, joypads, and other IO
-	//6000 - 7FFF = cartridge PRG - RAM(if present), or PRG - ROM depending on mapper
-	//8000 - FFFF = cartridge memory, usually ROM.
-	if (addr < 0x2000) { //normal RAM
-		addr %= 0x800; //RAM is mirrored after 0x07FF
-		memory[addr] = val;
-	}
-	else if (addr < 0x4000) { //PPU registers
-		addr = 0x2000 + (addr % 8); //the 8 PPU registers are 0x2000-0x2007 then repeated
-		mNES.ppu.writeRegiter(addr, val);
-	}
-	else {
-		std::cout << "Unhandeled write to address: " << addr << ". Value: " << val << std::endl;
-	}
-	
-}
 
 unsigned char CPU6502::readImmediate()
 {

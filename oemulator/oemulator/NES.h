@@ -1,6 +1,7 @@
 #pragma once
 #include "CPU6502.h"
 #include "PPU.h"
+#include "Memory.h"
 
 class NES {
 public:
@@ -16,8 +17,9 @@ public:
 
 	//the CPU and the PPU, they talk to eachother via the NES
 	//so they need to be public
-	CPU6502 cpu;
-	PPU ppu;
+	CPU6502* cpu;
+	PPU* ppu;
+	Memory* memory;
 
 private:
 	

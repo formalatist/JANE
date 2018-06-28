@@ -4,6 +4,7 @@
 #include <iostream>
 #include "CPU6502.h"
 #include "ROMLoader.h"
+#include "NES.h"
 
 bool running = true;
 
@@ -48,19 +49,20 @@ int main(int argc, char** argv) {
 		(static_cast<int>(fileBuffer[7]) & 0x8) << std::endl;
 
 	//create the cpu
-	CPU6502 cpu = CPU6502();
-	ROMLoader loader = ROMLoader(&cpu);
+	//CPU6502 cpu = CPU6502();
+	NES nes = NES();
+	ROMLoader loader = ROMLoader(nes.cpu);
 	loader.loadROM(fileBuffer, fileSize);
 	//clear ppu registers
 	loader.clearPPUReg();
-	std::cout << "Starting PC at: 0x" << std::hex << cpu.PC << std::endl;
+	std::cout << "Starting PC at: 0x" << std::hex << nes.cpu->PC << std::endl;
 	for (int i = 0; i < 50; i++)
 	{	
-		cpu.step();
+		nes.cpu->step();
 	}
-	std::cout << "Total unique ops: " << std::dec << cpu.numImplementedOps << std::endl;
+	std::cout << "Total unique ops: " << std::dec << nes.cpu->numImplementedOps << std::endl;
 	std::cout << "Done!" << std::endl;
-	std::cout << "PC: " << std::hex << cpu.PC << std::endl;
+	std::cout << "PC: " << std::hex << nes.cpu->PC << std::endl;
 
 	std::cin.get();
 	delete[] fileBuffer;
