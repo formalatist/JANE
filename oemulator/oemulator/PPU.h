@@ -7,7 +7,7 @@ typedef unsigned char byte;
 
 class PPU {
 public:
-	PPU();
+	PPU(PPUMemory* memory_);
 
 	//performes one PPU step
 	void step();
@@ -30,7 +30,7 @@ public:
 	//Generate an NMI at the start of the vertical blanking interval(0: off; 1: on)
 	byte CTRLNMI = 0b1000'0000;
 
-	//0x2001 CPU has write access
+	//0x2001 PPUMASK CPU has write access
 	byte MASK;
 	byte MASKGreyscale = 0b0000'0001; //Greyscale (0: normal color, 1: produce a greyscale display)
 	// 1: Show background in leftmost 8 pixels of screen, 0: Hide
@@ -99,9 +99,9 @@ public:
 	int v; //current VRAM address (15bit)
 	int t; //temporary VRAM address (15bit)
 	byte x; //fine x scroll (3 bit)
-	bool writing; //
+	bool writeToggle = false; //some MM Registers behave differently if this is the first or second write. use this to keep track
 	bool oddFrame; //is frame odd/even
 
 private:
-
+	PPUMemory* memory;
 };

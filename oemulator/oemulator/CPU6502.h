@@ -39,20 +39,11 @@ public:
 	//the number of cpu cycles we have done
 	int cycles = 0;
 
-	//0000 - 07FF = RAM
-	//0800 - 1FFF = mirrors of RAM
-	//2000 - 2007 = PPU registers accessable from the CPU
-	//2008 - 3FFF = mirrors of those same 8 bytes over and over again
-	//4000 - 401F = sound channels, joypads, and other IO
-	//6000 - 7FFF = cartridge PRG - RAM(if present), or PRG - ROM depending on mapper
-	//8000 - FFFF = cartridge memory, usually ROM.
-	//unsigned char memory[65536];
-
-	//void loadMemory(std::vector<unsigned char> rom, int offset);
-	//void loadMemory(unsigned char rom[], int romSize, int offset);
-
 	//performes one cpu step, returns the number of cycles the step took
 	int step();
+	//increment this number to make the cpu "stall" for a number of cycles
+	//use this to make sure the PPU and CPU are in sync
+	int cyclesToStall = 0;
 	//set to true if the cpu should halt next step
 	bool HALT = false;
 	//for debugging
@@ -61,9 +52,9 @@ public:
 	int numSteps = 0;
 	int numImplementedOps = 0;
 
-private:
-	//reference to the shared memory we are using
+	//reference to the memory we are using
 	Memory* memory;
+private:
 
 	//execute the op pointed to by PC
 	void executeOP();

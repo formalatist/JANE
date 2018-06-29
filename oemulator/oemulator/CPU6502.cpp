@@ -16,6 +16,11 @@ int CPU6502::step()
 	}
 	numSteps++;
 	int cyclesBeforeOP = cycles;
+	//if we need to stall cycles just return here
+	if (cyclesToStall > 0) {
+		cyclesToStall--;
+		return 1;
+	}
 	executeOP();
 	//return the number of cycles it took to complete the OP
 	return cycles - cyclesBeforeOP;

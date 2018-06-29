@@ -5,7 +5,7 @@ NES::NES()
 	memory = new Memory();
 	ppuMemory = new PPUMemory();
 	cpu = new CPU6502(memory);
-	ppu = new PPU();
+	ppu = new PPU(ppuMemory);
 	
 	//tell the memory about the cpu and ppu
 	memory->setCPU(*cpu);

@@ -50,7 +50,7 @@ void PPUMemory::write(int addr, byte val)
 	} else if (addr < 0x3F20) { //palette table
 		memory[addr] = val;
 	} else if(addr < 0x4000) { //mirrors of palette
-		memory[addr - 0x20] = val;
+		memory[addr % 0x20 + 0x3F00] = val;
 	}
 	else {
 		std::cout << "Tried to write to addr: " << addr << " val: " << val << std::endl;
@@ -59,6 +59,18 @@ void PPUMemory::write(int addr, byte val)
 
 byte PPUMemory::read(int addr)
 {
-	if(addr < 0x2000) {}
-	return memory[addr];
+	if(addr < 0x2000) { //pattern tables
+		return memory[addr];
+	} else if (addr < 0x3000) { //nametables
+		return memory[addr];
+	} else if(addr < 0x3F00) { //mirror of nametables
+		return memory[addr - 0x1000];
+	} else if(addr < 0x3F20) { //palette
+		return memory[addr];
+	} else if(addr < 0x4000) { //mirrors of palette
+		return memory[addr%0x20 + 0x3F00];
+	} else {
+		std::cout << "Tried to read addr: " << addr << std::endl;
+		return 0;
+	}
 }
