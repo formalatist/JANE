@@ -77,7 +77,7 @@ public:
 
 	//0x2007 PPUDATA read/write access	
 	//this is also handeled like 0x2004-0x2006 but we need a buffer
-	byte buffer;
+	byte DATABuffer;
 
 	byte readRegister(int addr); //read register at addr, addr should be 0x2000-0x2007
 	void writeRegiter(int addr, byte val); //write register
@@ -101,6 +101,9 @@ public:
 	byte x; //fine x scroll (3 bit)
 	bool writeToggle = false; //some MM Registers behave differently if this is the first or second write. use this to keep track
 	bool oddFrame; //is frame odd/even
+	//we need to keep track of what was last written to a register, this is returned when reading
+	//0x2007 for instance
+	byte registerBuffer;
 
 private:
 	PPUMemory* memory;

@@ -9,8 +9,49 @@ void PPU::step()
 {
 }
 
+byte PPU::readRegister(int addr)
+{
+	if (addr == 0x2002) { // PPUSTATUS
+		writeToggle = false;
+		byte val = STATUS & (STATUSVBlankStarted | STATUSSpriteZeroHit | STATUSSpriteOverflow);
+		val = val | (registerBuffer & 0x1F);
+		return val;
+	} else if (addr == 0x2004) { // OAMDATA
+		return OAM[OAMADDR];
+	} else if (addr == 0x2007) { // PPUDATA
+		byte val = memory->read(v);
+		/*When reading while the VRAM address is in the range 0-$3EFF 
+		(i.e., before the palettes), the read will return the contents of an 
+		internal read buffer. This internal buffer is updated only when reading PPUDATA, 
+		and so is preserved across frames*/
+		if(v < 0x3F00) { // we need to do a buffered read (see above)
+			byte oldDATABuffer = DATABuffer;
+			DATABuffer = val;
+			val = oldDATABuffer;
+		} else {
+			//TODO check: v - 0x1000 should put us at nametable 3 and not the mirror region
+			//which would instead have been nametable 0 (me thinks). This is probably not
+			//used by any games anyway and should not matter
+			DATABuffer = memory->read(v - 0x1000);
+		}
+
+		//remember to increment v
+		if ((CTRL & CTRLIncrement) == CTRLIncrement) {
+			v += 32;
+		}
+		else {
+			v++;
+		}
+		return val;
+	} else {
+		std::cout << "Tried reading register that doesnt exist: " << addr << std::endl;
+		return 0;
+	}
+}
+
 void PPU::writeRegiter(int addr, byte val)
 {
+	registerBuffer = val;
 	if (addr == 0x2000) { //PPUCTRL register
 		//sets the PPUCTRL register to val
 		CTRL = val;
@@ -74,7 +115,6 @@ void PPU::writeRegiter(int addr, byte val)
 		else {
 			v++;
 		}
-
 	} else if(addr == 0x4014) { //OAMDMA
 		/*Writing $XX will upload 256 bytes of data from CPU page $XX00-$XXFF to 
 		the internal PPU OAM*/
