@@ -1,4 +1,8 @@
 #pragma once
+#include "NES.h"
+
+class PPUMemory;
+
 typedef unsigned char byte;
 
 class PPU {
@@ -77,6 +81,13 @@ public:
 
 	byte readRegister(int addr); //read register at addr, addr should be 0x2000-0x2007
 	void writeRegiter(int addr, byte val); //write register
+
+	//Object attribute memory. PPU has 256 of OAM
+	byte OAM[256];
+
+	//video buffer
+	int pixels[256 * 240];
+
 
 	//which cycle we are on (0-340). 340 cycles per scanline (maybe?)
 	int cycle;

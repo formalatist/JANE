@@ -11,7 +11,7 @@ class Memory;
 class CPU6502 {
 public:
 	//constructor
-	CPU6502();
+	CPU6502(Memory* memory_);
 
 	//number of cycles per second (6502 is a ~1.7MHz CPU)
 	const int CPUFrequency = 1789773;

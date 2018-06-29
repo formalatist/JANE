@@ -3,8 +3,11 @@
 NES::NES()
 {
 	memory = new Memory();
-	cpu = new CPU6502();
+	ppuMemory = new PPUMemory();
+	cpu = new CPU6502(memory);
 	ppu = new PPU();
+	
+	//tell the memory about the cpu and ppu
 	memory->setCPU(*cpu);
 	memory->setPPU(*ppu);
 }

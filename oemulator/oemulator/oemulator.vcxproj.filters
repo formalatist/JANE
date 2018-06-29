@@ -39,6 +39,9 @@
     <ClCompile Include="Memory.cpp">
       <Filter>Source Files\NES emulator</Filter>
     </ClCompile>
+    <ClCompile Include="PPUMemory.cpp">
+      <Filter>Source Files\NES emulator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPU6502.h">
@@ -54,6 +57,9 @@
       <Filter>Header Files\NES emulator</Filter>
     </ClInclude>
     <ClInclude Include="Memory.h">
+      <Filter>Header Files\NES emulator</Filter>
+    </ClInclude>
+    <ClInclude Include="PPUMemory.h">
       <Filter>Header Files\NES emulator</Filter>
     </ClInclude>
   </ItemGroup>

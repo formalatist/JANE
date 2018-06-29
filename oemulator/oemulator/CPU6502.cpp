@@ -2,8 +2,9 @@
 //FOR DEBUG
 #include <windows.h>
 
-CPU6502::CPU6502()
+CPU6502::CPU6502(Memory* memory_)
 {
+	memory = memory_;
 	//do nothign for now
 }
 

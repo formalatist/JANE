@@ -2,6 +2,8 @@
 #include "CPU6502.h"
 #include "PPU.h"
 #include "Memory.h"
+#include "PPUMemory.h"
+
 
 class NES {
 public:
@@ -20,6 +22,7 @@ public:
 	CPU6502* cpu;
 	PPU* ppu;
 	Memory* memory;
+	PPUMemory* ppuMemory;
 
 private:
 	

@@ -1,4 +1,6 @@
 #include "Memory.h"
+//FOR DEBUG
+#include <windows.h>
 
 Memory::Memory()
 {
@@ -26,10 +28,14 @@ void Memory::loadMemory(std::vector<byte> rom, int offset)
 
 void Memory::loadMemory(byte rom[], int romSize, int offset)
 {
+	std::cout << "From Memory.cpp. Loading memory. memory[0] = " << memory[0] << std::endl;
 	for (int i = 0; i < romSize; i++)
 	{
+		//std::cout << "memory[" << i + offset << "] = " << memory[i + offset] << std::endl;
 		memory[i + offset] = rom[i];
+		//std::cout << "memory[" << i + offset << "] = " << memory[i + offset] << std::endl;
 	}
+	std::cout << "From Memory.cpp. Loaded memory. memory[0] = " << memory[0] << std::endl;
 }
 
 void Memory::write(int addr, byte val)
@@ -52,10 +58,18 @@ void Memory::write(int addr, byte val)
 	else {
 		std::cout << "Unhandeled write to address: " << addr << ". Value: " << val << std::endl;
 	}
+	if (printWrites) {
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 11);
+		std::cout << "Write to addr: " << std::hex << addr << " value: " << std::hex << val << std::endl;
+	}
 }
 
 byte Memory::read(int addr)
 {
+	if (printReads) {
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
+		std::cout << "Read of addr: " << std::hex << addr << std::endl;
+	}
 	//TODO: Temporary, we need to properly read PPU registers etc
 	return memory[addr];
 }

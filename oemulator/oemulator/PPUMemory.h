@@ -8,20 +8,23 @@ class CPU6502;
 #include "NES.h"
 
 typedef unsigned char byte;
-class Memory {
+
+class PPUMemory {
 public:
-	Memory();
+	PPUMemory();
 	void setPPU(PPU& ppu_);
 	void setCPU(CPU6502& cpu_);
 
-	//0000 - 07FF = RAM
-	//0800 - 1FFF = mirrors of RAM
-	//2000 - 2007 = PPU registers accessable from the CPU
-	//2008 - 3FFF = mirrors of those same 8 bytes over and over again
-	//4000 - 401F = sound channels, joypads, and other IO
-	//6000 - 7FFF = cartridge PRG - RAM(if present), or PRG - ROM depending on mapper
-	//8000 - FFFF = cartridge memory, usually ROM.
-	byte memory[65536]; //the memory itself
+	//$0000-$0FFF = Pattern Table 0
+	//$1000-$1FFF = Pattern Table 1
+	//$2000-$23FF = Nametable 0
+	//$2400-$27FF = Nametable 1
+	//$2800-$2BFF = Nametable 2
+	//$2C00-$2FFF = Nametable 3
+	//$3000-$3EFF = Mirrors of $2000-$2EFF
+	//$3F00-$3F1F = Palette RAM indexes
+	//$3F20-$3FFF = Mirrors of $3F00-$3F1F
+	byte memory[16384]; //the memory itself
 	void loadMemory(std::vector<byte> rom, int offset);
 	void loadMemory(byte rom[], int romSize, int offset);
 

@@ -3,13 +3,14 @@
 //#include "CPU6502.h"
 #include "NES.h"
 class Memory;
+class PPUMemory;
 class CPU6502;
 
 typedef unsigned char byte;
 class ROMLoader {
 public:
 	//constructor
-	ROMLoader(Memory* memory_);
+	ROMLoader(Memory* memory_, PPUMemory* ppuMemory_);
 
 	void loadROM(byte rom[], int size, CPU6502& cpu);
 
@@ -18,4 +19,5 @@ public:
 
 private:
 	Memory* memory;
+	PPUMemory* ppuMemory;
 };

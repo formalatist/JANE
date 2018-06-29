@@ -1,9 +1,10 @@
 #include "ROMLoader.h"
 #include <iostream>
 
-ROMLoader::ROMLoader(Memory* memory_)
+ROMLoader::ROMLoader(Memory* memory_, PPUMemory* ppuMemory_)
 {
 	memory = memory_;
+	ppuMemory = ppuMemory_;
 }
 
 void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
@@ -18,18 +19,28 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 	5. PlayChoice INST - ROM, if present(0 or 8192 bytes)
 	6. PlayChoice PROM, if present(16 bytes Data, 16 bytes CounterOut) (this is often missing, see PC10 ROM - Images for details)
 	*/
-	//TODO: properly red the ines header. this is a placeholder that only works for donkey kong
-	byte prgROM[16384];
-	//read inn the prgROM
-	for (int i = 0; i < 16384; i++)
+	//TODO: properly read the ines header. this is a placeholder that only works for donkey kong
+	//this does NOT support RAM on the chip. only rom. add that later ;^)
+	int PRGROMSIZE = rom[4] * 16384;
+	int CHRROMSIZE = rom[5] * 8192;
+	
+	byte *prgROM = new byte[PRGROMSIZE];
+	//read in the prgROM
+	for (int i = 0; i < PRGROMSIZE; i++)
 	{
-
 		prgROM[i] = rom[i + headerSize];
 	}
-
 	//load the rom into the cpu
-	memory->loadMemory(prgROM, 16384, 0x8000);
-	memory->loadMemory(prgROM, 16384, 0xc000);
+	memory->loadMemory(prgROM, PRGROMSIZE, 0x8000);
+	memory->loadMemory(prgROM, PRGROMSIZE, 0xc000);
+
+	byte * chrROM = new byte[CHRROMSIZE];
+	//read in the chrROM
+	for (int i = 0; i < CHRROMSIZE; i++) {
+		chrROM[i] = rom[i + headerSize + PRGROMSIZE];
+	}
+	//load the rom into the ppu
+	ppuMemory->loadMemory(chrROM, CHRROMSIZE, 0x0000);
 
 	//set the PC to the init vector
 	std::cout << std::hex << (int)memory->memory[0xfffc] << "  " << (memory->memory[0xfffd] << 8) << std::endl;

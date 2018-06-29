@@ -123,6 +123,7 @@
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="NES.cpp" />
     <ClCompile Include="PPU.cpp" />
+    <ClCompile Include="PPUMemory.cpp" />
     <ClCompile Include="ROMLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -130,6 +131,7 @@
     <ClInclude Include="Memory.h" />
     <ClInclude Include="NES.h" />
     <ClInclude Include="PPU.h" />
+    <ClInclude Include="PPUMemory.h" />
     <ClInclude Include="ROMLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
