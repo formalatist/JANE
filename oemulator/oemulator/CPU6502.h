@@ -76,8 +76,6 @@ private:
 	//unimplemented op
 	void unimplementedOP();
 
-	//void writeToMemory(int addr, byte val);
-
 	//addressing modes
 	//read the memory at these locations
 	//unsigned char readAccumulator(); not needed since we always have easy access to the A reg

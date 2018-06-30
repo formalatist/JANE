@@ -82,14 +82,14 @@ public:
 	byte readRegister(int addr); //read register at addr, addr should be 0x2000-0x2007
 	void writeRegiter(int addr, byte val); //write register
 
-	//Object attribute memory. PPU has 256 of OAM
+	//Object attribute memory. PPU has 256 bytes of OAM
 	byte OAM[256];
 
 	//video buffer
 	int pixels[256 * 240];
 
 
-	//which cycle we are on (0-340). 340 cycles per scanline (maybe?)
+	//which cycle we are on (0-340). 341 cycles per scanline 
 	int cycle;
 	//which scanline are we on (0-261, where 0-239 are the visible ones, 240 is "post" 
 	//241-260 is vblank (vertical blanking lines), 261 is some pre calculations for scanline 0
@@ -105,6 +105,30 @@ public:
 	//0x2007 for instance
 	byte registerBuffer;
 
+	//these are the values required to draw the next 8 pixels of background. these are fetched
+	//every 8 ppu cycles
+	byte nameTableByte;
+	byte attributeTableByte;
+	byte bitmapLow; 
+	byte bitmapHigh;
+
+	//OAM info about the (up to) 8 sprites on this scanline is kept in shift registers
+	int spriteBitmapData[8]; //16bits of data per sprite (for 1 row) 1 byte upper and 1 byte lower
+	byte spriteAttributes[8];
+	byte ATTRIBUTEPALETTE = 3;
+	byte ATTRIBUTEPRIORITY = 0x20;
+	byte ATTRIBUTEFLIPHOR = 0x40;
+	byte ATTRIBUTEFLIPVER = 0x80;
+	byte spriteXPositions[8];
+	byte numberOfSpritesOnScanline;
+
 private:
 	PPUMemory* memory;
+
+	//sprite evaluation phase happens for the next scanline as cycles 1-256 are processed.
+	//since we just do this instantly and we are not using shiftregisters we do it at cycle
+	//257.if we evaluate sprite data for the next scanline in cycles1-256 we will
+	//overwrite the data needed for this line
+	void spriteEvaluation();
+
 };

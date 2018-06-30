@@ -134,3 +134,12 @@ void PPU::writeRegiter(int addr, byte val)
 		std::cout << "ERROR: Tried writing to PPU register " << addr << std::endl;
 	}
 }
+
+void PPU::spriteEvaluation()
+{
+	//loop over all sprites in OAM and find the (up to) 8 on this scanline
+	numberOfSpritesOnScanline = 0;
+	for (int i = 0; i < 64; i++) {
+
+	}
+}
