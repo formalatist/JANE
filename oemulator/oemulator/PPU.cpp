@@ -140,6 +140,62 @@ void PPU::spriteEvaluation()
 	//loop over all sprites in OAM and find the (up to) 8 on this scanline
 	numberOfSpritesOnScanline = 0;
 	for (int i = 0; i < 64; i++) {
-
+		//check if this sprite is on our scanline
+		byte yPos = OAM[i * 4];
+		byte rowOfSprite = scanLine - yPos;
+		if(rowOfSprite >= 0 && rowOfSprite <= 7) { //our scanline hits this sprite
+			if (numberOfSpritesOnScanline < 8) { // theres still room for sprites on this scanline
+				byte tile =		 OAM[i * 4 + 1];
+				byte attribute = OAM[i * 4 + 2];
+				byte xPos =		 OAM[i * 4 + 3];
+				spriteAttributes[numberOfSpritesOnScanline] = attribute;
+				spriteXPositions[numberOfSpritesOnScanline] = xPos;
+				isSpriteZero[numberOfSpritesOnScanline] = i == 0;
+				spriteBitmapData[numberOfSpritesOnScanline] = getSpriteBitmapData(rowOfSprite, tile, attribute);
+			}
+			numberOfSpritesOnScanline++;
+		}
 	}
+
+	//set sprite overflow flag
+	if (numberOfSpritesOnScanline > 8) {
+		numberOfSpritesOnScanline = 8;
+		STATUS = STATUS | STATUSSpriteOverflow;
+	}
+}
+
+int PPU::getSpriteBitmapData(byte row, byte tile, byte attribute)
+{
+	int addr;
+	int spriteBitmapData = 0;;
+	//take into account weather or not we are in 8x8 or 8x16 sprite mode
+	//for now only support 8x8
+	if((attribute & 0x80) == 0x80) { //flip vertically
+		row = 7 - row;
+	}
+	addr = 0x1000 * ((CTRL & CTRLSpritePattern) >> 3) + tile*16 + row;
+	byte bitmapLow = memory->read(addr);
+	byte bitmapHigh = memory->read(addr + 8);
+	bool highBit;
+	bool lowBit;
+	bool flipHorizontal = attribute & 0x40;
+	//loop over the 8 pixels and add them to the spriteBitmapData
+	for (int i = 0; i < 8; i++) {
+		if (flipHorizontal) { //if flipping hor we start at the right most bits, that way they end up at the end of bitmapData
+			lowBit = bitmapLow & 1;
+			highBit = bitmapHigh & 1;
+			bitmapHigh = bitmapHigh >> 1;
+			bitmapLow = bitmapLow >> 1;
+		}
+		else {
+			lowBit = (bitmapLow & 0x80) >> 7;
+			highBit = (bitmapHigh & 0x80) >> 7;
+			bitmapHigh = bitmapHigh << 1;
+			bitmapLow = bitmapLow << 1;
+		}
+		spriteBitmapData <<= 2;
+		spriteBitmapData |= (highBit << 1) | lowBit;
+	}
+
+	return spriteBitmapData;
 }

@@ -83,6 +83,11 @@ public:
 	void writeRegiter(int addr, byte val); //write register
 
 	//Object attribute memory. PPU has 256 bytes of OAM
+	//OAM is structured like this:
+	/*	Sprite Y coordinate
+		Sprite tile #
+		Sprite attribute
+		Sprite X coordinate*/
 	byte OAM[256];
 
 	//video buffer
@@ -113,13 +118,17 @@ public:
 	byte bitmapHigh;
 
 	//OAM info about the (up to) 8 sprites on this scanline is kept in shift registers
-	int spriteBitmapData[8]; //16bits of data per sprite (for 1 row) 1 byte upper and 1 byte lower
+	//16bits of data per sprite (for 1 row) 1 byte upper and 1 byte lower
+	//this is stored as (pixel 8 upper) (pixel 8 lower)...(pixel 1 upper) (piel 1 lower)
+	//these two bits combined with the attribute bits 1 and 2 choose the color
+	int spriteBitmapData[8]; 
 	byte spriteAttributes[8];
 	byte ATTRIBUTEPALETTE = 3;
 	byte ATTRIBUTEPRIORITY = 0x20;
 	byte ATTRIBUTEFLIPHOR = 0x40;
 	byte ATTRIBUTEFLIPVER = 0x80;
 	byte spriteXPositions[8];
+	bool isSpriteZero[8]; //true if the sprite is the first sprite in OAM. needed to set the spriteZeroHit flag
 	byte numberOfSpritesOnScanline;
 
 private:
@@ -130,5 +139,8 @@ private:
 	//257.if we evaluate sprite data for the next scanline in cycles1-256 we will
 	//overwrite the data needed for this line
 	void spriteEvaluation();
+
+	//function for getting the bitmap data for sprite
+	int getSpriteBitmapData(byte row, byte tile, byte attribute);
 
 };
