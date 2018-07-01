@@ -114,8 +114,8 @@ public:
 	//every 8 ppu cycles
 	byte nameTableByte;
 	byte attributeTableByte;
-	byte bitmapLow; 
-	byte bitmapHigh;
+	byte tileBitmapLow; 
+	byte tileBitmapHigh;
 
 	//OAM info about the (up to) 8 sprites on this scanline is kept in shift registers
 	//16bits of data per sprite (for 1 row) 1 byte upper and 1 byte lower
@@ -143,4 +143,8 @@ private:
 	//function for getting the bitmap data for sprite
 	int getSpriteBitmapData(byte row, byte tile, byte attribute);
 
+	void getNametableByte();
+	void getAttributeTableByte();
+	void getTileBitmapLow();
+	void getTileBitmapHigh();
 };

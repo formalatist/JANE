@@ -199,3 +199,7 @@ int PPU::getSpriteBitmapData(byte row, byte tile, byte attribute)
 
 	return spriteBitmapData;
 }
+
+void PPU::getNametableByte()
+{
+}
