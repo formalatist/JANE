@@ -56,10 +56,17 @@ void CPU6502::executeOP()
 		std::cout << "Steps: " << numSteps << std::endl;
 		std::cout << "\n" << std::endl;
 		*/
+		int P = C
+			| (Z << 1)
+			| (IntDisable << 2)
+			| (D << 3)
+			| (B << 4)
+			| (1 << 5)
+			| (V << 6)
+			| (N << 7);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10 + (numSteps % 2) * 5);
-		std::cout << "A: " << (int)A << " X: " << (int)X << " Y: " << (int)Y << " SP: "
-			<< std::hex << (int)SP << " P: " << (int)N << (int)V << (int)B << (int)D << (int)IntDisable
-			<< (int)Z << (int)C << "	$" << std::hex << PC << ":" << (int)memory->memory[PC]
+		std::cout << std::dec << numSteps << std::hex << "   " << "A: " << (int)A << " X: " << (int)X << " Y: " << (int)Y << " SP: "
+			<< std::hex << (int)SP << " P: " << std::hex << P << "	$" << std::hex << PC << ":" << (int)memory->memory[PC]
 			<< "   " << (int)memory->memory[PC + 1] << std::endl;
 	}
 	
@@ -69,7 +76,7 @@ void CPU6502::executeOP()
 		{
 			//NOTE: we save PC then flags to stack. so the stack is [flags | PCLO | PCHI]
 			push(PC);
-			pushStatus();
+			pushStatus(1);
 			PC = memory->memory[0xfffe] | (memory->memory[0xffff] << 8);
 			B = 1;
 			cycles += 7;
@@ -108,7 +115,7 @@ void CPU6502::executeOP()
 		}
 		case 0x8: //PHP push procesor status, implied
 		{
-			pushStatus();
+			pushStatus(1);
 			PC++;
 			cycles += 3;
 			break;
@@ -1602,7 +1609,7 @@ void CPU6502::NMI()
 {
 	//push the PC to the stack
 	push(PC);
-	pushStatus();
+	pushStatus(0);
 	//set PC to the interrupt vector
 	PC = memory->read(0xFFFA) | (memory->read(0xFFFA + 1) << 8);
 	cycles += 7;
@@ -1618,7 +1625,7 @@ void CPU6502::push(byte high, byte low)
 
 void CPU6502::pushByte(byte val)
 {
-	memory->write(SP - 1, val);
+	memory->write((SP - 1) | 0x100, val);
 	SP--;
 }
 
@@ -1629,15 +1636,18 @@ void CPU6502::push(int word)
 	SP -= 2;
 }
 
-void CPU6502::pushStatus()
+void CPU6502::pushStatus(bool bit4)
 {
+	//look at nesdev CPU_status_flag_behavior
 	//TODO: this might not be correct
 	byte statusByte = C 
-		| Z << 1
-		| IntDisable << 2
-		| B << 3
-		| V << 4
-		| N << 5;
+		| (Z << 1)
+		| (IntDisable << 2)
+		| (D << 3)
+		| (bit4 << 4)
+		| (1 << 5)
+		| (V << 6)
+		| (N << 7);
 	memory->write((SP - 1) | 0x100, statusByte);
 	SP--;
 }
@@ -1647,12 +1657,12 @@ void CPU6502::pullStatus()
 	//TODO: this might not be correct
 	byte sByte = memory->read(SP | 0x100);
 	SP++;
-	C |= sByte & 0x1;
-	Z |= sByte & 0x2;
-	IntDisable |= sByte & 0x4;
-	B |= sByte & 0x8;
-	V |= sByte & 0x10;
-	N |= sByte & 0x20;
+	Z = sByte & 0x2;
+	C = sByte & 0x1;
+	IntDisable = sByte & 0x4;
+	D = sByte & 0x8;
+	V = sByte & 0x40;
+	N = sByte & 0x80;
 }
 
 int CPU6502::pullWord()
@@ -1667,6 +1677,7 @@ byte CPU6502::pullByte()
 {
 	byte val = memory->read(SP | 0x100);
 	SP++;
+	PC++;
 	return val & 0xff;
 }
 

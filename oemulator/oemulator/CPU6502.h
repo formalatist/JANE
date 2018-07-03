@@ -17,13 +17,14 @@ public:
 	const int CPUFrequency = 1789773;
 
 	//flags
-	bool C; //carry flag. 1 when overflow or underflow
-	bool Z; //zero flag. 1 when result is zero
-	bool IntDisable; //interrupt disable flag. 1 when interrupts are disabled
+	bool C = false; //carry flag. 1 when overflow or underflow
+	bool Z = false; //zero flag. 1 when result is zero
+	bool IntDisable = true; //interrupt disable flag. 1 when interrupts are disabled
 	bool D = 1; //decimal mode. 1 when decimal mode is active. --THE NES DOES NOT USE THIS--
-	bool B; //break flag. 1 when a BRK instruction has been executed and an interrupt has been generated to process it
-	bool V; //overflow flag. 1 when neg + neg = pos or pos + pos = neg in an arithmetic op
-	bool N; //negative flag. 1 when bit 7 is set in the result of the last op
+	bool B = 0; //break flag. 1 when a BRK instruction has been executed and an interrupt has been generated to process it
+	bool U = true; //Unused flag, always set
+	bool V = false; //overflow flag. 1 when neg + neg = pos or pos + pos = neg in an arithmetic op
+	bool N = false; //negative flag. 1 when bit 7 is set in the result of the last op
 
 	//8 bit registers A, X and Y
 	unsigned char A = 0;
@@ -68,7 +69,7 @@ private:
 	void push(byte high, byte low);
 	void pushByte(byte val);
 	void push(int word);
-	void pushStatus();
+	void pushStatus(bool bit4);
 
 	void pullStatus();
 	int pullWord();

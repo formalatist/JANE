@@ -19,7 +19,7 @@ long getFileSize(FILE *file)
 
 
 int main(int argc, char** argv) {
-	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\donkey-kong.nes";
+	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\nestest.nes";
 
 	unsigned char* fileBuffer;
 	FILE* file = NULL;
@@ -68,7 +68,11 @@ int main(int argc, char** argv) {
 	nes.updateScreen();
 
 	//run the nes
-	nes.step(500000);
+	//nes.step(100000);
+	
+	nes.step(100); //works with nestest.nes
+	nes.cpu->printCallLog = true;
+	nes.step(100);
 
 	std::cout << "Total unique ops: " << std::dec << nes.cpu->numImplementedOps << std::endl;
 	std::cout << "Done!" << std::endl;
