@@ -408,7 +408,7 @@ int PPU::getPixelSpriteColor()
 
 int PPU::getPixelBackgroundColor()
 {
-	return 0;
+	return (tileBitmap >> (2*x)) & 0xf;
 }
 
 void PPU::blitPixel()
