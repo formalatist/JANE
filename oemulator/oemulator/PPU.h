@@ -2,15 +2,19 @@
 #include "NES.h"
 
 class PPUMemory;
+class NES;
 
 typedef unsigned char byte;
 
 class PPU {
 public:
 	PPU(PPUMemory* memory_);
+	void setNES(NES* nes_);
 
 	//performes one PPU step
 	void step();
+	//advances the different counters correctly
+	void advanceCounters();
 
 	//IO mapped registers at 0x2000-0x2007
 	//0x2000 PPUCTRL CPU has write access
@@ -91,7 +95,7 @@ public:
 	byte OAM[256];
 
 	//video buffer
-	int pixels[256 * 240];
+	int pixels[256 * 240*2];
 
 
 	//which cycle we are on (0-340). 341 cycles per scanline 
@@ -109,6 +113,9 @@ public:
 	//we need to keep track of what was last written to a register, this is returned when reading
 	//0x2007 for instance
 	byte registerBuffer;
+
+	//NMI
+	bool NMIOccured; //if this is set and the CTRLNMI flag is set. we generate an NMI
 
 	//these are the values required to draw the next 8 pixels of background. these are fetched
 	//every 8 ppu cycles
@@ -134,12 +141,18 @@ public:
 
 private:
 	PPUMemory* memory;
+	NES* nes;
 
 	//sprite evaluation phase happens for the next scanline as cycles 1-256 are processed.
 	//since we just do this instantly and we are not using shiftregisters we do it at cycle
 	//257.if we evaluate sprite data for the next scanline in cycles1-256 we will
 	//overwrite the data needed for this line
 	void spriteEvaluation();
+
+	//enter vertical blank
+	void enterVerticalBlank();
+	//leave vertical blank
+	void leaveVerticalBlank();
 
 	//function for getting the bitmap data for sprite
 	int getSpriteBitmapData(byte row, byte tile, byte attribute);
@@ -150,6 +163,11 @@ private:
 	void setTileBitmapLow();
 	void setTileBitmapHigh();
 	void createTileBitmap();
+
+	void copyVerticalBits();
+	void incrementX(); // helper func from nesdev
+	void incrementY(); //helper func from nesdev
+	void copyHorizontalBits();
 
 	int getSpriteOfCurrentPixel();
 	int getPixelSpriteColor();

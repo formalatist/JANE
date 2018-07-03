@@ -3,7 +3,7 @@
 #include "PPU.h"
 #include "Memory.h"
 #include "PPUMemory.h"
-
+#include <SDL.h>
 
 class NES {
 public:
@@ -17,6 +17,9 @@ public:
 	//do one whole frame
 	void stepFrame();
 
+	void setScreen(SDL_Surface* screen_, SDL_Window* window_);
+	void updateScreen();
+
 	//the CPU and the PPU, they talk to eachother via the NES
 	//so they need to be public
 	CPU6502* cpu;
@@ -25,5 +28,6 @@ public:
 	PPUMemory* ppuMemory;
 
 private:
-	
+	SDL_Surface* screen;
+	SDL_Window* window;
 };

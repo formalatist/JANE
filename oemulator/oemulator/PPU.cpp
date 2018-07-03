@@ -5,11 +5,102 @@ PPU::PPU(PPUMemory* memory_)
 	memory = memory_;
 }
 
-void PPU::step()
+void PPU::setNES(NES * nes_)
 {
+	nes = nes_;
 }
 
-byte PPU::readRegister(int addr)
+void PPU::step()
+{
+	advanceCounters();
+
+	bool isPreLine = scanLine == 261;
+	bool isVisibleLine = scanLine < 240; //lines are the Y of the pixel
+	bool isRenderedLine = isPreLine || isVisibleLine;
+	bool isPrefetchCycle = cycle >= 321 && cycle <= 336;
+	bool isVisibleCycle = cycle >= 1 && cycle <= 256; //cycles gives the X
+	bool isFetchCycle = isPrefetchCycle || isVisibleCycle;
+
+	if (true /*rendering is enabled*/) {
+		if (isVisibleLine && isVisibleCycle) { //Both X and Y are within their visible areas
+			blitPixel();
+		}
+		if (isRenderedLine && isFetchCycle) {
+			switch (cycle % 8) {
+			case 1:
+				setNametableByte();
+			case 3:
+				setAttributeTableByte();
+			case 5:
+				setTileBitmapLow();
+			case 7:
+				setTileBitmapHigh();
+			case 0:
+				createTileBitmap();
+			}
+		}
+		if (isPreLine && cycle >= 280 && cycle <= 304) {
+			/*If rendering is enabled, at the end of vblank, shortly after 
+			the horizontal bits are copied from t to v at dot 257, the PPU 
+			will repeatedly copy the vertical bits from t to v from 
+			dots 280 to 304, completing the full initialization of v from t:*/
+			copyVerticalBits();
+		}
+		if (isRenderedLine) {
+			if (isFetchCycle && cycle % 8 == 0) {
+				incrementX();
+			}
+			if (cycle == 256) {
+				incrementY();
+			}
+			if (cycle == 257) {
+				copyHorizontalBits();
+			}
+		}
+
+		if (cycle == 257) {
+			if (isVisibleLine) { //we are at the end of a visible line. evaluate sprites for the next line
+				spriteEvaluation();
+			} else {
+				numberOfSpritesOnScanline = 0;
+			}
+		}
+	}
+
+	if(scanLine == 241 && cycle == 1) { //vertical blank
+		
+	}
+	if (isPreLine && cycle == 1) {
+		leaveVerticalBlank();
+	}
+}
+
+void PPU::advanceCounters()
+{
+	bool showSprites = (MASK & MASKShowSprites) == MASKShowSprites;
+	bool showBackground = (MASK & MASKShowBackground) == MASKShowBackground;
+	
+	//generate NMI
+	if (((CTRL & CTRLNMI) == CTRLNMI) && NMIOccured) {
+		memory->cpu->triggerNMI();
+	}
+
+	if(showBackground || showSprites) { //if we are rendering anything
+		//TODO: 
+	}
+
+	cycle++;
+	if (cycle > 340) { //we are done with this scanline so we go to the next
+		cycle = 0;
+		scanLine++;
+		if(scanLine > 261) { //we are done with the screen
+			scanLine = 0;
+			nes->updateScreen();
+		}
+	}
+}
+
+byte PPU::readRegister(int addr)	
 {
 	if (addr == 0x2002) { // PPUSTATUS
 		writeToggle = false;
@@ -164,6 +255,16 @@ void PPU::spriteEvaluation()
 	}
 }
 
+void PPU::enterVerticalBlank()
+{
+	NMIOccured = true;
+}
+
+void PPU::leaveVerticalBlank()
+{
+	NMIOccured = false;
+}
+
 int PPU::getSpriteBitmapData(byte row, byte tile, byte attribute)
 {
 	int addr;
@@ -242,4 +343,82 @@ void PPU::createTileBitmap()
 		tileBitmapHigh <<= 1;
 	}
 	tileBitmap = newTileBitmap;
+}
+
+void PPU::copyVerticalBits()
+{
+	//v: IHGF.ED CBA..... = t: IHGF.ED CBA.....
+	v = (v & 0x41F) || (t & 0x7BE0);
+}
+
+void PPU::incrementX()
+{
+	// increment hori(v)
+	if ((v & 0x001F) == 31) { // if coarse X == 31
+		v &= 0xFFE0; // coarse X = 0
+		v ^= 0x0400; // switch horizontal nametable
+	} else {// increment coarse X
+		v++;
+	}
+}
+
+void PPU::incrementY()
+{
+	if ((v & 0x7000) != 0x7000) {// if fine Y < 7
+		v += 0x1000; // increment fine Y
+	} 
+	else {
+		v &= ~0x7000;// fine Y = 0
+		int y = (v & 0x03E0) >> 5;// let y = coarse Y
+		if (y == 29) {
+			y = 0;// coarse Y = 0
+			v ^= 0x0800;
+		}// switch vertical nametable
+		else if (y == 31) {
+			y = 0; // coarse Y = 0, nametable not switched
+		}
+		else {
+			y += 1; // increment coarse Y
+			v = (v & ~0x03E0) | (y << 5);// put coarse Y back into v
+		}
+	}
+}
+
+void PPU::copyHorizontalBits()
+{
+	//v: ....F.. ...EDCBA = t: ....F.. ...EDCBA
+	v = (v & 0x7BE0) | (t & 0x41F);
+}
+
+int PPU::getPixelSpriteColor()
+{
+	int col = 0;
+	//loop over the sprites on the scanline and check if any of them are on this pixel
+	for (int i = 0; i < numberOfSpritesOnScanline; i++) {
+		int spriteColumn = cycle - 1 - spriteXPositions[i];
+		if(spriteColumn >= 0 && spriteColumn <= 7) { //we hit this sprite
+			col = (spriteBitmapData[i] >> (2 * spriteColumn)) & 3;
+			if(col != 0) { //pixel is not transparent so we stop searching and return it
+				return col;
+			}
+		}
+	}
+	return col;
+}
+
+int PPU::getPixelBackgroundColor()
+{
+	return 0;
+}
+
+void PPU::blitPixel()
+{
+	int x = cycle - 1;
+	int y = scanLine;
+	const int tempPalette[4] = { 0xFF, 0x00FF, 0x0000FF, 0x00FFFF };
+	int spritePixel = getPixelSpriteColor();
+	int backgroundPixel = getPixelBackgroundColor();
+
+	pixels[x + y * (512)] = tempPalette[spritePixel];
+	pixels[x + 256 + y * 512] = tempPalette[backgroundPixel];
 }

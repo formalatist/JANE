@@ -70,6 +70,12 @@ byte Memory::read(int addr)
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 12);
 		std::cout << "Read of addr: " << std::hex << addr << std::endl;
 	}
-	//TODO: Temporary, we need to properly read PPU registers etc
-	return memory[addr];
+	if(addr < 0x2000) { //reading RAM
+		return memory[addr];
+	} else if(addr < 0x4000) { //reading repeating PPU registers
+		return ppu->readRegister(0x2000 + (addr % 8));
+	} else if (addr == 0x4014) {
+		return ppu->readRegister(addr);
+	}
+	return 0;
 }

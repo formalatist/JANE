@@ -9,6 +9,11 @@ CPU6502::CPU6502(Memory* memory_)
 }
 
 
+void CPU6502::triggerNMI()
+{
+	NMIWaiting = true;
+}
+
 int CPU6502::step()
 {
 	if (HALT) {
@@ -20,6 +25,12 @@ int CPU6502::step()
 	if (cyclesToStall > 0) {
 		cyclesToStall--;
 		return 1;
+	}
+
+	//check if we have interrupt waiting
+	if (NMIWaiting) {
+		NMIWaiting = false;
+		NMI();
 	}
 	executeOP();
 	//return the number of cycles it took to complete the OP
@@ -1585,6 +1596,17 @@ void CPU6502::executeOP()
 			break;
 		}
 	}
+}
+
+void CPU6502::NMI()
+{
+	//push the PC to the stack
+	push(PC);
+	pushStatus();
+	//set PC to the interrupt vector
+	PC = memory->read(0xFFFA) | (memory->read(0xFFFA + 1) << 8);
+	cycles += 7;
+	IntDisable = 1; //disable interrupts while we are in NMI
 }
 
 void CPU6502::push(byte high, byte low)

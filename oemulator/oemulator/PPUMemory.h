@@ -32,8 +32,8 @@ public:
 	byte read(int addr);
 
 	//for debug
-	bool printReads = true;
-	bool printWrites = true;
+	bool printReads = false;
+	bool printWrites = false;
 
 	//TODO: Refractor. communication should just happen via
 	//the NES itself

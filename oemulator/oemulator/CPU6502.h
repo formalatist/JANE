@@ -36,6 +36,9 @@ public:
 	//16bit program counter
 	unsigned int PC;
 
+	//trigger NMI on the next instruction
+	void triggerNMI();
+
 	//the number of cpu cycles we have done
 	int cycles = 0;
 
@@ -48,16 +51,18 @@ public:
 	bool HALT = false;
 	//for debugging
 	bool usedOPs[256];
-	bool printCallLog = true;
+	bool printCallLog = false;
 	int numSteps = 0;
 	int numImplementedOps = 0;
 
 	//reference to the memory we are using
 	Memory* memory;
 private:
-
 	//execute the op pointed to by PC
 	void executeOP();
+
+	bool NMIWaiting;
+	void NMI();
 
 	//push and pull to the stack
 	void push(byte high, byte low);
