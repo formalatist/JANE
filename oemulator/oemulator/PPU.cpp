@@ -168,7 +168,7 @@ int PPU::getSpriteBitmapData(byte row, byte tile, byte attribute)
 {
 	int addr;
 	int spriteBitmapData = 0;;
-	//take into account weather or not we are in 8x8 or 8x16 sprite mode
+	//TODO: take into account weather or not we are in 8x8 or 8x16 sprite mode
 	//for now only support 8x8
 	if((attribute & 0x80) == 0x80) { //flip vertically
 		row = 7 - row;
@@ -200,6 +200,46 @@ int PPU::getSpriteBitmapData(byte row, byte tile, byte attribute)
 	return spriteBitmapData;
 }
 
-void PPU::getNametableByte()
+void PPU::setNametableByte()
 {
+	nameTableByte = memory->read(0x2000 | (v & 0x0FFF));
+}
+
+void PPU::setAttributeTableByte()
+{
+	attributeTableByte = memory->read(0x23C0 | (v & 0x0C00) | ((v >> 4) & 0x38) | ((v >> 2) & 0x07));
+}
+
+void PPU::setTileBitmapLow()
+{
+	//if backgroundpattern bit is 1 we add 0x1000 to the address
+	int addr = (0x1000)*((CTRL & CTRLBackgroundPattern) == CTRLBackgroundPattern);
+	//get the fine Y scroll from V. This is in the 3 high bits. v is 15 bit
+	int fineYScroll = (v >> 12) & 7;
+	addr += nameTableByte * 16 + fineYScroll;
+	tileBitmapLow = memory->read(addr);
+}
+
+//high byte is 8 bytes further in memory
+void PPU::setTileBitmapHigh()
+{
+	//if backgroundpattern bit is 1 we add 0x1000 to the address
+	int addr = (0x1000)*((CTRL & CTRLBackgroundPattern) == CTRLBackgroundPattern);
+	//get the fine Y scroll from V. This is in the 3 high bits. v is 15 bit
+	int fineYScroll = (v >> 12) & 7;
+	addr += nameTableByte * 16 + fineYScroll + 8;
+	tileBitmapHigh = memory->read(addr);
+}
+
+void PPU::createTileBitmap()
+{
+	int newTileBitmap = 0;
+	for (int i = 0; i < 8; i++) {
+		newTileBitmap <<= 2;
+		newTileBitmap |= ((tileBitmapLow & 0x80) >> 7) 
+			| ((tileBitmapHigh & 0x80) >> 6);
+		tileBitmapLow <<= 1;
+		tileBitmapHigh <<= 1;
+	}
+	tileBitmap = newTileBitmap;
 }

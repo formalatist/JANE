@@ -116,6 +116,7 @@ public:
 	byte attributeTableByte;
 	byte tileBitmapLow; 
 	byte tileBitmapHigh;
+	int tileBitmap;
 
 	//OAM info about the (up to) 8 sprites on this scanline is kept in shift registers
 	//16bits of data per sprite (for 1 row) 1 byte upper and 1 byte lower
@@ -143,8 +144,16 @@ private:
 	//function for getting the bitmap data for sprite
 	int getSpriteBitmapData(byte row, byte tile, byte attribute);
 
-	void getNametableByte();
-	void getAttributeTableByte();
-	void getTileBitmapLow();
-	void getTileBitmapHigh();
+	//set the data needed for the tile
+	void setNametableByte(); //from Tile and attribute fetching on nesdev
+	void setAttributeTableByte(); //Tile and attribute fetching on nesdev
+	void setTileBitmapLow();
+	void setTileBitmapHigh();
+	void createTileBitmap();
+
+	int getSpriteOfCurrentPixel();
+	int getPixelSpriteColor();
+	int getPixelBackgroundColor();
+
+	void blitPixel();
 };
