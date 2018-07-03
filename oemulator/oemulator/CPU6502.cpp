@@ -1157,6 +1157,7 @@ void CPU6502::executeOP()
 		{
 			V = 0;
 			cycles += 2;
+			PC++;
 			break;
 		}
 		case 0xb9: //LDA load accumulator, absoluteY
