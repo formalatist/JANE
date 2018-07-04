@@ -57,9 +57,7 @@ int main(int argc, char** argv) {
 	std::cout << "printing memory" << nes.memory->memory[0] << std::endl;
 	std::cout << "Starting PC at: 0x" << std::hex << nes.cpu->PC << std::endl;
 	
-
 	//create the screen
-	/*
 	SDL_Window* mainWindow = NULL;
 	SDL_Surface* mainWindowSurface = NULL;
 	mainWindow = SDL_CreateWindow("ØMULATOR", 1024, 512,
@@ -68,7 +66,6 @@ int main(int argc, char** argv) {
 	mainWindowSurface = SDL_GetWindowSurface(mainWindow);
 	nes.setScreen(mainWindowSurface, mainWindow);
 	nes.updateScreen();
-	*/
 
 	//run the nes
 	//nes.step(100000);
@@ -94,7 +91,7 @@ int main(int argc, char** argv) {
 
 
 
-	/*
+
 
 	SDL_Window* patternTableWindow = NULL;
 	SDL_Surface* patternTableSurface = NULL;
@@ -149,7 +146,7 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	SDL_UpdateWindowSurface(patternTableWindow); */
+	SDL_UpdateWindowSurface(patternTableWindow);
 	/*
 	bool run = true;
 	while (run) {

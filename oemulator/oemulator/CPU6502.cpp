@@ -685,12 +685,14 @@ void CPU6502::executeOP()
 		case 0x69: //ADC add with carry, immediate
 		{
 			byte M = readImmediate();
-			byte val = A + M + C;
-			A = val & 0xff;
-			Z = A == 0;
+			int val = A + M + C;
+			std::cout << "ADC: M:" <<(int) M << " C:  " <<(int) C << "  A: " << (int)A << std::endl;
+			Z = (val & 0xFF) == 0;
 			C = val > 0xff;
 			N = (val & 0x80) == 0x80;
-			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+			V = (((A ^ val) & (M ^ val)) & 0x80) == 0x80;
+			A = val & 0xff;
+			std::cout << "V: " << V << std::endl;
 			cycles += 2;
 			break;
 		}
