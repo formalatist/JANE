@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
 	//run the nes
 	//nes.step(100000);
 	
-	nes.step(200); //works with nestest.nes
+	nes.step(300); //works with nestest.nes
 	nes.cpu->printCallLog = true;
 	nes.step(100);
 
@@ -159,12 +159,13 @@ int main(int argc, char** argv) {
 				run = false;
 			}
 		}
-	}*/
+	}
 
-	std::cin.get();
+	
 	SDL_DestroyWindow(patternTableWindow);
 	SDL_DestroyWindow(mainWindow);
-	SDL_Quit();
+	SDL_Quit(); */
+	std::cin.get();
 
 	delete[] fileBuffer;
 	return 0;
