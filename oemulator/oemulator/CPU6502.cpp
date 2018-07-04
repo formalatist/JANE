@@ -1406,11 +1406,11 @@ void CPU6502::executeOP()
 			//TODO: check this, might be wrong way to do SBC
 			byte M = readIndirectX();
 			short val = A - M - (1 - C);
-			A = val & 0xff;
-			C = val > 0xff | val < 0;
-			Z = A == 0;
-			N = (A & 0x80) == 0x80;
+			C = (val > 0xff);
+			Z = (val & 0xff) == 0;
+			N = (val & 0x80) == 0x80;
 			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+			A = val & 0xff;
 			cycles += 6;
 			break;
 		}
@@ -1457,11 +1457,13 @@ void CPU6502::executeOP()
 		{
 			byte M = readImmediate();
 			short val = A - M - (1 - C);
-			A = val & 0xff;
-			C = val > 0xff | val < 0;
-			Z = A == 0;
-			N = (A & 0x80) == 0x80;
+			std::cout << "C: " << (int)C << " val: " << (int)val << std::endl;
+			C = !(val > 0xff);
+			std::cout << "C: " << (int)C << std::endl;
+			Z = (val & 0xff) == 0;
+			N = ((val & 0xff) & 0x80) == 0x80;
 			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+			A = val & 0xff;
 			cycles += 2;
 			break;
 		}

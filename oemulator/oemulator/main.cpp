@@ -67,15 +67,16 @@ int main(int argc, char** argv) {
 		SDL_WINDOW_SHOWN);
 	mainWindowSurface = SDL_GetWindowSurface(mainWindow);
 	nes.setScreen(mainWindowSurface, mainWindow);
-	nes.updateScreen();
-	*/
+	nes.updateScreen();*/
+	
 
 	//run the nes
-	//nes.step(100000);
+	//nes.step(250000);
+
 	
-	nes.step(300); //works with nestest.nes
+	nes.step(399); 
 	nes.cpu->printCallLog = true;
-	nes.step(100);
+	nes.step(101);
 
 	std::cout << "Total unique ops: " << std::dec << nes.cpu->numImplementedOps << std::endl;
 	std::cout << "Done!" << std::endl;
