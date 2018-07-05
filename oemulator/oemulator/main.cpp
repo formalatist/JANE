@@ -74,7 +74,7 @@ int main(int argc, char** argv) {
 	//nes.step(250000);
 
 	
-	nes.step(3250); 
+	nes.step(4750); 
 	nes.cpu->printCallLog = true;
 	nes.step(500);
 

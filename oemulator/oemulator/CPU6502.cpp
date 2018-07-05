@@ -167,7 +167,7 @@ void CPU6502::executeOP()
 			if (!N) {
 				byte PCH = (PC & 0xff00) >> 8;
 				//treat the value as a signed char
-				if (val & 0x80 == 0x80) { //val is negative
+				if ((val & 0x80) == 0x80) { //val is negative
 					//invert bits
 					val = ~val;
 					//add 1
@@ -364,7 +364,7 @@ void CPU6502::executeOP()
 			if (N) {
 				byte PCH = (PC & 0xff00) >> 8;
 				//treat the value as a signed char
-				if (val & 0x80 == 0x80) { //val is negative
+				if ((val & 0x80) == 0x80) { //val is negative
 										  //invert bits
 					val = ~val;
 					//add 1
@@ -746,7 +746,7 @@ void CPU6502::executeOP()
 			if (V) {
 				byte PCH = (PC & 0xff00) >> 8;
 				//treat the value as a signed char
-				if (val & 0x80 == 0x80) { //val is negative
+				if ((val & 0x80) == 0x80) { //val is negative
 										  //invert bits
 					val = ~val;
 					//add 1
@@ -918,7 +918,7 @@ void CPU6502::executeOP()
 			if (!C) {
 				byte PCH = (PC & 0xff00) >> 8;
 				//treat the value as a signed char
-				if (val & 0x80 == 0x80) { //val is negative
+				if ((val & 0x80) == 0x80) { //val is negative
 										  //invert bits
 					val = ~val;
 					//add 1
@@ -1103,7 +1103,7 @@ void CPU6502::executeOP()
 			if (C) {
 				byte PCH = (PC & 0xff00) >> 8;
 				//treat the value as a signed char
-				if (val & 0x80 == 0x80) { //val is negative
+				if ((val & 0x80) == 0x80) { //val is negative
 										  //invert bits
 					val = ~val;
 					//add 1
@@ -1142,7 +1142,7 @@ void CPU6502::executeOP()
 		case 0xb5: //LDA load accumulator, zeroPageX
 		{
 			A = readZeroPageX();
-			Z = A == Z;
+			Z = A == 0;
 			N = (A & 0x80) == 0x80;
 			cycles += 4;
 			break;
@@ -1181,7 +1181,7 @@ void CPU6502::executeOP()
 		}
 		case 0xbc: //LDY load Y register, absoluteX
 		{
-			Y = readAbsoluteY();
+			Y = readAbsoluteX();
 			Z = Y == 0;
 			N = (Y & 0x80) == 0x80;
 			cycles += 4;
@@ -1315,7 +1315,7 @@ void CPU6502::executeOP()
 			if (!Z) {
 				byte PCH = (PC & 0xff00) >> 8;
 				//treat the value as a signed char
-				if (val & 0x80 == 0x80) { //val is negative
+				if ((val & 0x80) == 0x80) { //val is negative
 										  //invert bits
 					val = ~val;
 					//add 1
