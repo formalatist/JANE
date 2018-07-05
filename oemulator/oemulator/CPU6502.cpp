@@ -670,7 +670,7 @@ void CPU6502::executeOP()
 			byte val = readZeroPage();
 			bool tempC = C;
 			C = val & 1;
-			val = (val >> 1) | tempC;
+			val = (val >> 1) | (tempC << 7);
 			N = (val & 0x80) == 0x80;
 			memory->write(zeroPage(), val);
 			cycles += 5;
@@ -719,12 +719,12 @@ void CPU6502::executeOP()
 		case 0x6d: //ADC add with carry, absolute
 		{
 			byte M = readAbsolute();
-			byte val = A + M + C;
-			A = val & 0xff;
-			Z = A == 0;
+			int val = A + M + C;
+			Z = (val & 0xFF) == 0;
 			C = val > 0xff;
 			N = (val & 0x80) == 0x80;
-			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+			V = (((A ^ val) & (M ^ val)) & 0x80) == 0x80;
+			A = val & 0xff;
 			cycles += 4;
 			break;
 		}
@@ -733,7 +733,7 @@ void CPU6502::executeOP()
 			byte val = readAbsolute();
 			bool tempC = C;
 			C = val & 1;
-			val = (val >> 1) | tempC;
+			val = (val >> 1) | (tempC << 7);
 			N = (val & 0x80) == 0x80;
 			Z = A == 0; //this might not be correct for this instruction
 			memory->write(absolute(), val);
@@ -769,24 +769,24 @@ void CPU6502::executeOP()
 		case 0x71: //ADC add with carry, indirectY
 		{
 			byte M = readIndirectY();
-			byte val = A + M + C;
-			A = val & 0xff;
-			Z = A == 0;
+			int val = A + M + C;
+			Z = (val & 0xFF) == 0;
 			C = val > 0xff;
 			N = (val & 0x80) == 0x80;
-			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+			V = (((A ^ val) & (M ^ val)) & 0x80) == 0x80;
+			A = val & 0xff;
 			cycles += 5;
 			break;
 		}
 		case 0x75: //ADC add with carry, zeroPageX
 		{
 			byte M = readZeroPageX();
-			byte val = A + M + C;
-			A = val & 0xff;
-			Z = A == 0;
+			int val = A + M + C;
+			Z = (val & 0xFF) == 0;
 			C = val > 0xff;
 			N = (val & 0x80) == 0x80;
-			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+			V = (((A ^ val) & (M ^ val)) & 0x80) == 0x80;
+			A = val & 0xff;
 			cycles += 4;
 			break;
 		}
@@ -795,7 +795,7 @@ void CPU6502::executeOP()
 			byte val = readZeroPageX();
 			bool tempC = C;
 			C = val & 1;
-			val = (val >> 1) | tempC;
+			val = (val >> 1) | (tempC << 7);
 			N = (val & 0x80) == 0x80;
 			Z = A == 0; //this might not be correct for this instruction
 			memory->write(zeroPageX(), val);
@@ -812,24 +812,24 @@ void CPU6502::executeOP()
 		case 0x79: //ADC add with carry, absoluteY
 		{
 			byte M = readAbsoluteY();
-			byte val = A + M + C;
-			A = val & 0xff;
-			Z = A == 0;
+			int val = A + M + C;
+			Z = (val & 0xFF) == 0;
 			C = val > 0xff;
 			N = (val & 0x80) == 0x80;
-			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+			V = (((A ^ val) & (M ^ val)) & 0x80) == 0x80;
+			A = val & 0xff;
 			cycles += 4;
 			break;
 		}
 		case 0x7d: //ADC add with carry, absoluteX
 		{
 			byte M = readAbsoluteX();
-			byte val = A + M + C;
-			A = val & 0xff;
-			Z = A == 0;
+			int val = A + M + C;
+			Z = (val & 0xFF) == 0;
 			C = val > 0xff;
 			N = (val & 0x80) == 0x80;
-			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+			V = (((A ^ val) & (M ^ val)) & 0x80) == 0x80;
+			A = val & 0xff;
 			cycles += 4;
 			break;
 		}
@@ -838,7 +838,7 @@ void CPU6502::executeOP()
 			byte val = readAbsoluteX();
 			bool tempC = C;
 			C = val & 1;
-			val = (val >> 1) | tempC;
+			val = (val >> 1) | (tempC << 7);
 			N = (val & 0x80) == 0x80;
 			Z = A == 0; //this might not be correct for this instruction
 			memory->write(absoluteX(), val);
@@ -1241,10 +1241,14 @@ void CPU6502::executeOP()
 		}
 		case 0xc6: //DEC decrement memory, zeroPage
 		{
-			byte val = readZeroPage() - 1;
+			int addr = zeroPage();
+			byte val = readZeroPage();
+			std::cout << (int)val << std::endl;
+			val -= 1;
+			std::cout << (int)val << std::endl;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(zeroPage(), val);
+			memory->write(addr, val);
 			cycles += 5;
 			break;
 		}
@@ -1297,10 +1301,11 @@ void CPU6502::executeOP()
 		}
 		case 0xce: //DEC decrement memory, absolute
 		{
+			int addr = absolute();
 			byte val = readAbsolute() - 1;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(absolute(), val);
+			memory->write(addr, val);
 			cycles += 6;
 			break;
 		}
@@ -1350,10 +1355,11 @@ void CPU6502::executeOP()
 		}
 		case 0xd6: //DEC decrement memory, zeroPageX
 		{
+			int addr = zeroPageX();
 			byte val = readZeroPageX() - 1;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(zeroPageX(), val);
+			memory->write(addr, val);
 			cycles += 6;
 			break;
 		}
@@ -1385,10 +1391,11 @@ void CPU6502::executeOP()
 		}
 		case 0xde: //DEC decrement memory, absoluteX
 		{
+			int addr = absoluteX();
 			byte val = readAbsoluteX() - 1;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(absoluteX(), val);
+			memory->write(addr, val);
 			cycles += 7;
 			break;
 		}
@@ -1437,10 +1444,11 @@ void CPU6502::executeOP()
 		}
 		case 0xe6: //INC increment memory, zeroPage
 		{
+			int zeroPageAddr = zeroPage();
 			byte val = (readZeroPage() + 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(zeroPage(), val);
+			memory->write(zeroPageAddr, val);
 			cycles += 5;
 			break;
 		}
@@ -1494,10 +1502,11 @@ void CPU6502::executeOP()
 		}
 		case 0xee: //INC increment memory, absolute
 		{
+			int absoluteAddr = absolute();
 			byte val = readAbsolute() + 1;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(absolute(), val);
+			memory->write(absoluteAddr, val);
 			cycles += 6;
 			break;
 		}
@@ -1555,10 +1564,11 @@ void CPU6502::executeOP()
 		}
 		case 0xf6: //INC increment memory, zeroPageX
 		{
+			int zeroPageXAddr = zeroPageX();
 			byte val = readZeroPageX() + 1;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(zeroPageX(), val);
+			memory->write(zeroPageXAddr, val);
 			cycles += 6;
 			break;
 		}
@@ -1595,10 +1605,11 @@ void CPU6502::executeOP()
 		}
 		case 0xfe: //INC increment memory, absoluteX
 		{
+			int abosluteXAddr = absoluteX();
 			byte val = readAbsoluteX() + 1;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(absoluteX(), val);
+			memory->write(abosluteXAddr, val);
 			cycles += 7;
 			break;
 		}
@@ -1665,10 +1676,10 @@ void CPU6502::pullStatus()
 	SP++;
 	Z = sByte & 0x2;
 	C = sByte & 0x1;
-	IntDisable = sByte & 0x4;
-	D = sByte & 0x8;
-	V = sByte & 0x40;
-	N = sByte & 0x80;
+IntDisable = sByte & 0x4;
+D = sByte & 0x8;
+V = sByte & 0x40;
+N = sByte & 0x80;
 }
 
 int CPU6502::pullWord()
@@ -1695,7 +1706,7 @@ void CPU6502::NOP()
 
 void CPU6502::unimplementedOP()
 {
-	std::cout << "Unimplemented OP: 0x" << std::hex <<(int) memory->read(PC) << std::endl;
+	std::cout << "Unimplemented OP: 0x" << std::hex << (int)memory->read(PC) << std::endl;
 	HALT = true;
 }
 
@@ -1738,7 +1749,7 @@ unsigned char CPU6502::readRelative()
 	return val;
 }
 
-unsigned char CPU6502::readAbsolute() 
+unsigned char CPU6502::readAbsolute()
 {
 	int addr = memory->read(PC + 2) << 8 | memory->read(PC + 1);
 	unsigned char val = memory->read(addr) & 0xff;
@@ -1765,7 +1776,13 @@ unsigned char CPU6502::readAbsoluteY()
 int CPU6502::readIndirect()
 {
 	int addr = memory->read(PC + 2) << 8 | memory->read(PC + 1);
-	int val = memory->read(addr + 1) << 8 | memory->read(addr);
+	int val;
+	if ((addr & 0xff) == 0xff) {
+		val = memory->read(addr&0xff00) << 8 | memory->read(addr);
+	}
+	else {
+		val = memory->read(addr + 1) << 8 | memory->read(addr);
+	}
 	PC += 3;
 	return val;
 }
@@ -1783,9 +1800,11 @@ unsigned char CPU6502::readIndirectX()
 
 unsigned char CPU6502::readIndirectY()
 {
-	int addr1 = memory->read(PC + 1) << 8 | memory->read(PC) + Y;
-	//Wrong int addr2 = memory->read(addr1 + 1] << 8 | memory->read(addr1);
-	unsigned char val = memory->read(addr1);
+	int addr1 = memory->read(PC + 1);
+	int addr2 = memory->read(addr1) | memory->read((addr1 + 1) & 0xff) << 8;
+	addr2 += Y;
+	addr2 &= 0xFFFF;
+	unsigned char val = memory->read(addr2);
 	PC += 2;
 	return val;
 }
@@ -1834,7 +1853,11 @@ int CPU6502::indirectX()
 
 int CPU6502::indirectY()
 {
-	return memory->read((PC + 1)&0xff) << 8 | memory->read(PC) + Y;
+	int addr1 = memory->read(PC + 1);
+	int addr2 = memory->read(addr1) | memory->read((addr1 + 1) & 0xff) << 8;
+	addr2 += Y;
+	addr2 &= 0xFFFF;
+	return addr2;
 }
 
 int CPU6502::readWord()
