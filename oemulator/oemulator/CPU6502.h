@@ -32,7 +32,7 @@ public:
 	unsigned char Y = 0;
 
 	//8 bit stack pointer. Starts at ram adress 0x100 so can adress 0x100-0x1ff
-	unsigned char SP = 0xFF;
+	unsigned char SP = 0xFD;
 
 	//16bit program counter
 	unsigned int PC;

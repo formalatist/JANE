@@ -136,6 +136,7 @@ void CPU6502::executeOP()
 			A = val;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
+			PC++;
 			cycles += 2;
 			break;
 		}
@@ -322,6 +323,7 @@ void CPU6502::executeOP()
 			A = ((A << 1) | tempC) & 0xff;
 			N = (A & 0x80) == 0x80;
 			Z = A == 0;
+			PC++;
 			cycles += 2;
 			break;
 		}
@@ -453,7 +455,6 @@ void CPU6502::executeOP()
 		{
 			pullStatus();
 			PC = pullWord();
-			PC++; //TODO: this might not be required
 			cycles += 6;
 			break;
 		}
@@ -510,6 +511,7 @@ void CPU6502::executeOP()
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
 			A = val;
+			PC++;
 			cycles += 5;
 			break;
 		}
@@ -642,24 +644,24 @@ void CPU6502::executeOP()
 		case 0x61: //ADC add with carry, indirectX
 		{
 			byte M = readIndirectX();
-			byte val = A + M + C;
-			A = val & 0xff;
-			Z = A == 0;
+			int val = A + M + C;
+			Z = (val & 0xFF) == 0;
 			C = val > 0xff;
 			N = (val & 0x80) == 0x80;
-			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+			V = (((A ^ val) & (M ^ val)) & 0x80) == 0x80;
+			A = val & 0xff;
 			cycles += 6;
 			break;
 		}
 		case 0x65: //ADC add with carry, zeroPAge
 		{
 			byte M = readZeroPage();
-			byte val = A + M + C;
-			A = val & 0xff;
-			Z = A == 0;
+			int val = A + M + C;
+			Z = (val & 0xFF) == 0;
 			C = val > 0xff;
 			N = (val & 0x80) == 0x80;
-			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+			V = (((A ^ val) & (M ^ val)) & 0x80) == 0x80;
+			A = val & 0xff;
 			cycles += 3;
 			break;
 		}
@@ -686,13 +688,11 @@ void CPU6502::executeOP()
 		{
 			byte M = readImmediate();
 			int val = A + M + C;
-			std::cout << "ADC: M:" <<(int) M << " C:  " <<(int) C << "  A: " << (int)A << std::endl;
 			Z = (val & 0xFF) == 0;
 			C = val > 0xff;
 			N = (val & 0x80) == 0x80;
 			V = (((A ^ val) & (M ^ val)) & 0x80) == 0x80;
 			A = val & 0xff;
-			std::cout << "V: " << V << std::endl;
 			cycles += 2;
 			break;
 		}
@@ -701,10 +701,12 @@ void CPU6502::executeOP()
 			byte val = A;
 			bool tempC = C;
 			C = val & 1;
-			val = (val >> 1) | tempC;
+			val = (val >> 1) | (tempC << 7);
 			N = (val & 0x80) == 0x80;
 			Z = A == 0;
 			A = val & 0xff;
+
+			PC++;
 			cycles += 2;
 			break;
 		}
@@ -982,8 +984,7 @@ void CPU6502::executeOP()
 		}
 		case 0x9a: //TXS Transfer x to stack pointer
 		{
-			//TODO this might be to move X into the stackpointer iteself and not the addres of the SP
-			pushByte(X);
+			SP = X;
 			PC++;
 			cycles += 2;
 
@@ -1086,7 +1087,6 @@ void CPU6502::executeOP()
 			Z = A == 0;
 			N = (A & 0x80) == 0x80;
 			cycles += 4;
-
 			break;
 		}
 		case 0xae: //LDX load X register, absolute
@@ -1170,7 +1170,7 @@ void CPU6502::executeOP()
 			cycles += 4;
 			break;
 		}
-		case 0xba: //TSX transger stack pointer to X
+		case 0xba: //TSX transfer stack pointer to X
 		{
 			X = SP;
 			Z = X == 0;
@@ -1406,10 +1406,10 @@ void CPU6502::executeOP()
 			//TODO: check this, might be wrong way to do SBC
 			byte M = readIndirectX();
 			short val = A - M - (1 - C);
-			C = (val > 0xff);
+			C = (val >= 0);
 			Z = (val & 0xff) == 0;
-			N = (val & 0x80) == 0x80;
-			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+			N = ((val & 0xff) & 0x80) == 0x80;
+			V = ((A ^ M) & 0x80) != 0 && ((A^val) & 0x80) != 0;
 			A = val & 0xff;
 			cycles += 6;
 			break;
@@ -1427,11 +1427,11 @@ void CPU6502::executeOP()
 		{
 			byte M = readZeroPage();
 			short val = A - M - (1 - C);
+			C = (val >= 0);
+			Z = (val & 0xff) == 0;
+			N = ((val & 0xff) & 0x80) == 0x80;
+			V = ((A ^ M) & 0x80) != 0 && ((A^val) & 0x80) != 0;
 			A = val & 0xff;
-			C = val > 0xff | val < 0;
-			Z = A == 0;
-			N = (A & 0x80) == 0x80;
-			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
 			cycles += 3;
 			break;
 		}
@@ -1454,15 +1454,13 @@ void CPU6502::executeOP()
 			break;
 		}
 		case 0xe9: //SBC, subtract with carry, Immediate
-		{
+		{	
 			byte M = readImmediate();
 			short val = A - M - (1 - C);
-			std::cout << "C: " << (int)C << " val: " << (int)val << std::endl;
-			C = !(val > 0xff);
-			std::cout << "C: " << (int)C << std::endl;
+			C = (val >= 0);
 			Z = (val & 0xff) == 0;
 			N = ((val & 0xff) & 0x80) == 0x80;
-			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
+			V = ((A ^ M) & 0x80) != 0 && ((A^val) & 0x80) != 0;
 			A = val & 0xff;
 			cycles += 2;
 			break;
@@ -1486,11 +1484,11 @@ void CPU6502::executeOP()
 		{
 			byte M = readAbsolute();
 			short val = A - M - (1 - C);
+			C = (val >= 0);
+			Z = (val & 0xff) == 0;
+			N = ((val & 0xff) & 0x80) == 0x80;
+			V = ((A ^ M) & 0x80) != 0 && ((A^val) & 0x80) != 0;
 			A = val & 0xff;
-			C = val > 0xff | val < 0;
-			Z = A == 0;
-			N = (A & 0x80) == 0x80;
-			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
 			cycles += 4;
 			break;
 		}
@@ -1508,15 +1506,18 @@ void CPU6502::executeOP()
 			byte val = readRelative();
 			if (Z) {
 				byte PCH = (PC & 0xff00) >> 8;
+				std::cout << "val: " <<(int) val << std::endl;
 				//treat the value as a signed char
-				if(val & 0x80 == 0x80) { //val is negative
+				if((val & 0x80) == 0x80) { //val is negative
 					//invert bits
 					val = ~val;
 					//add 1
 					val++;
 					PC -= val;
+					std::cout << "val: " << (int)val << std::endl;
 				} else { // val is positive
 					PC += val;
+					std::cout << "val positive: " << (int)val << std::endl;
 				}
 				cycles += 3;
 				if (PCH != (PC & 0xff00) >> 8) { //new page
@@ -1532,11 +1533,11 @@ void CPU6502::executeOP()
 		{
 			byte M = readIndirectY();
 			short val = A - M - (1 - C);
+			C = (val >= 0);
+			Z = (val & 0xff) == 0;
+			N = ((val & 0xff) & 0x80) == 0x80;
+			V = ((A ^ M) & 0x80) != 0 && ((A^val) & 0x80) != 0;
 			A = val & 0xff;
-			C = val > 0xff | val < 0;
-			Z = A == 0;
-			N = (A & 0x80) == 0x80;
-			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
 			cycles += 5;
 			break;
 		}
@@ -1544,11 +1545,11 @@ void CPU6502::executeOP()
 		{
 			byte M = readZeroPageX();
 			short val = A - M - (1 - C);
+			C = (val >= 0);
+			Z = (val & 0xff) == 0;
+			N = ((val & 0xff) & 0x80) == 0x80;
+			V = ((A ^ M) & 0x80) != 0 && ((A^val) & 0x80) != 0;
 			A = val & 0xff;
-			C = val > 0xff | val < 0;
-			Z = A == 0;
-			N = (A & 0x80) == 0x80;
-			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
 			cycles += 4;
 			break;
 		}
@@ -1572,11 +1573,11 @@ void CPU6502::executeOP()
 		{
 			byte M = readAbsoluteY();
 			short val = A - M - (1 - C);
+			C = (val >= 0);
+			Z = (val & 0xff) == 0;
+			N = ((val & 0xff) & 0x80) == 0x80;
+			V = ((A ^ M) & 0x80) != 0 && ((A^val) & 0x80) != 0;
 			A = val & 0xff;
-			C = val > 0xff | val < 0;
-			Z = A == 0;
-			N = (A & 0x80) == 0x80;
-			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
 			cycles += 4;
 			break;
 		}
@@ -1584,11 +1585,11 @@ void CPU6502::executeOP()
 		{
 			byte M = readAbsoluteX();
 			short val = A - M - (1 - C);
+			C = (val >= 0);
+			Z = (val & 0xff) == 0;
+			N = ((val & 0xff) & 0x80) == 0x80;
+			V = ((A ^ M) & 0x80) != 0 && ((A^val) & 0x80) != 0;
 			A = val & 0xff;
-			C = val > 0xff | val < 0;
-			Z = A == 0;
-			N = (A & 0x80) == 0x80;
-			V = ((A ^ val) & (M ^ val) & 0x80) == 0x80;
 			cycles += 4;
 			break;
 		}
@@ -1623,21 +1624,21 @@ void CPU6502::NMI()
 
 void CPU6502::push(byte high, byte low)
 {
-	memory->write((SP - 1) | 0x100, high);
-	memory->write((SP - 2) | 0x100, low);
+	memory->write((SP) | 0x100, high);
+	memory->write((SP - 1) | 0x100, low);
 	SP -= 2;
 }
 
 void CPU6502::pushByte(byte val)
 {
-	memory->write((SP - 1) | 0x100, val);
+	memory->write((SP) | 0x100, val);
 	SP--;
 }
 
 void CPU6502::push(int word)
 {
-	memory->write((SP - 1) | 0x100, (word & 0xff00) >> 8);
-	memory->write((SP - 2) | 0x100, word & 0xff);
+	memory->write((SP) | 0x100, (word & 0xff00) >> 8);
+	memory->write((SP - 1) | 0x100, word & 0xff);
 	SP -= 2;
 }
 
@@ -1653,14 +1654,14 @@ void CPU6502::pushStatus(bool bit4)
 		| (1 << 5)
 		| (V << 6)
 		| (N << 7);
-	memory->write((SP - 1) | 0x100, statusByte);
+	memory->write((SP) | 0x100, statusByte);
 	SP--;
 }
 
 void CPU6502::pullStatus()
 {
 	//TODO: this might not be correct
-	byte sByte = memory->read(SP | 0x100);
+	byte sByte = memory->read((SP + 1) | 0x100);
 	SP++;
 	Z = sByte & 0x2;
 	C = sByte & 0x1;
@@ -1673,14 +1674,14 @@ void CPU6502::pullStatus()
 int CPU6502::pullWord()
 {
 	int val = 0;
-	val = memory->read(SP | 0x100) | (memory->read((SP + 1) | 0x100) << 8);
+	val = memory->read((SP + 1) | 0x100) | (memory->read((SP + 2) | 0x100) << 8);
 	SP += 2;
 	return val & 0xffff;
 }
 
 byte CPU6502::pullByte()
 {
-	byte val = memory->read(SP | 0x100);
+	byte val = memory->read((SP + 1) | 0x100);
 	SP++;
 	PC++;
 	return val & 0xff;
@@ -1772,9 +1773,10 @@ int CPU6502::readIndirect()
 unsigned char CPU6502::readIndirectX()
 {
 	int addr1 = (memory->read(PC + 1) + X) & 0xff;
-	int addr2 = memory->read(addr1 + 1) << 8 | memory->read(addr1);
-	//TODO: addr2 + 1 might have to wrap around and it might not.
+	int addr2 = memory->read((addr1 + 1)&0xff) << 8 | memory->read(addr1);
 	unsigned char val = memory->read(addr2);
+	std::cout << "ReadIndirectX: " << " PC: " << (int)PC << " addr1: "
+		<< (int)addr1 << "  addr2: " << (int)addr2 << "  val: " << (int)val << std::endl;
 	PC += 2;
 	return val;
 }
@@ -1827,12 +1829,12 @@ int CPU6502::absoluteY()
 int CPU6502::indirectX()
 {
 	int addr1 = (memory->read(PC + 1) + X) & 0xff;
-	return  memory->read(addr1 + 1) << 8 | memory->read(addr1);
+	return  memory->read((addr1 + 1) & 0xff) << 8 | memory->read(addr1);
 }
 
 int CPU6502::indirectY()
 {
-	return memory->read(PC + 1) << 8 | memory->read(PC) + Y;
+	return memory->read((PC + 1)&0xff) << 8 | memory->read(PC) + Y;
 }
 
 int CPU6502::readWord()
