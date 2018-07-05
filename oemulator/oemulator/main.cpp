@@ -19,7 +19,7 @@ long getFileSize(FILE *file)
 
 
 int main(int argc, char** argv) {
-	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\nestest.nes";
+	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\Ice Climber.nes";
 
 	unsigned char* fileBuffer;
 	FILE* file = NULL;
@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
 	
 
 	//create the screen
-	/*
+	
 	SDL_Window* mainWindow = NULL;
 	SDL_Surface* mainWindowSurface = NULL;
 	mainWindow = SDL_CreateWindow("ØMULATOR", 1024, 512,
@@ -67,16 +67,16 @@ int main(int argc, char** argv) {
 		SDL_WINDOW_SHOWN);
 	mainWindowSurface = SDL_GetWindowSurface(mainWindow);
 	nes.setScreen(mainWindowSurface, mainWindow);
-	nes.updateScreen();*/
+	nes.updateScreen();
 	
 
 	//run the nes
-	//nes.step(250000);
+	nes.step(25000);
 
-	
+	/*
 	nes.step(4750); 
 	nes.cpu->printCallLog = true;
-	nes.step(500);
+	nes.step(500);*/
 
 	std::cout << "Total unique ops: " << std::dec << nes.cpu->numImplementedOps << std::endl;
 	std::cout << "Done!" << std::endl;
@@ -95,7 +95,7 @@ int main(int argc, char** argv) {
 
 
 
-	/*
+	
 
 	SDL_Window* patternTableWindow = NULL;
 	SDL_Surface* patternTableSurface = NULL;
@@ -150,8 +150,8 @@ int main(int argc, char** argv) {
 		}
 	}
 
-	SDL_UpdateWindowSurface(patternTableWindow); */
-	/*
+	SDL_UpdateWindowSurface(patternTableWindow);
+	
 	bool run = true;
 	while (run) {
 		SDL_Event event;
@@ -165,7 +165,7 @@ int main(int argc, char** argv) {
 	
 	SDL_DestroyWindow(patternTableWindow);
 	SDL_DestroyWindow(mainWindow);
-	SDL_Quit(); */
+	SDL_Quit();
 	std::cin.get();
 
 	delete[] fileBuffer;

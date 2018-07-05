@@ -243,6 +243,7 @@ void PPU::spriteEvaluation()
 				spriteXPositions[numberOfSpritesOnScanline] = xPos;
 				isSpriteZero[numberOfSpritesOnScanline] = i == 0;
 				spriteBitmapData[numberOfSpritesOnScanline] = getSpriteBitmapData(rowOfSprite, tile, attribute);
+				std::cout << "Sprite eval: " << (int)spriteBitmapData[numberOfSpritesOnScanline] << std::endl;
 			}
 			numberOfSpritesOnScanline++;
 		}
@@ -297,7 +298,7 @@ int PPU::getSpriteBitmapData(byte row, byte tile, byte attribute)
 		spriteBitmapData <<= 2;
 		spriteBitmapData |= (highBit << 1) | lowBit;
 	}
-
+	std::cout << "SpriteBitmapData: " << (int)spriteBitmapData << std::endl;
 	return spriteBitmapData;
 }
 
@@ -398,6 +399,9 @@ int PPU::getPixelSpriteColor()
 		int spriteColumn = cycle - 1 - spriteXPositions[i];
 		if(spriteColumn >= 0 && spriteColumn <= 7) { //we hit this sprite
 			col = (spriteBitmapData[i] >> (2 * spriteColumn)) & 3;
+			std::cout << "data: " << (int)spriteBitmapData[i] << "  spriteColumn: " 
+				<< spriteColumn << "  col: " << (int)col<< "   val: " <<
+				(int)((spriteBitmapData[i]) >> (2 * spriteColumn)) << std::endl;
 			if(col != 0) { //pixel is not transparent so we stop searching and return it
 				return col;
 			}

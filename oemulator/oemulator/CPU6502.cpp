@@ -1243,9 +1243,7 @@ void CPU6502::executeOP()
 		{
 			int addr = zeroPage();
 			byte val = readZeroPage();
-			std::cout << (int)val << std::endl;
 			val -= 1;
-			std::cout << (int)val << std::endl;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
 			memory->write(addr, val);
@@ -1515,7 +1513,6 @@ void CPU6502::executeOP()
 			byte val = readRelative();
 			if (Z) {
 				byte PCH = (PC & 0xff00) >> 8;
-				std::cout << "val: " <<(int) val << std::endl;
 				//treat the value as a signed char
 				if((val & 0x80) == 0x80) { //val is negative
 					//invert bits
@@ -1523,10 +1520,8 @@ void CPU6502::executeOP()
 					//add 1
 					val++;
 					PC -= val;
-					std::cout << "val: " << (int)val << std::endl;
 				} else { // val is positive
 					PC += val;
-					std::cout << "val positive: " << (int)val << std::endl;
 				}
 				cycles += 3;
 				if (PCH != (PC & 0xff00) >> 8) { //new page
@@ -1792,8 +1787,6 @@ unsigned char CPU6502::readIndirectX()
 	int addr1 = (memory->read(PC + 1) + X) & 0xff;
 	int addr2 = memory->read((addr1 + 1)&0xff) << 8 | memory->read(addr1);
 	unsigned char val = memory->read(addr2);
-	std::cout << "ReadIndirectX: " << " PC: " << (int)PC << " addr1: "
-		<< (int)addr1 << "  addr2: " << (int)addr2 << "  val: " << (int)val << std::endl;
 	PC += 2;
 	return val;
 }
