@@ -1760,7 +1760,7 @@ unsigned char CPU6502::readAbsolute()
 unsigned char CPU6502::readAbsoluteX()
 {
 	int addr = memory->read(PC + 2) << 8 | memory->read(PC + 1);
-	unsigned char val = memory->read(addr + X) & 0xff;
+	unsigned char val = memory->read((addr + X)&0xffff) & 0xff;
 	PC += 3;
 	return val;
 }
@@ -1768,7 +1768,7 @@ unsigned char CPU6502::readAbsoluteX()
 unsigned char CPU6502::readAbsoluteY()
 {
 	int addr = memory->read(PC + 2) << 8 | memory->read(PC + 1);
-	unsigned char val = memory->read(addr + Y) & 0xff;
+	unsigned char val = memory->read((addr + Y)&0xffff) & 0xff;
 	PC += 3;
 	return val;
 }
