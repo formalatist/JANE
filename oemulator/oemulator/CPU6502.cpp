@@ -109,7 +109,7 @@ void CPU6502::executeOP()
 			val = (val << 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(memory->memory[PC + 1], val);
+			memory->write(memory->read(PC + 1), val);
 			cycles += 5;
 			break;
 		}
@@ -152,10 +152,10 @@ void CPU6502::executeOP()
 		case 0xe: //Arithmetic shift left, absolute
 		{
 			int addr = readWord();
-			byte val = (memory->memory[addr] << 1) & 0xff;
+			byte val = (memory->read(addr) << 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			C = (memory->memory[addr] & 0x80) == 0x80;
+			C = (memory->read(addr) & 0x80) == 0x80;
 			memory->write(addr, val);
 			cycles += 6;
 			break;
@@ -348,7 +348,7 @@ void CPU6502::executeOP()
 		case 0x2e: //ROL rotate left, Absolute
 		{
 			int addr = readWord();
-			byte val = memory->memory[addr];
+			byte val = memory->read(addr);
 			bool tempC = C;
 			C = (val & 0x80) == 0x80;
 			val = ((val << 1) | tempC) & 0xff;

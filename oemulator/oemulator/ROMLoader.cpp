@@ -44,7 +44,7 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 
 	//set the PC to the init vector
 	std::cout << std::hex << (int)memory->memory[0xfffc] << "  " << (memory->memory[0xfffd] << 8) << std::endl;
-	cpu.PC = memory->read(0xfffc) | (memory->read(0xfffd) << 8);
+	cpu.PC = memory->read(0xfffc) | ((memory->read(0xfffd) << 8));
 	//FOR NESTEST ONLY
 	//cpu.PC = 0xC000;
 }

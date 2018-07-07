@@ -11,6 +11,9 @@ NES::NES()
 	memory->setCPU(*cpu);
 	memory->setPPU(*ppu);
 
+	//tell the PPUMemory about cpu
+	ppuMemory->setCPU(*cpu);
+
 	//tell the PPU about the NES
 	ppu->setNES(this);
 }

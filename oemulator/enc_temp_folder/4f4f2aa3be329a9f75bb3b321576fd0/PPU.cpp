@@ -430,11 +430,6 @@ void PPU::copyHorizontalBits()
 	v = (v & 0x7BE0) | (t & 0x41F);
 }
 
-bool PPU::isSpriteZeroHit()
-{
-	return 0;
-}
-
 int PPU::getPixelSpriteColor()
 {
 	int col = 0;
@@ -464,30 +459,11 @@ int PPU::getPixelBackgroundColor()
 
 void PPU::blitPixel()
 {
-	const int tempPalette[4] = { 0xFF, 0x00FF, 0x0000FF, 0x00FFFF };
 	int xPos = cycle - 1;
 	int yPos = scanLine;
+	const int tempPalette[4] = { 0xFF, 0x00FF, 0x0000FF, 0x00FFFF };
 	int spritePixel = getPixelSpriteColor();
 	int backgroundPixel = getPixelBackgroundColor();
-	byte color = 0;
-
-	bool b = backgroundPixel % 4 != 0;
-	bool s = spritePixel % 4 != 0;
-	if (!b && !s) {
-		color = 0;
-	}
-	else if (!b && s) {
-		color = spritePixel;
-	}
-	else if (b && !s) {
-		color = backgroundPixel;
-	}
-	else {
-		if (isSpriteZeroHit() && x < 255) {
-			STATUS |= STATUSSpriteZeroHit;
-		}
-		color = backgroundPixel;
-	}
 
 	pixels[xPos + yPos * (512)] = tempPalette[spritePixel];
 	pixels[xPos + 256 + yPos * 512] = tempPalette[backgroundPixel];

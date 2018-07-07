@@ -167,7 +167,7 @@ private:
 	void incrementY(); //helper func from nesdev
 	void copyHorizontalBits();
 
-	bool isSpriteZeroHit();
+	int getSpriteOfCurrentPixel();
 	int getPixelSpriteColor();
 	int getPixelBackgroundColor();
 

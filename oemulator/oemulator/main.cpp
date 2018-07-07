@@ -19,7 +19,7 @@ long getFileSize(FILE *file)
 
 
 int main(int argc, char** argv) {
-	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\Ice Climber.nes";
+	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\donkey-kong.nes";
 
 	unsigned char* fileBuffer;
 	FILE* file = NULL;
@@ -71,10 +71,10 @@ int main(int argc, char** argv) {
 	
 
 	//run the nes
-	nes.step(25000);
-
+	nes.step(25000 * 120);
+	nes.updateScreen();
 	/*
-	nes.step(4750); 
+	nes.step(25050); 
 	nes.cpu->printCallLog = true;
 	nes.step(500);*/
 
