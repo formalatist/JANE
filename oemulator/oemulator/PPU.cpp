@@ -14,6 +14,8 @@ void PPU::step()
 {
 	advanceCounters();
 
+	bool isRendering = (MASK & (MASKShowBackground | MASKShowSprites))
+		== (MASKShowBackground | MASKShowSprites);
 	bool isPreLine = scanLine == 261;
 	bool isVisibleLine = scanLine < 240; //lines are the Y of the pixel
 	bool isRenderedLine = isPreLine || isVisibleLine;
@@ -21,11 +23,12 @@ void PPU::step()
 	bool isVisibleCycle = cycle >= 1 && cycle <= 256; //cycles gives the X
 	bool isFetchCycle = isPrefetchCycle || isVisibleCycle;
 
-	if (true /*rendering is enabled*/) {
+	if (isRendering) {
 		if (isVisibleLine && isVisibleCycle) { //Both X and Y are within their visible areas
 			blitPixel();
 		}
 		if (isRenderedLine && isFetchCycle) {
+			tileBitmap <<= 4;
 			switch (cycle % 8) {
 			case 1:
 				setNametableByte();
@@ -72,6 +75,8 @@ void PPU::step()
 	}
 	if (isPreLine && cycle == 1) {
 		leaveVerticalBlank();
+		STATUS |= ~STATUSSpriteZeroHit;
+		STATUS |= ~STATUSSpriteOverflow;
 	}
 }
 
@@ -82,8 +87,11 @@ void PPU::advanceCounters()
 	
 	//generate NMI
 	if (((CTRL & CTRLNMI) == CTRLNMI) 
-		&& ((STATUS & STATUSVBlankStarted) == STATUSVBlankStarted)) {
+		&& ((STATUS & STATUSVBlankStarted) == STATUSVBlankStarted)
+		&& !nmiSent) {
 		memory->cpu->triggerNMI();
+		nmiSent = true;
+		std::cout << "NMI CREATED#####################" << std::endl;
 	}
 
 	if(showBackground || showSprites) { //if we are rendering anything
@@ -91,7 +99,6 @@ void PPU::advanceCounters()
 			cycle = 0;
 			scanLine = 0;
 			isOddFrame = false;
-			nes->updateScreen();
 			return;
 		}
 	}
@@ -103,7 +110,6 @@ void PPU::advanceCounters()
 		if(scanLine > 261) { //we are done with the screen
 			scanLine = 0;
 			isOddFrame = true;
-			nes->updateScreen();
 		}
 	}
 }
@@ -112,7 +118,7 @@ byte PPU::readRegister(int addr)
 {
 	if (addr == 0x2002) { // PPUSTATUS
 		writeToggle = false;
-		byte val = STATUS & (STATUSVBlankStarted | STATUSSpriteZeroHit | STATUSSpriteOverflow);
+		byte val = STATUS;
 		val = val | (registerBuffer & 0x1F);
 		STATUS = (STATUS & ~STATUSVBlankStarted);
 		return val;
@@ -202,7 +208,7 @@ void PPU::writeRegiter(int addr, byte val)
 			/*	t: ....... HGFEDCBA = d: HGFEDCBA
 				v                   = t
    (writeToggle)w:                  = 0*/
-			t = (t & 0x7F00) | val;
+			t = (t & 0xFF00) | val;
 			v = t;
 			writeToggle = false;
 		}
@@ -239,6 +245,7 @@ void PPU::writeRegiter(int addr, byte val)
 
 void PPU::spriteEvaluation()
 {
+	/*
 	//loop over all sprites in OAM and find the (up to) 8 on this scanline
 	numberOfSpritesOnScanline = 0;
 	for (int i = 0; i < 64; i++) {
@@ -258,6 +265,31 @@ void PPU::spriteEvaluation()
 			}
 			numberOfSpritesOnScanline++;
 		}
+	}*/
+
+	int spriteHeight;
+	if ((CTRL & CTRLSpriteSize) == CTRLSpriteSize) {
+		spriteHeight = 16;
+	}
+	else {
+		spriteHeight = 8;
+	}
+	numberOfSpritesOnScanline = 0;
+	for (int i = 0; i < 64; i++) {
+		byte y = OAM[i * 4];
+		byte a = OAM[i * 4 + 2];
+		byte x = OAM[i * 4 + 3];
+		byte row = scanLine - y;
+		if (row < 0 || row >= spriteHeight) {
+			continue;
+		}
+		if (numberOfSpritesOnScanline < 8) {
+			spritePatterns[numberOfSpritesOnScanline] = getSpriteBitmapData(i, row);
+			spritePositions[numberOfSpritesOnScanline] = x;
+			spritePriorities[numberOfSpritesOnScanline] = (a >> 5) & 1;
+			spriteIndexes[numberOfSpritesOnScanline] = i;
+		}
+		numberOfSpritesOnScanline++;
 	}
 
 	//set sprite overflow flag
@@ -269,7 +301,9 @@ void PPU::spriteEvaluation()
 
 void PPU::enterVerticalBlank()
 {
+	nmiSent = false;
 	STATUS = STATUS | STATUSVBlankStarted;
+	nes->updateScreen();
 	//NMIOccured = true;
 }
 
@@ -280,8 +314,9 @@ void PPU::leaveVerticalBlank()
 	//NMIOccured = false;
 }
 
-int PPU::getSpriteBitmapData(byte row, byte tile, byte attribute)
+int PPU::getSpriteBitmapData(byte index, byte row)
 {
+	/*
 	int addr;
 	int spriteBitmapData = 0;;
 	//TODO: take into account weather or not we are in 8x8 or 8x16 sprite mode
@@ -313,7 +348,52 @@ int PPU::getSpriteBitmapData(byte row, byte tile, byte attribute)
 		spriteBitmapData = spriteBitmapData | (highBit << 1) | lowBit;
 	}
 	//std::cout << "SpriteBitmapData: " << (int)spriteBitmapData << std::endl;
-	return spriteBitmapData;
+	return spriteBitmapData;*/
+	byte tile = OAM[index * 4 + 1];
+	byte attributes = OAM[index * 4 + 2];
+	int addr;
+	if ((CTRL & CTRLSpriteSize) != CTRLSpriteSize) {
+		if ((attributes & 0x80) == 0x80) {
+			row = 7 - row;
+		}
+		int table = (CTRL & CTRLSpritePattern) == CTRLSpritePattern;
+		addr = 0x1000 * table + tile * 16 + row;
+	}
+	else {
+		if ((attributes & 0x80) == 0x80) {
+			row = 15 - row;
+		}
+		int table = tile & 1;
+		tile &= 0xFE;
+		if (row > 7) {
+			tile++;
+			row -= 8;
+		}
+		addr = 0x1000 * table + tile * 16 + row;
+	}
+	byte a = (attributes & 3) << 2;
+	byte lowSpriteByte = memory->read(addr);
+	byte highSpriteByte = memory->read(addr + 8);
+	int data = 0;
+	for (int i = 0; i < 8; i++) {
+		byte p1 = 0;
+		byte p2 = 0;
+		if ((attributes & 0x40) == 0x40) {
+			p1 = (lowSpriteByte & 1) << 0;
+			p2 = (highSpriteByte & 1) << 1;
+			lowSpriteByte >>= 1;
+			highSpriteByte >>= 1;
+		}
+		else {
+			p1 = (lowSpriteByte & 1) << 0;
+			p2 = (highSpriteByte & 1) << 1;
+			lowSpriteByte <<= 1;
+			highSpriteByte <<= 1;
+		}
+		data <<= 4;
+		data |= (a | p1 | p2);
+	}
+	return data;
 }
 
 void PPU::setNametableByte()
@@ -323,8 +403,7 @@ void PPU::setNametableByte()
 
 void PPU::setAttributeTableByte()
 {
-	attributeTableByte = memory->read(0x23C0 | (v & 0x0C00) | ((v >> 4) & 0x38) | ((v >> 2) & 0x07));
-	int addr = 0x23C0 | (v & 0x0C00) | ((v >> 4) & 0x38) | ((v >> 2) & 0x07);
+	int addr = (0x23C0 | (v & 0x0C00) | ((v >> 4) & 0x38) | ((v >> 2) & 0x07));
 	int shift = ((v >> 4) & 4) | (v & 2);
 	attributeTableByte = ((memory->read(addr) >> shift) & 3) << 2;
 }
@@ -372,7 +451,7 @@ void PPU::createTileBitmap()
 	tileBitmap = newTileBitmap;
 	//std::cout << "created tileBitmap: " << (int)tileBitmap << "   low: " << (int)low << "   high: "
 	//	<< (int)high << std::endl;*/
-	int newData = 0;
+	uint64_t newData = 0;
 	for (int i = 0; i < 8; i++) {
 		byte a = attributeTableByte;
 		byte low = (tileBitmapLow & 0x80) >> 7;
@@ -388,7 +467,7 @@ void PPU::createTileBitmap()
 void PPU::copyVerticalBits()
 {
 	//v: IHGF.ED CBA..... = t: IHGF.ED CBA.....
-	v = (v & 0x41F) || (t & 0x7BE0);
+	v = (v & 0x41F) | (t & 0x7BE0);
 }
 
 void PPU::incrementX()
@@ -430,13 +509,29 @@ void PPU::copyHorizontalBits()
 	v = (v & 0x7BE0) | (t & 0x41F);
 }
 
-bool PPU::isSpriteZeroHit()
+int PPU::indexOfCurrentSprite()
 {
+	if ((MASK & MASKShowSprites) != MASKShowSprites) {
+		return 0;
+	}
+	for (int i = 0; i < numberOfSpritesOnScanline; i++) {
+		byte offset = (cycle - 1) - spritePositions[i];
+		if (offset < 0 || offset > 7) {
+			continue;
+		}
+		offset = 7 - offset;
+		int color = (spritePatterns[i] >> (offset * 4)) & 0x0F;
+		if (color % 4 == 0) {
+			continue;
+		}
+		return i;
+	}
 	return 0;
 }
 
 int PPU::getPixelSpriteColor()
-{
+{ 
+	/*	
 	int col = 0;
 	//loop over the sprites on the scanline and check if any of them are on this pixel
 	for (int i = 0; i < numberOfSpritesOnScanline; i++) {
@@ -451,7 +546,23 @@ int PPU::getPixelSpriteColor()
 			}
 		}
 	}
-	return col;
+	return col;*/
+	if ((MASK & MASKShowSprites) != MASKShowSprites) {
+		return 0;
+	}
+	for (int i = 0; i < numberOfSpritesOnScanline; i++) {
+		byte offset = (cycle - 1) - spritePositions[i];
+		if ((offset < 0) || (offset > 7)) {
+			continue;
+		}
+		offset = 7 - offset;
+		int color = (spritePatterns[i] >> (offset * 4)) & 0x0F;
+		if (color % 4 == 0) {
+			continue;
+		}
+		return color;
+	}
+	return 0;
 }
 
 int PPU::getPixelBackgroundColor()
@@ -459,7 +570,7 @@ int PPU::getPixelBackgroundColor()
 	//return (tileBitmap >> (2*(x&0b111))) & 0xf;
 	//std::cout << "X pos: " << (int)x << "  arrBM: " << arrBM[x & 0b111] << std::endl;
 	//return arrBM[x & 0b111];
-	return ((tileBitmap >> 32) >> ((7 - x) * 4)) & 0x0f;
+	return ((tileBitmap >> 32) >> ((7 - x) * 4)) & 0x0F;
 }
 
 void PPU::blitPixel()
@@ -468,6 +579,7 @@ void PPU::blitPixel()
 	int xPos = cycle - 1;
 	int yPos = scanLine;
 	int spritePixel = getPixelSpriteColor();
+	int spriteIndex = indexOfCurrentSprite();
 	int backgroundPixel = getPixelBackgroundColor();
 	byte color = 0;
 
@@ -483,12 +595,13 @@ void PPU::blitPixel()
 		color = backgroundPixel;
 	}
 	else {
-		if (isSpriteZeroHit() && x < 255) {
+		if ((spriteIndexes[spriteIndex] == 0) && x < 255) {
 			STATUS |= STATUSSpriteZeroHit;
 		}
 		color = backgroundPixel;
 	}
 
-	pixels[xPos + yPos * (512)] = tempPalette[spritePixel];
-	pixels[xPos + 256 + yPos * 512] = tempPalette[backgroundPixel];
+	pixels[xPos + yPos * (512)] = PaletteLookup[memory->read(spritePixel+0x3F00)];//tempPalette[spritePixel];
+	
+	pixels[xPos + 256 + yPos * 512] = PaletteLookup[memory->read(backgroundPixel + 0x3F00)];//tempPalette[color];
 }

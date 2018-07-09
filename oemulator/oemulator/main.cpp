@@ -73,10 +73,12 @@ int main(int argc, char** argv) {
 	//run the nes
 	nes.step(25000 * 120);
 	nes.updateScreen();
+
 	/*
-	nes.step(25050); 
 	nes.cpu->printCallLog = true;
-	nes.step(500);*/
+	nes.step(9200); 
+	
+	nes.step(200);*/
 
 	std::cout << "Total unique ops: " << std::dec << nes.cpu->numImplementedOps << std::endl;
 	std::cout << "Done!" << std::endl;

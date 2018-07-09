@@ -48,11 +48,15 @@ void PPUMemory::write(int addr, byte val)
 	} else if (addr < 0x3F00) { //mirrors of them at(0x3000 - 0x3EFF)
 		memory[addr - 0x1000] = val;
 	} else if (addr < 0x3F20) { //palette table
+		//std::cout << "PALETTE WRITE: addr: " << (int)addr << "  val: " << (int)val << std::endl;
 		memory[addr] = val;
 	} else if(addr < 0x4000) { //mirrors of palette
 		memory[addr % 0x20 + 0x3F00] = val;
 	}
 	else {
+		std::cout << "opcode that did it: "
+			<< (int)cpu->memory->read(cpu->PC) 
+			<< "  step: " << (int)cpu->numSteps << std::endl;
 		std::cout << "Tried to write to addr: " << addr << " val: " << val << std::endl;
 	}
 }
@@ -66,8 +70,10 @@ byte PPUMemory::read(int addr)
 	} else if(addr < 0x3F00) { //mirror of nametables
 		return memory[addr - 0x1000];
 	} else if(addr < 0x3F20) { //palette
+		//std::cout << "PALETTE READ: addr: " << (int)addr << "  val: " << (int)memory[addr] << std::endl;
 		return memory[addr];
 	} else if(addr < 0x4000) { //mirrors of palette
+		//std::cout << "PALETTE READ: addr: " << (int)addr << "  val: " << (int)memory[addr] << std::endl;
 		return memory[addr%0x20 + 0x3F00];
 	} else {
 		std::cout << "Tried to read addr: " << addr << std::endl;

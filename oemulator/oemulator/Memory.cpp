@@ -57,7 +57,17 @@ void Memory::write(int addr, byte val)
 		ppu->writeRegiter(addr, val);
 	} else if(addr == 0x4014) { //OAM DATA PPU register
 		ppu->writeRegiter(addr, val);
-	} else {
+	}
+	else if (addr == 0x4015) { //write to APU
+		//TODO: implement audio
+	}
+	else if (addr == 0x4016) { //write to controllers
+		//TODO: add controllers
+	}
+	else if (addr == 0x4017) { //write to APU
+		//TODO implement audio
+	}
+	else {
 		std::cout << "Unhandeled write to address: " << addr << ". Value: " << val << std::endl;
 	}
 	if (printWrites) {

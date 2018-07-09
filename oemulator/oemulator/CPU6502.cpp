@@ -65,7 +65,7 @@ void CPU6502::executeOP()
 			| (V << 6)
 			| (N << 7);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10 + (numSteps % 2) * 5);
-		std::cout << std::dec << numSteps << std::hex << "   " << "A: " << (int)A << " X: " << (int)X << " Y: " << (int)Y << " SP: "
+		std::cout << std::dec << numSteps << "  cycles: " << (int)cycles << std::hex << "   " << "A: " << (int)A << " X: " << (int)X << " Y: " << (int)Y << " SP: "
 			<< std::hex << (int)SP << " P: " << std::hex << P << "	$" << std::hex << PC << ":" << (int)memory->memory[PC]
 			<< "   " << (int)memory->memory[PC + 1] << std::endl;
 	}
@@ -1696,6 +1696,7 @@ byte CPU6502::pullByte()
 void CPU6502::NOP()
 {
 	//only increments the PC
+	std::cout << "NOP: opcode: " << (int)memory->read(PC) << std::endl;
 	PC++;
 }
 

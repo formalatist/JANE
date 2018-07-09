@@ -1,5 +1,6 @@
 #pragma once
 #include "NES.h"
+#include <stdint.h>
 
 class PPUMemory;
 class NES;
@@ -72,6 +73,8 @@ public:
            line); cleared after reading $2002 and at dot 1 of the
            pre-render line.*/
 	byte STATUSVBlankStarted = 0b1000'0000;
+	//for making sure we only send one nmi
+	bool nmiSent = false;
 
 	//0x2003 OAMADDR access write. (Object attribute memory address)
 	byte OAMADDR; //this is just the address, the individual bits has no special significanse, so we dont need any bit-masks
@@ -99,11 +102,11 @@ public:
 
 
 	//which cycle we are on (0-340). 341 cycles per scanline 
-	int cycle;
+	int cycle = 340;
 	//which scanline are we on (0-261, where 0-239 are the visible ones, 240 is "post" 
 	//241-260 is vblank (vertical blanking lines), 261 is some pre calculations for scanline 0
-	int scanLine;
-	bool isOddFrame;
+	int scanLine = 240;
+	bool isOddFrame = false;
 
 	//PPU registers
 	int v; //current VRAM address (15bit)
@@ -121,13 +124,13 @@ public:
 	byte attributeTableByte;
 	byte tileBitmapLow; 
 	byte tileBitmapHigh;
-	int tileBitmap;
+	uint64_t tileBitmap;
 
 	//OAM info about the (up to) 8 sprites on this scanline is kept in shift registers
 	//16bits of data per sprite (for 1 row) 1 byte upper and 1 byte lower
 	//this is stored as (pixel 8 upper) (pixel 8 lower)...(pixel 1 upper) (piel 1 lower)
 	//these two bits combined with the attribute bits 1 and 2 choose the color
-	int spriteBitmapData[8]; 
+	/*int spriteBitmapData[8]; 
 	byte spriteAttributes[8];
 	byte ATTRIBUTEPALETTE = 3;
 	byte ATTRIBUTEPRIORITY = 0x20;
@@ -135,7 +138,12 @@ public:
 	byte ATTRIBUTEFLIPVER = 0x80;
 	byte spriteXPositions[8];
 	bool isSpriteZero[8]; //true if the sprite is the first sprite in OAM. needed to set the spriteZeroHit flag
+	*/
 	byte numberOfSpritesOnScanline;
+	int spritePatterns[8];
+	byte spritePositions[8];
+	byte spritePriorities[8];
+	byte spriteIndexes[8];
 
 private:
 	PPUMemory* memory;
@@ -153,7 +161,7 @@ private:
 	void leaveVerticalBlank();
 
 	//function for getting the bitmap data for sprite
-	int getSpriteBitmapData(byte row, byte tile, byte attribute);
+	int getSpriteBitmapData(byte index, byte row);
 
 	//set the data needed for the tile
 	void setNametableByte(); //from Tile and attribute fetching on nesdev
@@ -167,9 +175,19 @@ private:
 	void incrementY(); //helper func from nesdev
 	void copyHorizontalBits();
 
-	bool isSpriteZeroHit();
+	int indexOfCurrentSprite();
 	int getPixelSpriteColor();
 	int getPixelBackgroundColor();
 
 	void blitPixel();
+
+	const int PaletteLookup[64] = { 
+		0x666666, 0x002A88, 0x1412A7, 0x3B00A4, 0x5C007E, 0x6E0040, 0x6C0600, 0x561D00,
+		0x333500, 0x0B4800, 0x005200, 0x004F08, 0x00404D, 0x000000, 0x000000, 0x000000,
+		0xADADAD, 0x155FD9, 0x4240FF, 0x7527FE, 0xA01ACC, 0xB71E7B, 0xB53120, 0x994E00,
+		0x6B6D00, 0x388700, 0x0C9300, 0x008F32, 0x007C8D, 0x000000, 0x000000, 0x000000,
+		0xFFFEFF, 0x64B0FF, 0x9290FF, 0xC676FF, 0xF36AFF, 0xFE6ECC, 0xFE8170, 0xEA9E22,
+		0xBCBE00, 0x88D800, 0x5CE430, 0x45E082, 0x48CDDE, 0x4F4F4F, 0x000000, 0x000000,
+		0xFFFEFF, 0xC0DFFF, 0xD3D2FF, 0xE8C8FF, 0xFBC2FF, 0xFEC4EA, 0xFECCC5, 0xF7D8A5,
+		0xE4E594, 0xCFEF96, 0xBDF4AB, 0xB3F3CC, 0xB5EBF2, 0xB8B8B8, 0x000000, 0x000000 };
 };
