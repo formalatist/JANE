@@ -181,7 +181,7 @@ void PPU::writeRegiter(int addr, byte val)
 		NMIChange();
 	} else if (addr == 0x2001) { // PPUMASK
 		MASK = val;
-		//std::cout << "Write to MASK: " << (int)MASK << "  val:  " << (int)val << std::endl;
+		std::cout << "Write to MASK: " << (int)MASK << "  val:  " << (int)val << std::endl;
 	} else if (addr == 0x2002) { // PPUSTATUS read only
 		//std::cout << "ERROR: Writing to 0x2002 PPUSTATUS. Val: " << val << std::endl;
 	} else if (addr == 0x2003) { // OAMADDR

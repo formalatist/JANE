@@ -55,7 +55,11 @@ void Memory::write(int addr, byte val)
 		//std::cout << "_____________WRITE TO REGISTER: " << addr << std::endl;
 		addr = 0x2000 + (addr % 8); //the 8 PPU registers are 0x2000-0x2007 then repeated
 		ppu->writeRegiter(addr, val);
-	} else if(addr == 0x4014) { //OAM DATA PPU register
+	}
+	else if (addr < 0x4014) { //NES APU and I/O registers
+		//TODO: implement
+	} 
+	else if (addr == 0x4014) { //OAM DATA PPU register
 		ppu->writeRegiter(addr, val);
 	}
 	else if (addr == 0x4015) { //write to APU

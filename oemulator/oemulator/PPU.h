@@ -19,7 +19,7 @@ public:
 
 	//IO mapped registers at 0x2000-0x2007
 	//0x2000 PPUCTRL CPU has write access
-	byte CTRL;
+	byte CTRL = 0;
 	byte CTRLNametable = 0b0000'0011; //0: $2000; 1: $2400; 2: $2800; 3: $2C00
 	//VRAM address increment per CPU read/write of PPUDATA (0: add 1, going across
 	//1: add 32, going down)
@@ -36,7 +36,7 @@ public:
 	byte CTRLNMI = 0b1000'0000;
 
 	//0x2001 PPUMASK CPU has write access
-	byte MASK;
+	byte MASK = 0;
 	byte MASKGreyscale = 0b0000'0001; //Greyscale (0: normal color, 1: produce a greyscale display)
 	// 1: Show background in leftmost 8 pixels of screen, 0: Hide
 	byte MASKShowLeftBackground = 0b0000'0010;
@@ -75,9 +75,10 @@ public:
 	byte STATUSVBlankStarted = 0b1000'0000;
 	//for making sure we only send one nmi
 	bool nmiSent = false;
+	int nmiDelay = 0;
 
 	//0x2003 OAMADDR access write. (Object attribute memory address)
-	byte OAMADDR; //this is just the address, the individual bits has no special significanse, so we dont need any bit-masks
+	byte OAMADDR = 0; //this is just the address, the individual bits has no special significanse, so we dont need any bit-masks
 
 	//0x2004-0x2006 does not need any register masks, they should be handeled in the
 	//read/writeRegister functions
@@ -155,6 +156,7 @@ private:
 	//overwrite the data needed for this line
 	void spriteEvaluation();
 
+	void NMIChange();
 	//enter vertical blank
 	void enterVerticalBlank();
 	//leave vertical blank
