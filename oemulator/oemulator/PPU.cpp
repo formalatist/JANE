@@ -105,7 +105,7 @@ void PPU::advanceCounters()
 		if (nmiDelay == 0 && ((CTRL & CTRLNMI) == CTRLNMI)
 			&& ((STATUS & STATUSVBlankStarted) == STATUSVBlankStarted)) {
 			memory->cpu->triggerNMI();
-			std::cout << "NMI CREATED#####################" << std::endl;
+			//std::cout << "NMI CREATED#####################" << std::endl;
 		}
 	}
 
@@ -298,14 +298,14 @@ void PPU::spriteEvaluation()
 	for (int i = 0; i < 64; i++) {
 		byte y = OAM[i * 4];
 		byte a = OAM[i * 4 + 2];
-		byte x = OAM[i * 4 + 3];
-		byte row = scanLine - y;
+		byte xPos = OAM[i * 4 + 3];
+		int row = scanLine - y;
 		if (row < 0 || row >= spriteHeight) {
 			continue;
 		}
 		if (numberOfSpritesOnScanline < 8) {
 			spritePatterns[numberOfSpritesOnScanline] = getSpriteBitmapData(i, row);
-			spritePositions[numberOfSpritesOnScanline] = x;
+			spritePositions[numberOfSpritesOnScanline] = xPos;
 			spritePriorities[numberOfSpritesOnScanline] = (a >> 5) & 1;
 			spriteIndexes[numberOfSpritesOnScanline] = i;
 		}
@@ -317,6 +317,7 @@ void PPU::spriteEvaluation()
 		numberOfSpritesOnScanline = 8;
 		STATUS = STATUS | STATUSSpriteOverflow;
 	}
+	//std::cout << "SPRITES ON SCANLINE: " << (int)numberOfSpritesOnScanline << std::endl;
 }
 
 void PPU::NMIChange()
@@ -346,7 +347,7 @@ void PPU::leaveVerticalBlank()
 	//NMIOccured = false;
 }
 
-int PPU::getSpriteBitmapData(byte index, byte row)
+uint32_t PPU::getSpriteBitmapData(byte index, byte row)
 {
 	/*
 	int addr;
@@ -406,7 +407,7 @@ int PPU::getSpriteBitmapData(byte index, byte row)
 	byte a = (attributes & 3) << 2;
 	byte lowSpriteByte = memory->read(addr);
 	byte highSpriteByte = memory->read(addr + 8);
-	int data = 0;
+	uint32_t data = 0;
 	for (int i = 0; i < 8; i++) {
 		byte p1 = 0;
 		byte p2 = 0;
@@ -417,13 +418,13 @@ int PPU::getSpriteBitmapData(byte index, byte row)
 			highSpriteByte >>= 1;
 		}
 		else {
-			p1 = (lowSpriteByte & 1) << 0;
-			p2 = (highSpriteByte & 1) << 1;
+			p1 = (lowSpriteByte & 0x80) >> 7;
+			p2 = (highSpriteByte & 0x80) >> 6;
 			lowSpriteByte <<= 1;
 			highSpriteByte <<= 1;
 		}
 		data <<= 4;
-		data |= (a | p1 | p2);
+		data |= (uint32_t)(a | p1 | p2);
 	}
 	return data;
 }
@@ -581,10 +582,10 @@ int PPU::getPixelSpriteColor()
 	}
 	return col;*/
 	if ((MASK & MASKShowSprites) != MASKShowSprites) {
-		//return 0;
+		return 0;
 	}
 	for (int i = 0; i < numberOfSpritesOnScanline; i++) {
-		byte offset = (cycle - 1) - spritePositions[i];
+		int offset = (cycle - 1) - spritePositions[i];
 		if ((offset < 0) || (offset > 7)) {
 			continue;
 		}
@@ -614,7 +615,6 @@ int PPU::getPixelBackgroundColor()
 
 void PPU::blitPixel()
 {
-	const int tempPalette[4] = { 0xFF, 0x00FF, 0x0000FF, 0x00FFFF };
 	int xPos = cycle - 1;
 	int yPos = scanLine;
 	int spritePixel = getPixelSpriteColor();
@@ -651,7 +651,7 @@ void PPU::blitPixel()
 		}
 	}
 
-	pixels[xPos + yPos * (512)] = PaletteLookup[memory->read((spritePixel | 0x10)+0x3F00)];//tempPalette[spritePixel];
+	pixels[xPos + yPos * (512)] = PaletteLookup[memory->read((spritePixel | 0x10)+0x3F00)];
 	
-	pixels[xPos + 256 + yPos * 512] = PaletteLookup[memory->read(color + 0x3F00)];//tempPalette[color];
+	pixels[xPos + 256 + yPos * 512] = PaletteLookup[memory->read(color + 0x3F00)];
 }

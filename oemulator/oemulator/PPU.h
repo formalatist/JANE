@@ -141,7 +141,7 @@ public:
 	bool isSpriteZero[8]; //true if the sprite is the first sprite in OAM. needed to set the spriteZeroHit flag
 	*/
 	byte numberOfSpritesOnScanline;
-	int spritePatterns[8];
+	uint32_t spritePatterns[8];
 	byte spritePositions[8];
 	byte spritePriorities[8];
 	byte spriteIndexes[8];
@@ -163,7 +163,7 @@ private:
 	void leaveVerticalBlank();
 
 	//function for getting the bitmap data for sprite
-	int getSpriteBitmapData(byte index, byte row);
+	uint32_t getSpriteBitmapData(byte index, byte row);
 
 	//set the data needed for the tile
 	void setNametableByte(); //from Tile and attribute fetching on nesdev
