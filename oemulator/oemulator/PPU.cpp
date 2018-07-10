@@ -32,14 +32,19 @@ void PPU::step()
 			switch (cycle % 8) {
 			case 1:
 				setNametableByte();
+				break;
 			case 3:
 				setAttributeTableByte();
+				break;
 			case 5:
 				setTileBitmapLow();
+				break;
 			case 7:
 				setTileBitmapHigh();
+				break;
 			case 0:
 				createTileBitmap();
+				break;
 				//std::cout << "Created tileBitmap: " << tileBitmap << std::endl;
 			}
 		}
@@ -576,7 +581,7 @@ int PPU::getPixelSpriteColor()
 	}
 	return col;*/
 	if ((MASK & MASKShowSprites) != MASKShowSprites) {
-		return 0;
+		//return 0;
 	}
 	for (int i = 0; i < numberOfSpritesOnScanline; i++) {
 		byte offset = (cycle - 1) - spritePositions[i];
