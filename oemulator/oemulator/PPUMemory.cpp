@@ -42,13 +42,13 @@ void PPUMemory::write(int addr, byte val)
 		//TODO add mappers that we call here. so we can use CHR RAM if the cartridge has it
 		//and other rerouting stuff that mappers do
 		//for now just write the CHR ROM from memory directly
-		std::cout << "WRITING TO PATTERN TABLE: " << (int)addr << std::endl;
-		std::cout << "opcode that did it: "
-			<< (int)cpu->memory->read(cpu->PC)
-			<< "  step: " << (int)cpu->numSteps << std::endl;
+		//std::cout << "WRITING TO PATTERN TABLE: " << (int)addr << std::endl;
+		//std::cout << "opcode that did it: "
+			//<< (int)cpu->memory->read(cpu->PC)
+			//<< "  step: " << (int)cpu->numSteps << std::endl;
 		memory[addr] = val;
 	} else if(addr < 0x3000) { //Nametables 0-3 
-		std::cout << "Write to nametable: addr: " << (int)addr << "  val: " << (int)val << std::endl;
+		//std::cout << "Write to nametable: addr: " << (int)addr << "  val: " << (int)val << std::endl;
 		memory[addr] = val;
 	} else if (addr < 0x3F00) { //mirrors of them at(0x3000 - 0x3EFF)
 		memory[addr - 0x1000] = val;

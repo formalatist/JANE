@@ -146,14 +146,11 @@ byte PPU::readRegister(int addr)
 		(i.e., before the palettes), the read will return the contents of an 
 		internal read buffer. This internal buffer is updated only when reading PPUDATA, 
 		and so is preserved across frames*/
-		if(v < 0x3F00) { // we need to do a buffered read (see above)
+		if((v%0x4000) < 0x3F00) { // we need to do a buffered read (see above)
 			byte oldDATABuffer = DATABuffer;
 			DATABuffer = val;
 			val = oldDATABuffer;
 		} else {
-			//TODO check: v - 0x1000 should put us at nametable 3 and not the mirror region
-			//which would instead have been nametable 0 (me thinks). This is probably not
-			//used by any games anyway and should not matter
 			DATABuffer = memory->read(v - 0x1000);
 		}
 
@@ -485,7 +482,7 @@ void PPU::createTileBitmap()
 	tileBitmap = newTileBitmap;
 	//std::cout << "created tileBitmap: " << (int)tileBitmap << "   low: " << (int)low << "   high: "
 	//	<< (int)high << std::endl;*/
-	int newData = 0;
+	uint32_t newData = 0;
 	for (int i = 0; i < 8; i++) {
 		byte a = attributeTableByte;
 		byte low = (tileBitmapLow & 0x80) >> 7;

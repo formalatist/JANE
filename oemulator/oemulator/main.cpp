@@ -3,9 +3,14 @@
 #include <stdio.h>
 #include <iostream>
 #include "ROMLoader.h"
+#include <chrono>
+#include <ctime>
 //#include "NES.h"
 
 bool running = true;
+const int FPS = 30;
+int tickCounter = 0;
+
 
 long getFileSize(FILE *file)
 {
@@ -71,8 +76,8 @@ int main(int argc, char** argv) {
 	
 
 	//run the nes
-	nes.step(25000 * 120*2);
-	nes.updateScreen();
+	//nes.step(25000 * 120*2);
+	//nes.updateScreen();
 
 	
 	//nes.cpu->printCallLog = true;
@@ -82,18 +87,6 @@ int main(int argc, char** argv) {
 	std::cout << "Total unique ops: " << std::dec << nes.cpu->numImplementedOps << std::endl;
 	std::cout << "Done!" << std::endl;
 	std::cout << "PC: " << std::hex << nes.cpu->PC << std::endl;
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 	
@@ -152,15 +145,31 @@ int main(int argc, char** argv) {
 	}
 
 	SDL_UpdateWindowSurface(patternTableWindow);
-	
+	tickCounter = SDL_GetTicks();
+	int frame = 0;
+	int frameTime = 0;
 	bool run = true;
+	int start = 0;
+	int start2 = 0;
 	while (run) {
+		start = clock();
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				run = false;
 			}
 		}
+		start2 = clock();
+		nes.stepSeconds(0.016f);
+		std::cout << "Nes took: " << (clock() - start2) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
+		frameTime = SDL_GetTicks() - tickCounter;
+		if (frameTime < 160) {
+			SDL_Delay(160 - frameTime);
+			std::cout << "test";
+		}
+		frame++;
+		std::cout << frame << std::endl;
+		std::cout << "Frame took: " << (clock() - start) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
 	}
 
 	

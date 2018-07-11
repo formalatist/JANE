@@ -1,4 +1,5 @@
 #include "NES.h"
+#include <ctime>
 
 NES::NES()
 {
@@ -32,7 +33,18 @@ void NES::step(int numSteps)
 void NES::stepSeconds(float seconds)
 {
 	int cyclesNeeded = (int)(cpu->CPUFrequency * seconds);
-	step(cyclesNeeded);
+	int cyclesDone = 0;
+	while (true) {
+		int cpuCyclesDone = cpu->step();
+		int ppuCyclesNeeded = cpuCyclesDone * 3;
+		for (int j = 0; j < ppuCyclesNeeded; j++) {
+			ppu->step();
+		}
+		cyclesDone += cpuCyclesDone;
+		if (cyclesDone >= cyclesNeeded) {
+			return;
+		}
+	}
 }
 
 void NES::setScreen(SDL_Surface * screen_, SDL_Window* window_)
@@ -43,6 +55,7 @@ void NES::setScreen(SDL_Surface * screen_, SDL_Window* window_)
 
 void NES::updateScreen()
 {
+	int start = clock();
 	for (int x = 0; x < 512; x++) {
 		for (int y = 0; y < 240; y++) {
 
@@ -52,4 +65,5 @@ void NES::updateScreen()
 		}
 	}
 	SDL_UpdateWindowSurface(window);
+	std::cout << "Rendering took: " << (clock() - start) / double(CLOCKS_PER_SEC) * 1000<< std::endl;
 }
