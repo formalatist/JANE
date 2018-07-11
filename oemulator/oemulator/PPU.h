@@ -110,8 +110,8 @@ public:
 	bool isOddFrame = false;
 
 	//PPU registers
-	int v; //current VRAM address (15bit)
-	int t; //temporary VRAM address (15bit)
+	uint16_t v; //current VRAM address (15bit)
+	uint16_t t; //temporary VRAM address (15bit)
 	byte x; //fine x scroll (3 bit)
 	bool writeToggle = false; //some MM Registers behave differently if this is the first or second write. use this to keep track
 	bool oddFrame; //is frame odd/even

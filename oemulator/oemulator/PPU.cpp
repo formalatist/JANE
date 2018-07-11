@@ -338,8 +338,7 @@ void PPU::enterVerticalBlank()
 
 void PPU::leaveVerticalBlank()
 {
-	//STATUS = STATUS & ~STATUSVBlankStarted;
-	STATUS = 0;
+	STATUS = STATUS & ~STATUSVBlankStarted;
 	NMIChange();
 	//NMIOccured = false;
 }
@@ -444,8 +443,8 @@ void PPU::setTileBitmapLow()
 	int fineYScroll = (v >> 12) & 7;
 	//if backgroundpattern bit is 1 we add 0x1000 to the address
 	int table = (CTRL & CTRLBackgroundPattern) == CTRLBackgroundPattern;
-	int tile = nameTableByte;
-	int addr = 0x1000*table + tile * 16 + fineYScroll;
+	uint16_t tile = nameTableByte;
+	uint16_t addr = 0x1000*table + tile * 16 + fineYScroll;
 	tileBitmapLow = memory->read(addr);
 	//std::cout << "bitmapLow addr: " << (int)addr << std::endl;
 	//std::cout << "TileBitmapLow: " << (int)tileBitmapLow << std::endl;
@@ -455,10 +454,10 @@ void PPU::setTileBitmapLow()
 void PPU::setTileBitmapHigh()
 {
 	//if backgroundpattern bit is 1 we add 0x1000 to the address
-	int addr = (0x1000)*((CTRL & CTRLBackgroundPattern) == CTRLBackgroundPattern);
+	uint16_t addr = (0x1000)*((CTRL & CTRLBackgroundPattern) == CTRLBackgroundPattern);
 	//get the fine Y scroll from V. This is in the 3 high bits. v is 15 bit
 	int fineYScroll = (v >> 12) & 7;
-	addr += nameTableByte * 16 + fineYScroll + 8;
+	addr += ((uint16_t)nameTableByte) * 16 + fineYScroll + 8;
 	tileBitmapHigh = memory->read(addr);
 	//std::cout << "bitmapHigh addr: " << (int)addr << std::endl;
 	//std::cout << "TileBitmapHigh: " << (int)tileBitmapHigh << std::endl;
@@ -518,7 +517,7 @@ void PPU::incrementY()
 		v += 0x1000; // increment fine Y
 	} 
 	else {
-		v &= ~0x7000;// fine Y = 0
+		v &= 0x8FFF;// fine Y = 0
 		int y = (v & 0x03E0) >> 5;// let y = coarse Y
 		if (y == 29) {
 			y = 0;// coarse Y = 0
@@ -530,7 +529,7 @@ void PPU::incrementY()
 		else {
 			y += 1; // increment coarse Y
 		}
-		v = (v & ~0x03E0) | (y << 5);// put coarse Y back into v
+		v = (v & 0xFC1F) | (y << 5);// put coarse Y back into v
 	}
 }
 
@@ -603,9 +602,6 @@ int PPU::getPixelBackgroundColor()
 	//return arrBM[x & 0b111];
 	if ((MASK & MASKShowBackground) != MASKShowBackground) {
 		return 0;
-	}
-	if (x != 0) {
-		std::cout << "X: " << (int)x << std::endl;
 	}
 	return ((tileBitmap >> 32) >> ((7 - x) * 4)) & 0x0F;
 }

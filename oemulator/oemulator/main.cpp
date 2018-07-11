@@ -58,7 +58,7 @@ int main(int argc, char** argv) {
 	ROMLoader loader = ROMLoader(nes.memory, nes.ppuMemory);
 	loader.loadROM(fileBuffer, fileSize, (*nes.cpu));
 	//clear ppu registers
-	loader.clearPPUReg();
+	//loader.clearPPUReg();
 	std::cout << "printing memory" << nes.memory->memory[0] << std::endl;
 	std::cout << "Starting PC at: 0x" << std::hex << nes.cpu->PC << std::endl;
 	
