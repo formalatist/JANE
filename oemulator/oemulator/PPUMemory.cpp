@@ -38,7 +38,7 @@ void PPUMemory::loadMemory(byte rom[], int romSize, int offset)
 
 void PPUMemory::write(int addr, byte val)
 {
-	addr &= 0x7FFF;
+	addr %= 0x4000;
 	if (addr < 0x2000) { //pattern table
 		//TODO add mappers that we call here. so we can use CHR RAM if the cartridge has it
 		//and other rerouting stuff that mappers do
@@ -54,7 +54,7 @@ void PPUMemory::write(int addr, byte val)
 		addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
 		memory[addr] = val;
 	} else if (addr < 0x3F00) { //mirrors of them at(0x3000 - 0x3EFF)
-		std::cout << "#######WRITE tO MIRROR OF NAMETABLE" << std::endl;
+		//std::cout << "#######WRITE tO MIRROR OF NAMETABLE" << std::endl;
 		addr -= 0x1000;
 		int offset = addr > 0x27FF ? 0x800 : 0;
 		addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
@@ -75,7 +75,7 @@ void PPUMemory::write(int addr, byte val)
 
 byte PPUMemory::read(int addr)
 {
-	addr &= 0x7FFF;
+	addr %= 0x4000;
 	if(addr < 0x2000) { //pattern tables
 		return memory[addr];
 	} else if (addr < 0x3000) { //nametables

@@ -81,8 +81,8 @@ void PPU::step()
 	}
 	if (isPreLine && cycle == 1) {
 		leaveVerticalBlank();
-		STATUS |= ~STATUSSpriteZeroHit;
-		STATUS |= ~STATUSSpriteOverflow;
+		STATUS &= ~STATUSSpriteZeroHit;
+		STATUS &= ~STATUSSpriteOverflow;
 	}
 }
 
@@ -243,7 +243,7 @@ void PPU::writeRegiter(int addr, byte val)
 	} else if(addr == 0x4014) { //OAMDMA
 		/*Writing $XX will upload 256 bytes of data from CPU page $XX00-$XXFF to 
 		the internal PPU OAM*/
-		int cpuMemoryAddress = val << 8;
+		uint16_t cpuMemoryAddress = val << 8;
 		for (int i = 0; i < 256; i++) {
 			OAM[OAMADDR] = memory->cpu->memory->read(cpuMemoryAddress);
 			cpuMemoryAddress++;
@@ -453,12 +453,13 @@ void PPU::setTileBitmapLow()
 //high byte is 8 bytes further in memory
 void PPU::setTileBitmapHigh()
 {
-	//if backgroundpattern bit is 1 we add 0x1000 to the address
-	uint16_t addr = (0x1000)*((CTRL & CTRLBackgroundPattern) == CTRLBackgroundPattern);
 	//get the fine Y scroll from V. This is in the 3 high bits. v is 15 bit
 	int fineYScroll = (v >> 12) & 7;
-	addr += ((uint16_t)nameTableByte) * 16 + fineYScroll + 8;
-	tileBitmapHigh = memory->read(addr);
+	int table = (CTRL & CTRLBackgroundPattern) == CTRLBackgroundPattern;
+	uint16_t tile = nameTableByte;
+	//if backgroundpattern bit is 1 we add 0x1000 to the address
+	uint16_t addr = 0x1000 * table + tile * 16 + fineYScroll;
+	tileBitmapHigh = memory->read(addr+8);
 	//std::cout << "bitmapHigh addr: " << (int)addr << std::endl;
 	//std::cout << "TileBitmapHigh: " << (int)tileBitmapHigh << std::endl;
 }
