@@ -5,7 +5,6 @@
 #include "ROMLoader.h"
 #include <chrono>
 #include <ctime>
-//#include "NES.h"
 
 bool running = true;
 const int FPS = 30;
@@ -53,13 +52,12 @@ int main(int argc, char** argv) {
 		(static_cast<int>(fileBuffer[7]) & 0x8) << std::endl;
 
 	//create the cpu
-	//CPU6502 cpu = CPU6502();
 	NES nes = NES();
+	Controller c1 = Controller();
+	nes.connectController(&c1);
 	ROMLoader loader = ROMLoader(nes.memory, nes.ppuMemory);
 	loader.loadROM(fileBuffer, fileSize, (*nes.cpu));
-	//clear ppu registers
-	//loader.clearPPUReg();
-	std::cout << "printing memory" << nes.memory->memory[0] << std::endl;
+
 	std::cout << "Starting PC at: 0x" << std::hex << nes.cpu->PC << std::endl;
 	
 
@@ -74,21 +72,8 @@ int main(int argc, char** argv) {
 	nes.setScreen(mainWindowSurface, mainWindow);
 	nes.updateScreen();
 	
-
-	//run the nes
-	//nes.step(25000 * 120*2);
-	//nes.updateScreen();
-
-	
 	//nes.cpu->printCallLog = true;
 	//nes.step(9200); 
-
-
-	std::cout << "Total unique ops: " << std::dec << nes.cpu->numImplementedOps << std::endl;
-	std::cout << "Done!" << std::endl;
-	std::cout << "PC: " << std::hex << nes.cpu->PC << std::endl;
-
-
 	
 
 	SDL_Window* patternTableWindow = NULL;
@@ -157,6 +142,18 @@ int main(int argc, char** argv) {
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				run = false;
+			}
+			else if (event.type == SDL_KEYDOWN) {
+				std::cout << "KEYDOWN############" << std::endl;
+				switch (event.key.keysym.sym) {
+				case SDLK_a:
+					c1.pushButton(1);
+					break;
+				case SDLK_DOWN:
+					c1.pushButton(32);
+					std::cout << "DOWN" << std::endl;
+					break;
+				}
 			}
 		}
 		start2 = clock();

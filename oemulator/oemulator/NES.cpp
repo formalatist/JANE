@@ -67,3 +67,9 @@ void NES::updateScreen()
 	SDL_UpdateWindowSurface(window);
 	std::cout << "Rendering took: " << (clock() - start) / double(CLOCKS_PER_SEC) * 1000<< std::endl;
 }
+
+void NES::connectController(Controller * controller)
+{
+	controller->setMemory(memory);
+	memory->connectController(controller);
+}

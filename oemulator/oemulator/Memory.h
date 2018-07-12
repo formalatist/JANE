@@ -4,6 +4,7 @@
 
 class PPU;
 class CPU6502;
+class Controller;
 
 #include "NES.h"
 
@@ -28,6 +29,8 @@ public:
 	void write(int addr, byte val);
 	byte read(int addr);
 
+	void connectController(Controller* c1_);
+
 	//for debug
 	bool printReads = false;
 	bool printWrites = false;
@@ -35,4 +38,5 @@ public:
 private:
 	CPU6502* cpu;
 	PPU* ppu;
+	Controller* c1;
 };
