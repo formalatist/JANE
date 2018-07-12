@@ -151,9 +151,9 @@ int main(int argc, char** argv) {
 	bool run = true;
 	int start = 0;
 	int start2 = 0;
+	SDL_Event event;
 	while (run) {
 		start = clock();
-		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				run = false;
