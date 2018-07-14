@@ -93,7 +93,7 @@ byte Memory::read(int addr)
 	} else if (addr == 0x4014) {
 		return ppu->readRegister(addr);
 	} else if (addr == 0x4016) { //read controller
-		c1->readController();
+		return c1->readController();
 	} else if (addr >= 0x6000) { //area for a mapper to take care of
 		return memory[addr];
 	}

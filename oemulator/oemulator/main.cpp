@@ -137,36 +137,110 @@ int main(int argc, char** argv) {
 	int start = 0;
 	int start2 = 0;
 	SDL_Event event;
+	c1.pushButton(0xff);
 	while (run) {
 		start = clock();
+		c1.releaseButton(0xFF);
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				run = false;
 			}
 			else if (event.type == SDL_KEYDOWN) {
-				std::cout << "KEYDOWN############" << std::endl;
+				std::cout << "KEYDOWN############" << event.key.keysym.sym << std::endl;
+
 				switch (event.key.keysym.sym) {
-				case SDLK_a:
-					c1.pushButton(1);
+				case SDLK_1:
+					c1.pushButton(0x1);
+					std::cout << 1 << std::endl;
+					break;
+				case SDLK_2:
+					c1.pushButton(0x2);
+					std::cout << 2 << std::endl;
+					break;
+				case SDLK_3:
+					c1.pushButton(0x4);
+					std::cout << 3 << std::endl;
+					break;
+				case SDLK_4:
+					c1.pushButton(0x8);
+					std::cout << 4 << std::endl;
+					break;
+				case SDLK_5:
+					c1.pushButton(0x10);
+					std::cout << 5 << std::endl;
+					break;
+				case SDLK_6:
+					c1.pushButton(0x20);
+					std::cout << 6 << std::endl;
+					break;
+				case SDLK_7:
+					c1.pushButton(0x40);
+					std::cout << 7 << std::endl;
+					break;
+				case SDLK_8:
+					c1.pushButton(0x80);
+					std::cout << 8 << std::endl;
 					break;
 				case SDLK_DOWN:
 					c1.pushButton(32);
 					std::cout << "DOWN" << std::endl;
 					break;
 				}
-			}
+			}/*
+			else if (event.type == SDL_KEYUP) {
+				std::cout << "KEYUP############" << event.key.keysym.sym << std::endl;
+
+				switch (event.key.keysym.sym) {
+				case SDLK_1:
+					c1.releaseButton(1);
+					std::cout << 1 << std::endl;
+					break;
+				case SDLK_2:
+					c1.releaseButton(2);
+					std::cout << 2 << std::endl;
+					break;
+				case SDLK_3:
+					c1.releaseButton(4);
+					std::cout << 3 << std::endl;
+					break;
+				case SDLK_4:
+					c1.releaseButton(8);
+					std::cout << 4 << std::endl;
+					break;
+				case SDLK_5:
+					c1.releaseButton(16);
+					std::cout << 5 << std::endl;
+					break;
+				case SDLK_6:
+					c1.releaseButton(32);
+					std::cout << 6 << std::endl;
+					break;
+				case SDLK_7:
+					c1.releaseButton(64);
+					std::cout << 7 << std::endl;
+					break;
+				case SDLK_8:
+					c1.releaseButton(128);
+					std::cout << 8 << std::endl;
+					break;
+				case SDLK_DOWN:
+					c1.pushButton(32);
+					std::cout << "DOWN" << std::endl;
+					break;
+				}
+			}*/
 		}
 		start2 = clock();
 		nes.stepSeconds(0.016f);
-		std::cout << "Nes took: " << (clock() - start2) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
+		//std::cout << "Nes took: " << (clock() - start2) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
 		frameTime = SDL_GetTicks() - tickCounter;
 		if (frameTime < 160) {
 			SDL_Delay(160 - frameTime);
 			std::cout << "test";
 		}
 		frame++;
-		std::cout << frame << std::endl;
-		std::cout << "Frame took: " << (clock() - start) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
+		//std::cout << frame << std::endl;
+		//std::cout << "Frame took: " << (clock() - start) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
 	}
 
 	
