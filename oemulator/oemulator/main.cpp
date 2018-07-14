@@ -23,7 +23,7 @@ long getFileSize(FILE *file)
 
 
 int main(int argc, char** argv) {
-	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\Donkey Kong (JU).nes";
+	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\Donkey Kong 3.nes";
 
 	unsigned char* fileBuffer;
 	FILE* file = NULL;
@@ -75,7 +75,6 @@ int main(int argc, char** argv) {
 	//nes.cpu->printCallLog = true;
 	//nes.step(9200); 
 	
-
 	SDL_Window* patternTableWindow = NULL;
 	SDL_Surface* patternTableSurface = NULL;
 
@@ -220,13 +219,13 @@ int main(int argc, char** argv) {
 			}
 		}
 		c1.pushButton(input);
-		start2 = clock();
+		start2 = clock()/double(CLOCKS_PER_SEC) * 1000;
 		nes.stepSeconds(0.016f);
 		//std::cout << "Nes took: " << (clock() - start2) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
-		frameTime = SDL_GetTicks() - tickCounter;
+		frameTime = clock()/double(CLOCKS_PER_SEC) * 1000 - start2;
 		if (frameTime < 160) {
-			SDL_Delay(160 - frameTime);
-			std::cout << "test";
+			//SDL_Delay(160 - frameTime);
+			//std::cout << "test";
 		}
 		frame++;
 		//std::cout << frame << std::endl;
