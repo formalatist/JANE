@@ -5,7 +5,6 @@
 #include "ROMLoader.h"
 #include <chrono>
 #include <ctime>
-//#include "NES.h"
 
 bool running = true;
 const int FPS = 30;
@@ -24,7 +23,7 @@ long getFileSize(FILE *file)
 
 
 int main(int argc, char** argv) {
-	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\Donkey Kong (JU).nes";
+	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\Donkey Kong 3.nes";
 
 	unsigned char* fileBuffer;
 	FILE* file = NULL;
@@ -53,13 +52,12 @@ int main(int argc, char** argv) {
 		(static_cast<int>(fileBuffer[7]) & 0x8) << std::endl;
 
 	//create the cpu
-	//CPU6502 cpu = CPU6502();
 	NES nes = NES();
+	Controller c1 = Controller();
+	nes.connectController(&c1);
 	ROMLoader loader = ROMLoader(nes.memory, nes.ppuMemory);
 	loader.loadROM(fileBuffer, fileSize, (*nes.cpu));
-	//clear ppu registers
-	//loader.clearPPUReg();
-	std::cout << "printing memory" << nes.memory->memory[0] << std::endl;
+
 	std::cout << "Starting PC at: 0x" << std::hex << nes.cpu->PC << std::endl;
 	
 
@@ -74,23 +72,9 @@ int main(int argc, char** argv) {
 	nes.setScreen(mainWindowSurface, mainWindow);
 	nes.updateScreen();
 	
-
-	//run the nes
-	//nes.step(25000 * 120*2);
-	//nes.updateScreen();
-
-	
 	//nes.cpu->printCallLog = true;
 	//nes.step(9200); 
-
-
-	std::cout << "Total unique ops: " << std::dec << nes.cpu->numImplementedOps << std::endl;
-	std::cout << "Done!" << std::endl;
-	std::cout << "PC: " << std::hex << nes.cpu->PC << std::endl;
-
-
 	
-
 	SDL_Window* patternTableWindow = NULL;
 	SDL_Surface* patternTableSurface = NULL;
 
@@ -152,24 +136,100 @@ int main(int argc, char** argv) {
 	int start = 0;
 	int start2 = 0;
 	SDL_Event event;
+	byte input = 0;
 	while (run) {
 		start = clock();
+		c1.releaseButton(0xFF);
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				run = false;
 			}
+			else if (event.type == SDL_KEYDOWN) {
+				std::cout << "KEYDOWN############" << event.key.keysym.sym << std::endl;
+				switch (event.key.keysym.sym) {
+				case SDLK_a:
+					input |= 0x1;
+					std::cout << 1 << std::endl;
+					break;
+				case SDLK_b:
+					input |= 0x2;
+					std::cout << 2 << std::endl;
+					break;
+				case SDLK_s:
+					input |= 0x4;
+					std::cout << 3 << std::endl;
+					break;
+				case SDLK_SPACE:
+					input |= 0x8;
+					std::cout << 4 << std::endl;
+					break;
+				case SDLK_UP:
+					input |= 0x10;
+					std::cout << 5 << std::endl;
+					break;
+				case SDLK_DOWN:
+					input |= 0x20;
+					std::cout << 6 << std::endl;
+					break;
+				case SDLK_LEFT:
+					input |= 0x40;
+					std::cout << 7 << std::endl;
+					break;
+				case SDLK_RIGHT:
+					input |= 0x80;
+					std::cout << 8 << std::endl;
+					break;
+				}
+			} else if (event.type == SDL_KEYUP) {
+				std::cout << "KEYUP############" << event.key.keysym.sym << std::endl;
+				switch (event.key.keysym.sym) {
+				case SDLK_a:
+					input &= ~0x1;
+					std::cout << 1 << std::endl;
+					break;
+				case SDLK_b:
+					input &= ~0x2;
+					std::cout << 2 << std::endl;
+					break;
+				case SDLK_s:
+					input &= ~0x4;
+					std::cout << 3 << std::endl;
+					break;
+				case SDLK_SPACE:
+					input &= ~0x8;
+					std::cout << 4 << std::endl;
+					break;
+				case SDLK_UP:
+					input &= ~0x10;
+					std::cout << 5 << std::endl;
+					break;
+				case SDLK_DOWN:
+					input &= ~0x20;
+					std::cout << 6 << std::endl;
+					break;
+				case SDLK_LEFT:
+					input &= ~0x40;
+					std::cout << 7 << std::endl;
+					break;
+				case SDLK_RIGHT:
+					input &= ~0x80;
+					std::cout << 8 << std::endl;
+					break;
+				}
+			}
 		}
-		start2 = clock();
+		c1.pushButton(input);
+		start2 = clock()/double(CLOCKS_PER_SEC) * 1000;
 		nes.stepSeconds(0.016f);
-		std::cout << "Nes took: " << (clock() - start2) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
-		frameTime = SDL_GetTicks() - tickCounter;
+		//std::cout << "Nes took: " << (clock() - start2) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
+		frameTime = clock()/double(CLOCKS_PER_SEC) * 1000 - start2;
 		if (frameTime < 160) {
-			SDL_Delay(160 - frameTime);
-			std::cout << "test";
+			//SDL_Delay(160 - frameTime);
+			//std::cout << "test";
 		}
 		frame++;
-		std::cout << frame << std::endl;
-		std::cout << "Frame took: " << (clock() - start) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
+		//std::cout << frame << std::endl;
+		//std::cout << "Frame took: " << (clock() - start) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
 	}
 
 	

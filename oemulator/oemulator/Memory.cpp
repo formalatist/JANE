@@ -66,7 +66,7 @@ void Memory::write(int addr, byte val)
 		//TODO: implement audio
 	}
 	else if (addr == 0x4016) { //write to controllers
-		//TODO: add controllers
+		c1->writeController(val);
 	}
 	else if (addr == 0x4017) { //write to APU
 		//TODO implement audio
@@ -92,8 +92,15 @@ byte Memory::read(int addr)
 		return ppu->readRegister(0x2000 + (addr % 8));
 	} else if (addr == 0x4014) {
 		return ppu->readRegister(addr);
-	} else if(addr >= 0x6000) { //area for a mapper to take care of
+	} else if (addr == 0x4016) { //read controller
+		return c1->readController();
+	} else if (addr >= 0x6000) { //area for a mapper to take care of
 		return memory[addr];
 	}
 	return 0;
+}
+
+void Memory::connectController(Controller * c1_)
+{
+	c1 = c1_;
 }

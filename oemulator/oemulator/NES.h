@@ -3,6 +3,7 @@
 #include "PPU.h"
 #include "Memory.h"
 #include "PPUMemory.h"
+#include "Controller.h"
 #include <SDL.h>
 
 class NES {
@@ -19,6 +20,8 @@ public:
 
 	void setScreen(SDL_Surface* screen_, SDL_Window* window_);
 	void updateScreen();
+
+	void connectController(Controller* controller);
 
 	//the CPU and the PPU, they talk to eachother via the NES
 	//so they need to be public
