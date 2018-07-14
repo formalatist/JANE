@@ -137,7 +137,7 @@ int main(int argc, char** argv) {
 	int start = 0;
 	int start2 = 0;
 	SDL_Event event;
-	c1.pushButton(0xff);
+	byte input = 0;
 	while (run) {
 		start = clock();
 		c1.releaseButton(0xFF);
@@ -147,89 +147,79 @@ int main(int argc, char** argv) {
 			}
 			else if (event.type == SDL_KEYDOWN) {
 				std::cout << "KEYDOWN############" << event.key.keysym.sym << std::endl;
-
 				switch (event.key.keysym.sym) {
-				case SDLK_1:
-					c1.pushButton(0x1);
+				case SDLK_a:
+					input |= 0x1;
 					std::cout << 1 << std::endl;
 					break;
-				case SDLK_2:
-					c1.pushButton(0x2);
+				case SDLK_b:
+					input |= 0x2;
 					std::cout << 2 << std::endl;
 					break;
-				case SDLK_3:
-					c1.pushButton(0x4);
+				case SDLK_s:
+					input |= 0x4;
 					std::cout << 3 << std::endl;
 					break;
-				case SDLK_4:
-					c1.pushButton(0x8);
+				case SDLK_SPACE:
+					input |= 0x8;
 					std::cout << 4 << std::endl;
 					break;
-				case SDLK_5:
-					c1.pushButton(0x10);
+				case SDLK_UP:
+					input |= 0x10;
 					std::cout << 5 << std::endl;
 					break;
-				case SDLK_6:
-					c1.pushButton(0x20);
+				case SDLK_DOWN:
+					input |= 0x20;
 					std::cout << 6 << std::endl;
 					break;
-				case SDLK_7:
-					c1.pushButton(0x40);
+				case SDLK_LEFT:
+					input |= 0x40;
 					std::cout << 7 << std::endl;
 					break;
-				case SDLK_8:
-					c1.pushButton(0x80);
+				case SDLK_RIGHT:
+					input |= 0x80;
 					std::cout << 8 << std::endl;
 					break;
-				case SDLK_DOWN:
-					c1.pushButton(32);
-					std::cout << "DOWN" << std::endl;
-					break;
 				}
-			}/*
-			else if (event.type == SDL_KEYUP) {
+			} else if (event.type == SDL_KEYUP) {
 				std::cout << "KEYUP############" << event.key.keysym.sym << std::endl;
-
 				switch (event.key.keysym.sym) {
-				case SDLK_1:
-					c1.releaseButton(1);
+				case SDLK_a:
+					input &= ~0x1;
 					std::cout << 1 << std::endl;
 					break;
-				case SDLK_2:
-					c1.releaseButton(2);
+				case SDLK_b:
+					input &= ~0x2;
 					std::cout << 2 << std::endl;
 					break;
-				case SDLK_3:
-					c1.releaseButton(4);
+				case SDLK_s:
+					input &= ~0x4;
 					std::cout << 3 << std::endl;
 					break;
-				case SDLK_4:
-					c1.releaseButton(8);
+				case SDLK_SPACE:
+					input &= ~0x8;
 					std::cout << 4 << std::endl;
 					break;
-				case SDLK_5:
-					c1.releaseButton(16);
+				case SDLK_UP:
+					input &= ~0x10;
 					std::cout << 5 << std::endl;
 					break;
-				case SDLK_6:
-					c1.releaseButton(32);
+				case SDLK_DOWN:
+					input &= ~0x20;
 					std::cout << 6 << std::endl;
 					break;
-				case SDLK_7:
-					c1.releaseButton(64);
+				case SDLK_LEFT:
+					input &= ~0x40;
 					std::cout << 7 << std::endl;
 					break;
-				case SDLK_8:
-					c1.releaseButton(128);
+				case SDLK_RIGHT:
+					input &= ~0x80;
 					std::cout << 8 << std::endl;
 					break;
-				case SDLK_DOWN:
-					c1.pushButton(32);
-					std::cout << "DOWN" << std::endl;
-					break;
 				}
-			}*/
+			}
 		}
+		c1.pushButton(input);
 		start2 = clock();
 		nes.stepSeconds(0.016f);
 		//std::cout << "Nes took: " << (clock() - start2) / double(CLOCKS_PER_SEC) * 1000 << std::endl;

@@ -9,7 +9,7 @@ void Controller::setMemory(Memory * mem_)
 
 void Controller::pushButton(byte val)
 {
-	state |= val;
+	state = val;
 }
 
 void Controller::releaseButton(byte val)
@@ -21,11 +21,11 @@ byte Controller::readController()
 {
 	byte val = (state >> currentBit)&1;
 	currentBit++;
-	currentBit %= 8;
+	//currentBit %= 8;
 	if (strobe) {
 		currentBit = 0;
 	}
-	std::cout << "READING C: " << (int)state << "  val: " << (int)val << std::endl;
+	//std::cout << "READING C: " << (int)state << "  val: " << (int)val << std::endl;
 	return val;
 }
 
