@@ -1,4 +1,5 @@
 #include "NES.h"
+#include <ctime>
 
 NES::NES()
 {
@@ -54,6 +55,7 @@ void NES::setScreen(SDL_Surface * screen_, SDL_Window* window_)
 
 void NES::updateScreen()
 {
+	//int start = clock();
 	for (int x = 0; x < 512; x++) {
 		for (int y = 0; y < 240; y++) {
 
@@ -63,6 +65,7 @@ void NES::updateScreen()
 		}
 	}
 	SDL_UpdateWindowSurface(window);
+	//std::cout << "Frame time: " << (clock() - start) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
 }
 
 void NES::connectController(Controller * controller)

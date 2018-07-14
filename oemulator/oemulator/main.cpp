@@ -23,7 +23,7 @@ long getFileSize(FILE *file)
 
 
 int main(int argc, char** argv) {
-	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\Donkey Kong 3.nes";
+	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\Balloon Fight.nes";
 
 	unsigned char* fileBuffer;
 	FILE* file = NULL;
