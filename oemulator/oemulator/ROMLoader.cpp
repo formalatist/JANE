@@ -23,6 +23,7 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 	//this does NOT support RAM on the chip. only rom. add that later ;^)
 	int PRGROMSIZE = rom[4] * 16384;
 	int CHRROMSIZE = rom[5] * 8192;
+	ppuMemory->setMirror(rom[6]&1);
 	
 	byte *prgROM = new byte[PRGROMSIZE];
 	//read in the prgROM

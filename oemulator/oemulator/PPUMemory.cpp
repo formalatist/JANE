@@ -50,14 +50,26 @@ void PPUMemory::write(int addr, byte val)
 		//memory[addr] = val;
 	} else if(addr < 0x3000) { //Nametables 0-3 
 		//std::cout << "Write to nametable: addr: " << (int)addr << "  val: " << (int)val << std::endl;
-		int offset = addr > 0x27FF ? 0x800 : 0;
-		addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
+		if (isMirrorVertical) {
+			int offset = ((addr > 0x23FF && addr < 0x2800) || addr > 0x2BFF) ? 0x400 : 0;
+			addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
+		}
+		else { //Horizontal mirror
+			int offset = addr > 0x27FF ? 0x800 : 0;
+			addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
+		}
 		memory[addr] = val;
 	} else if (addr < 0x3F00) { //mirrors of them at(0x3000 - 0x3EFF)
 		//std::cout << "#######WRITE tO MIRROR OF NAMETABLE" << std::endl;
 		addr -= 0x1000;
-		int offset = addr > 0x27FF ? 0x800 : 0;
-		addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
+		if (isMirrorVertical) {
+			int offset = ((addr > 0x23FF && addr < 0x2800) || addr > 0x2BFF) ? 0x400 : 0;
+			addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
+		}
+		else { //Horizontal mirror
+			int offset = addr > 0x27FF ? 0x800 : 0;
+			addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
+		}
 		memory[addr] = val;
 	} else if (addr < 0x3F20) { //palette table
 		//std::cout << "PALETTE WRITE: addr: " << (int)addr << "  val: " << (int)val << std::endl;
@@ -79,14 +91,25 @@ byte PPUMemory::read(int addr)
 	if(addr < 0x2000) { //pattern tables
 		return memory[addr];
 	} else if (addr < 0x3000) { //nametables
-		//TODO: add mapper that does different types of mirroring, for now only horizontal
-		int offset = addr > 0x27FF ? 0x800 : 0;
-		addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
+		if (isMirrorVertical) {
+			int offset = ((addr > 0x23FF && addr < 0x2800) || addr > 0x2BFF) ? 0x400 : 0;
+			addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
+		}
+		else { //Horizontal mirror
+			int offset = addr > 0x27FF ? 0x800 : 0;
+			addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
+		}
 		return memory[addr];
 	} else if(addr < 0x3F00) { //mirror of nametables
 		addr -= 0x1000;
-		int offset = addr > 0x27FF ? 0x800 : 0;
-		addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
+		if (isMirrorVertical) {
+			int offset = ((addr > 0x23FF && addr < 0x2800) || addr > 0x2BFF) ? 0x400 : 0;
+			addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
+		}
+		else { //Horizontal mirror
+			int offset = addr > 0x27FF ? 0x800 : 0;
+			addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
+		}
 		return memory[addr];
 	} else if(addr < 0x3F20) { //palette
 		//std::cout << "PALETTE READ: addr: " << (int)addr << "  val: " << (int)memory[addr] << std::endl;
@@ -98,4 +121,9 @@ byte PPUMemory::read(int addr)
 		std::cout << "Tried to read addr: " << addr << std::endl;
 		return 0;
 	}
+}
+
+void PPUMemory::setMirror(bool mirror)
+{
+	isMirrorVertical = mirror;
 }
