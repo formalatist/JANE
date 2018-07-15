@@ -23,7 +23,7 @@ long getFileSize(FILE *file)
 
 
 int main(int argc, char** argv) {
-	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\Balloon Fight.nes";
+	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\Ice Climber.nes";
 
 	unsigned char* fileBuffer;
 	FILE* file = NULL;
@@ -62,7 +62,6 @@ int main(int argc, char** argv) {
 	
 
 	//create the screen
-	
 	SDL_Window* mainWindow = NULL;
 	SDL_Surface* mainWindowSurface = NULL;
 	mainWindow = SDL_CreateWindow("ØMULATOR", 1024, 512,

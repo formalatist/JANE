@@ -31,6 +31,8 @@ public:
 	void write(int addr, byte val);
 	byte read(int addr);
 
+	void setMirror(bool mirror);
+
 	//for debug
 	bool printReads = false;
 	bool printWrites = false;
@@ -42,4 +44,5 @@ public:
 	CPU6502* cpu;
 private:
 	PPU* ppu;
+	bool isMirrorVertical;
 };
