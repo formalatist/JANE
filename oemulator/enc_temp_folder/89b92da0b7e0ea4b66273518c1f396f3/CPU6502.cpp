@@ -146,6 +146,12 @@ void CPU6502::executeOP()
 			cycles += 2;
 			break;
 		}
+		case 0xc: //2 byte NOP
+		{
+			readAbsolute();
+			cycles += 4;
+			break;
+		}
 		case 0xd: //ORA logical inclusive or, absolute
 		{
 			byte val = A | readAbsolute();
@@ -202,6 +208,12 @@ void CPU6502::executeOP()
 			cycles += 5;
 			break;
 		}
+		case 0x14: //IGN d,X
+		{
+			readZeroPageX();
+			cycles += 4;
+			break;
+		}
 		case 0x15: //ORA logical inclusive or, zeropage X
 		{
 			byte val = A | readZeroPageX();
@@ -235,6 +247,12 @@ void CPU6502::executeOP()
 			A = val;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
+			cycles += 4;
+			break;
+		}
+		case 0x1c: //IGN a,X
+		{
+			readAbsoluteX();
 			cycles += 4;
 			break;
 		}
@@ -399,6 +417,12 @@ void CPU6502::executeOP()
 			cycles += 5;
 			break;
 		}
+		case 0x34: //IGN d,X
+		{
+			readZeroPageX();
+			cycles += 4;
+			break;
+		}
 		case 0x35: //AND logical and, ZeroPageX
 		{
 			byte val = A & readZeroPageX();
@@ -433,6 +457,12 @@ void CPU6502::executeOP()
 			A = val;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
+			cycles += 4;
+			break;
+		}
+		case 0x3c: //IGN a,X
+		{
+			readAbsoluteX();
 			cycles += 4;
 			break;
 		}
@@ -590,6 +620,12 @@ void CPU6502::executeOP()
 			cycles += 5;
 			break;
 		}
+		case 0x54: //IGN d,X
+		{
+			readZeroPageX();
+			cycles += 4;
+			break;
+		}
 		case 0x55: //EOR exclusive or, zeroPageX
 		{
 			byte val = A ^ readZeroPageX();
@@ -623,6 +659,12 @@ void CPU6502::executeOP()
 			A = val;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
+			cycles += 4;
+			break;
+		}
+		case 0x5c: //IGN a,X
+		{
+			readAbsoluteX();
 			cycles += 4;
 			break;
 		}
@@ -796,6 +838,12 @@ void CPU6502::executeOP()
 			cycles += 5;
 			break;
 		}
+		case 0x74: //IGN d,X
+		{
+			readZeroPageX();
+			cycles += 4;
+			break;
+		}
 		case 0x75: //ADC add with carry, zeroPageX
 		{
 			byte M = readZeroPageX();
@@ -836,6 +884,12 @@ void CPU6502::executeOP()
 			N = (val & 0x80) == 0x80;
 			V = (((A ^ val) & (M ^ val)) & 0x80) == 0x80;
 			A = val & 0xff;
+			cycles += 4;
+			break;
+		}
+		case 0x7c: //IGN a,X
+		{
+			readAbsoluteX();
 			cycles += 4;
 			break;
 		}
@@ -1360,6 +1414,12 @@ void CPU6502::executeOP()
 			cycles += 5;
 			break;
 		}
+		case 0xd4: //IGN d,X
+		{
+			readZeroPageX();
+			cycles += 4;
+			break;
+		}
 		case 0xd5: //CMP compare, zeroPageX
 		{
 			byte val = readZeroPageX();
@@ -1393,6 +1453,12 @@ void CPU6502::executeOP()
 			C = A >= val;
 			Z = A == val;
 			N = ((A - val) & 0x80) == 0x80;
+			cycles += 4;
+			break;
+		}
+		case 0xdc: //IGN a,X
+		{
+			readAbsoluteX();
 			cycles += 4;
 			break;
 		}
@@ -1563,6 +1629,12 @@ void CPU6502::executeOP()
 			cycles += 5;
 			break;
 		}
+		case 0xf4: //IGN d,X
+		{
+			readZeroPageX();
+			cycles += 4;
+			break;
+		}
 		case 0xf5: //SBC subtract with carry, zeroPageX
 		{
 			byte M = readZeroPageX();
@@ -1601,6 +1673,12 @@ void CPU6502::executeOP()
 			N = ((val & 0xff) & 0x80) == 0x80;
 			V = ((A ^ M) & 0x80) != 0 && ((A^val) & 0x80) != 0;
 			A = val & 0xff;
+			cycles += 4;
+			break;
+		}
+		case 0xfc: //IGN a,X
+		{
+			readAbsoluteX();
 			cycles += 4;
 			break;
 		}

@@ -917,11 +917,23 @@ void CPU6502::executeOP()
 			cycles += 7;
 			break;
 		}
+		case 0x80: //SKB skip byte
+		{
+			PC += 2;
+			cycles += 2;
+			break;
+		}
 		case 0x81: //STA store accumulator, indirectX
 		{
 			memory->write(indirectX(), A);
 			PC += 2;
 			cycles += 6;
+			break;
+		}
+		case 0x82: //SKB skip byte
+		{
+			PC += 2;
+			cycles += 2;
 			break;
 		}
 		case 0x84: //STY store Y register, zeroPAge
@@ -951,6 +963,12 @@ void CPU6502::executeOP()
 			Z = Y == 0;
 			N = (Y & 0x80) == 0x80;
 			PC++;
+			cycles += 2;
+			break;
+		}
+		case 0x89: //SKB skip byte
+		{
+			PC += 2;
 			cycles += 2;
 			break;
 		}
@@ -1293,6 +1311,12 @@ void CPU6502::executeOP()
 			cycles += 6;
 			break;
 		}
+		case 0xc2: //SKB skip byte
+		{
+			PC += 2;
+			cycles += 2;
+			break;
+		}
 		case 0xc4: //CPY compare Y register, zeroPage
 		{
 			byte val = readZeroPage();
@@ -1501,6 +1525,12 @@ void CPU6502::executeOP()
 			V = ((A ^ M) & 0x80) != 0 && ((A^val) & 0x80) != 0;
 			A = val & 0xff;
 			cycles += 6;
+			break;
+		}
+		case 0xe2: //SKB skip byte
+		{
+			PC += 2;
+			cycles += 2;
 			break;
 		}
 		case 0xe4: //CPX compare X register, zeroPage
