@@ -23,7 +23,7 @@ long getFileSize(FILE *file)
 
 
 int main(int argc, char** argv) {
-	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\Ice Climber.nes";
+	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\nestest.nes";
 
 	unsigned char* fileBuffer;
 	FILE* file = NULL;
@@ -71,8 +71,8 @@ int main(int argc, char** argv) {
 	nes.setScreen(mainWindowSurface, mainWindow);
 	nes.updateScreen();
 	
-	//nes.cpu->printCallLog = true;
-	//nes.step(9200); 
+	nes.cpu->printCallLog = true;
+	nes.step(9200); 
 	
 	SDL_Window* patternTableWindow = NULL;
 	SDL_Surface* patternTableSurface = NULL;
@@ -128,6 +128,7 @@ int main(int argc, char** argv) {
 	}
 
 	SDL_UpdateWindowSurface(patternTableWindow);
+	/*
 	tickCounter = SDL_GetTicks();
 	int frame = 0;
 	int frameTime = 0;
@@ -229,7 +230,7 @@ int main(int argc, char** argv) {
 		frame++;
 		//std::cout << frame << std::endl;
 		//std::cout << "Frame took: " << (clock() - start) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
-	}
+	}*/
 
 	
 	SDL_DestroyWindow(patternTableWindow);
