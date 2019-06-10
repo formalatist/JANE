@@ -684,6 +684,12 @@ void CPU6502::executeOP()
 			cycles += 4;
 			break;
 		}
+		case 0x5a: //NOP
+		{
+			PC++;
+			cycles += 2;
+			break;
+		}
 		case 0x5c: //IGN a,X
 		{
 			readAbsoluteX();
@@ -907,6 +913,12 @@ void CPU6502::executeOP()
 			V = (((A ^ val) & (M ^ val)) & 0x80) == 0x80;
 			A = val & 0xff;
 			cycles += 4;
+			break;
+		}
+		case 0x7a: //NOP
+		{
+			PC++;
+			cycles += 2;
 			break;
 		}
 		case 0x7c: //IGN a,X
@@ -1512,6 +1524,12 @@ void CPU6502::executeOP()
 			cycles += 4;
 			break;
 		}
+		case 0xda: //NOP
+		{
+			PC++;
+			cycles += 2;
+			break;
+		}
 		case 0xdc: //IGN a,X
 		{
 			readAbsoluteX();
@@ -1736,6 +1754,12 @@ void CPU6502::executeOP()
 			V = ((A ^ M) & 0x80) != 0 && ((A^val) & 0x80) != 0;
 			A = val & 0xff;
 			cycles += 4;
+			break;
+		}
+		case 0xfa: //NOP
+		{
+			PC++;
+			cycles += 2;
 			break;
 		}
 		case 0xfc: //IGN a,X
