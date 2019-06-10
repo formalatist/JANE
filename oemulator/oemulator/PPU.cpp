@@ -163,7 +163,7 @@ byte PPU::readRegister(int addr)
 		}
 		return val;
 	} else {
-		std::cout << "Tried reading register that doesnt exist: " << addr << std::endl;
+		std::cout << "Tried reading PPU register that doesnt exist: " << addr << std::endl;
 		return 0;
 	}
 }

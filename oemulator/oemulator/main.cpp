@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <stdio.h>
 #include <iostream>
+#include <iomanip>
 #include "ROMLoader.h"
 #include <chrono>
 #include <ctime>
@@ -23,7 +24,7 @@ long getFileSize(FILE *file)
 
 
 int main(int argc, char** argv) {
-	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\nestest.nes";
+	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\donkey-kong.nes";
 
 	unsigned char* fileBuffer;
 	FILE* file = NULL;
@@ -70,9 +71,7 @@ int main(int argc, char** argv) {
 	mainWindowSurface = SDL_GetWindowSurface(mainWindow);
 	nes.setScreen(mainWindowSurface, mainWindow);
 	nes.updateScreen();
-	
-	nes.cpu->printCallLog = true;
-	nes.step(9200); 
+
 	
 	SDL_Window* patternTableWindow = NULL;
 	SDL_Surface* patternTableSurface = NULL;
@@ -128,7 +127,7 @@ int main(int argc, char** argv) {
 	}
 
 	SDL_UpdateWindowSurface(patternTableWindow);
-	/*
+	
 	tickCounter = SDL_GetTicks();
 	int frame = 0;
 	int frameTime = 0;
@@ -137,6 +136,12 @@ int main(int argc, char** argv) {
 	int start2 = 0;
 	SDL_Event event;
 	byte input = 0;
+
+	/*nes.step(50000);
+	nes.cpu->printCallLog = true;
+	nes.step(2000);
+	run = false;*/
+
 	while (run) {
 		start = clock();
 		c1.releaseButton(0xFF);
@@ -147,9 +152,9 @@ int main(int argc, char** argv) {
 			else if (event.type == SDL_KEYDOWN) {
 				std::cout << "KEYDOWN############" << event.key.keysym.sym << std::endl;
 				switch (event.key.keysym.sym) {
-				case SDLK_a:
+				case SDLK_a:		
 					input |= 0x1;
-					std::cout << 1 << std::endl;
+					std::cout << 1 << " JUMP (A)" << std::endl;
 					break;
 				case SDLK_b:
 					input |= 0x2;
@@ -157,27 +162,27 @@ int main(int argc, char** argv) {
 					break;
 				case SDLK_s:
 					input |= 0x4;
-					std::cout << 3 << std::endl;
+					std::cout << 3 << " DOWN" << std::endl;
 					break;
 				case SDLK_SPACE:
 					input |= 0x8;
-					std::cout << 4 << std::endl;
+					std::cout << 4 << " START" << std::endl;
 					break;
 				case SDLK_UP:
 					input |= 0x10;
-					std::cout << 5 << std::endl;
+					std::cout << 5 << " UP" << std::endl;
 					break;
 				case SDLK_DOWN:
 					input |= 0x20;
-					std::cout << 6 << std::endl;
+					std::cout << 6 << " DOWN" << std::endl;
 					break;
 				case SDLK_LEFT:
 					input |= 0x40;
-					std::cout << 7 << std::endl;
+					std::cout << 7 << " LEFT" << std::endl;
 					break;
 				case SDLK_RIGHT:
 					input |= 0x80;
-					std::cout << 8 << std::endl;
+					std::cout << 8 << " RIGHT" << std::endl;
 					break;
 				}
 			} else if (event.type == SDL_KEYUP) {
@@ -220,17 +225,22 @@ int main(int argc, char** argv) {
 		}
 		c1.pushButton(input);
 		start2 = clock()/double(CLOCKS_PER_SEC) * 1000;
+		double duration = clock();
+		double duration2 = clock();
 		nes.stepSeconds(0.016f);
 		//std::cout << "Nes took: " << (clock() - start2) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
-		frameTime = clock()/double(CLOCKS_PER_SEC) * 1000 - start2;
-		if (frameTime < 160) {
-			//SDL_Delay(160 - frameTime);
-			//std::cout << "test";
+		duration = (clock() - duration) / ((double)CLOCKS_PER_SEC) * 1000;
+		//std::cout << "Duration: " << duration<< std::endl;
+		if (duration < 16.6667) {
+			SDL_Delay(16.6667 - duration);
+			//std::cout << "test  " << duration << std::endl;
 		}
+		std::cout << "\rFPS: " << std::setprecision(3) << 1.0 / ((clock() - duration2) / ((double)CLOCKS_PER_SEC)) 
+			<< "/" << std::setprecision(4) << 1.0 / (duration / 1000.0);// << std::endl;
 		frame++;
 		//std::cout << frame << std::endl;
 		//std::cout << "Frame took: " << (clock() - start) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
-	}*/
+	}
 
 	
 	SDL_DestroyWindow(patternTableWindow);

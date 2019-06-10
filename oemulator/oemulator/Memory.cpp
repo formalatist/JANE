@@ -73,6 +73,7 @@ void Memory::write(int addr, byte val)
 	}
 	else {
 		std::cout << "Unhandeled write to address: " << addr << ". Value: " << val << std::endl;
+		//cpu->printCallLog = true; uncomment to start printing callLog after unhandled write
 	}
 	if (printWrites) {
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 11);
@@ -87,7 +88,9 @@ byte Memory::read(int addr)
 		std::cout << "Read of addr: " << std::hex << addr << std::endl;
 	}
 	if(addr < 0x2000) { //reading RAM
-		return memory[addr];
+		//return memory[addr]; old code, this does not mirror RAM around 0x0800 as it should
+		//so i now mirror it, this /might/ be wrong. not sure why i didnt mirror it in the first place -ØA 06.10.19
+		return memory[addr % 0x800];
 	} else if(addr < 0x4000) { //reading repeating PPU registers
 		return ppu->readRegister(0x2000 + (addr % 8));
 	} else if (addr == 0x4014) {
