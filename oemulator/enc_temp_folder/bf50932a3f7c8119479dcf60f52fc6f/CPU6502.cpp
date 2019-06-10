@@ -260,6 +260,12 @@ void CPU6502::executeOP()
 			cycles += 4;
 			break;
 		}
+		case 0x1a: //NOP
+		{
+			PC++;
+			cycles += 2;
+			break;
+		}
 		case 0x1c: //IGN a,X
 		{
 			readAbsoluteX();
@@ -470,6 +476,12 @@ void CPU6502::executeOP()
 			cycles += 4;
 			break;
 		}
+		case 0x3a: //NOP
+		{
+			PC++;
+			cycles += 2;
+			break;
+		}
 		case 0x3c: //IGN a,X
 		{
 			readAbsoluteX();
@@ -670,6 +682,12 @@ void CPU6502::executeOP()
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
 			cycles += 4;
+			break;
+		}
+		case 0x5a: //NOP
+		{
+			PC++;
+			cycles += 2;
 			break;
 		}
 		case 0x5c: //IGN a,X
@@ -895,6 +913,12 @@ void CPU6502::executeOP()
 			V = (((A ^ val) & (M ^ val)) & 0x80) == 0x80;
 			A = val & 0xff;
 			cycles += 4;
+			break;
+		}
+		case 0x7a: //NOP
+		{
+			PC++;
+			cycles += 2;
 			break;
 		}
 		case 0x7c: //IGN a,X
@@ -1157,6 +1181,16 @@ void CPU6502::executeOP()
 			cycles += 3;
 			break;
 		}
+		case 0xa7: //LAX load accumulator and X, zeroPage
+		{
+			byte val = readZeroPage();
+			A = val;
+			X = val;
+			Z = A == 0;
+			N = (A & 0x80) == 0x80;
+			cycles += 3;
+			break;
+		}
 		case 0xa8: //TAY ytansfer accumulator to Y
 		{
 			Y = A;
@@ -1207,6 +1241,16 @@ void CPU6502::executeOP()
 			cycles += 4;
 			break;
 		}
+		case 0xaf: //LAX load accumulator and X, absolute
+		{
+			byte val = readAbsolute();
+			A = val;
+			X = val;
+			Z = A == 0;
+			N = (A & 0x80) == 0x80;
+			cycles += 4;
+			break;
+		}
 		case 0xb0: //BCS branch if carry set, relative
 		{
 			byte val = readRelative();
@@ -1241,6 +1285,16 @@ void CPU6502::executeOP()
 			cycles += 5;
 			break;
 		}
+		case 0xb3: //LAX load accumulator and X, indirectY
+		{
+			byte val = readIndirectY();
+			A = val;
+			X = val;
+			Z = A == 0;
+			N = (A & 0x80) == 0x80;
+			cycles += 5;
+			break;
+		}
 		case 0xb4: //LDY load Y register, zeroPageX
 		{
 			Y = readZeroPageX();
@@ -1262,6 +1316,16 @@ void CPU6502::executeOP()
 			X = readZeroPageY();
 			Z = X == 0;
 			N = (X & 0x80) == 0x80;
+			cycles += 4;
+			break;
+		}
+		case 0xb7: //LAX load accumulator and X, zeroPageY
+		{
+			byte val = readZeroPageY();
+			A = val;
+			X = val;
+			Z = A == 0;
+			N = (A & 0x80) == 0x80;
 			cycles += 4;
 			break;
 		}
@@ -1310,6 +1374,16 @@ void CPU6502::executeOP()
 			X = readAbsoluteY();
 			Z = X == 0;
 			N = (X & 0x80) == 0x80;
+			cycles += 4;
+			break;
+		}
+		case 0xbf: //LAX load accumulator and X, absoluteY
+		{
+			byte val = readAbsoluteY();
+			A = val;
+			X = val;
+			Z = A == 0;
+			N = (A & 0x80) == 0x80;
 			cycles += 4;
 			break;
 		}
@@ -1498,6 +1572,12 @@ void CPU6502::executeOP()
 			Z = A == val;
 			N = ((A - val) & 0x80) == 0x80;
 			cycles += 4;
+			break;
+		}
+		case 0xda: //NOP
+		{
+			PC++;
+			cycles += 2;
 			break;
 		}
 		case 0xdc: //IGN a,X
@@ -1724,6 +1804,12 @@ void CPU6502::executeOP()
 			V = ((A ^ M) & 0x80) != 0 && ((A^val) & 0x80) != 0;
 			A = val & 0xff;
 			cycles += 4;
+			break;
+		}
+		case 0xfa: //NOP
+		{
+			PC++;
+			cycles += 2;
 			break;
 		}
 		case 0xfc: //IGN a,X
