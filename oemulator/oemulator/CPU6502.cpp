@@ -1719,6 +1719,18 @@ void CPU6502::executeOP()
 			cycles += 2;
 			break;
 		}
+		case 0xeb: //SBC, subtract with carry, Immediate
+		{
+			byte M = readImmediate();
+			short val = A - M - (1 - C);
+			C = (val >= 0);
+			Z = (val & 0xff) == 0;
+			N = ((val & 0xff) & 0x80) == 0x80;
+			V = ((A ^ M) & 0x80) != 0 && ((A^val) & 0x80) != 0;
+			A = val & 0xff;
+			cycles += 2;
+			break;
+		}
 		case 0xec: //CPX compare X register, absolute
 		{
 			byte val = readAbsolute();
