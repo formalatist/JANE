@@ -260,12 +260,6 @@ void CPU6502::executeOP()
 			cycles += 4;
 			break;
 		}
-		case 0x1a: //NOP
-		{
-			PC++;
-			cycles += 2;
-			break;
-		}
 		case 0x1c: //IGN a,X
 		{
 			readAbsoluteX();
@@ -474,12 +468,6 @@ void CPU6502::executeOP()
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
 			cycles += 4;
-			break;
-		}
-		case 0x3a: //NOP
-		{
-			PC++;
-			cycles += 2;
 			break;
 		}
 		case 0x3c: //IGN a,X
