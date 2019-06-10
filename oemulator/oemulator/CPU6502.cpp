@@ -146,6 +146,16 @@ void CPU6502::executeOP()
 			cycles += 2;
 			break;
 		}
+		case 0xb: //AAC AND byte with acc, Immediate
+		{
+			byte val = A & readImmediate();
+			A = val;
+			C = (A & 0x80) == 0x80;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 2;
+			break;
+		}
 		case 0xc: //2 byte NOP
 		{
 			readAbsolute();
@@ -1110,6 +1120,16 @@ void CPU6502::executeOP()
 			N = (X & 0x80) == 0x80;
 			cycles += 2;
 
+			break;
+		}
+		case 0xa3: //LAX load accumulator and X regitser, indirectX
+		{
+			byte val = readIndirectX();
+			A = val;
+			X = val;
+			Z = A == 0;
+			N = (A & 0x80) == 0x80;
+			cycles += 6;
 			break;
 		}
 		case 0xa4: //LDY load Y register, zeroPage

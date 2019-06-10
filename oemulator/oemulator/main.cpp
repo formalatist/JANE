@@ -24,7 +24,7 @@ long getFileSize(FILE *file)
 
 
 int main(int argc, char** argv) {
-	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\donkey-kong.nes";
+	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\nestest.nes";
 
 	unsigned char* fileBuffer;
 	FILE* file = NULL;
@@ -137,10 +137,10 @@ int main(int argc, char** argv) {
 	SDL_Event event;
 	byte input = 0;
 
-	/*nes.step(50000);
+	nes.step(5250);
 	nes.cpu->printCallLog = true;
-	nes.step(2000);
-	run = false;*/
+	nes.step(20);
+	run = false;
 
 	while (run) {
 		start = clock();
