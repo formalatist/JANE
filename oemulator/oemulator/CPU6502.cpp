@@ -970,6 +970,12 @@ void CPU6502::executeOP()
 			cycles += 2;
 			break;
 		}
+		case 0x83: //AAX AND X register with accumulator and store result in memory, indirectX
+		{
+			memory->write(indirectX(), A & X);
+			cycles += 6;
+			break;
+		}
 		case 0x84: //STY store Y register, zeroPAge
 		{
 			memory->write(zeroPage(), Y);
