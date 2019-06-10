@@ -973,6 +973,7 @@ void CPU6502::executeOP()
 		case 0x83: //AAX AND X register with accumulator and store result in memory, indirectX
 		{
 			memory->write(indirectX(), A & X);
+			PC += 2;
 			cycles += 6;
 			break;
 		}
@@ -993,6 +994,13 @@ void CPU6502::executeOP()
 		case 0x86: //STX store X register, zeroPage
 		{
 			memory->write(zeroPage(), X);
+			PC += 2;
+			cycles += 3;
+			break;
+		}
+		case 0x87: //AAX AND X register with accumulator and store result in memory, zeroPage
+		{
+			memory->write(zeroPage(), A & X);
 			PC += 2;
 			cycles += 3;
 			break;
@@ -1038,6 +1046,13 @@ void CPU6502::executeOP()
 		case 0x8e: //STX store X register, absolute
 		{
 			memory->write(absolute(), X);
+			PC += 3;
+			cycles += 4;
+			break;
+		}
+		case 0x8f: //AAX AND X register with accumulator and store result in memory, absolute
+		{
+			memory->write(absolute(), A & X);
 			PC += 3;
 			cycles += 4;
 			break;
@@ -1092,6 +1107,13 @@ void CPU6502::executeOP()
 		case 0x96: //STX store X register, zeroPageY
 		{
 			memory->write(zeroPageY(), X);
+			PC += 2;
+			cycles += 4;
+			break;
+		}
+		case 0x97: //AAX AND X register with accumulator and store result in memory, zeroPageY
+		{
+			memory->write(zeroPageY(), A & X);
 			PC += 2;
 			cycles += 4;
 			break;
