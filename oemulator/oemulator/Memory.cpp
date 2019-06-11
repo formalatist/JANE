@@ -73,6 +73,7 @@ void Memory::write(int addr, byte val)
 	}
 	else {
 		std::cout << "Unhandeled write to address: " << addr << ". Value: " << val << std::endl;
+		std::cout << "PC: " << std::hex << cpu->PC << std::endl;
 		//cpu->printCallLog = true; uncomment to start printing callLog after unhandled write
 	}
 	if (printWrites) {

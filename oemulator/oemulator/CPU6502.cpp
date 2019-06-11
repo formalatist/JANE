@@ -94,12 +94,11 @@ void CPU6502::executeOP()
 		}
 		case 0x3: //SLO ASL and then ORA, indirectX
 		{
+			int addr = indirectX();
 			byte val = readIndirectX();
 			C = (val & 0x80) == 0x80;
 			val = (val << 1) & 0xff;
-			//Z = val == 0;
-			//N = (val & 0x80) == 0x80;
-			memory->write(indirectX(), val);
+			memory->write(addr, val);
 
 			val = A | val;
 			A = val;
@@ -132,6 +131,21 @@ void CPU6502::executeOP()
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
 			memory->write(memory->read(PC + 1), val);
+			cycles += 5;
+			break;
+		}
+		case 0x7: //SLO ASL and then ORA, zeroPage
+		{
+			int addr = zeroPage();
+			byte val = readZeroPage();
+			C = (val & 0x80) == 0x80;
+			val = (val << 1) & 0xff;
+			memory->write(addr, val);
+
+			val = A | val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
 			cycles += 5;
 			break;
 		}
@@ -198,6 +212,21 @@ void CPU6502::executeOP()
 			cycles += 6;
 			break;
 		}
+		case 0xf: //SLO ASL and then ORA, absolute
+		{
+			int addr = absolute();
+			byte val = readAbsolute();
+			C = (val & 0x80) == 0x80;
+			val = (val << 1) & 0xff;
+			memory->write(addr, val);
+
+			val = A | val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 6;
+			break;
+		}
 		case 0x10: //BPL branch if positive
 		{
 			//NOTE: for all branches we incerment PC before we check the high byte with PCH, this will skew when we detect page changes
@@ -234,6 +263,21 @@ void CPU6502::executeOP()
 			cycles += 5;
 			break;
 		}
+		case 0x13: //SLO ASL and then ORA, indirectY
+		{
+			int addr = indirectY();
+			byte val = readIndirectY();
+			C = (val & 0x80) == 0x80;
+			val = (val << 1) & 0xff;
+			memory->write(addr, val);
+
+			val = A | val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 8;
+			break;
+		}
 		case 0x14: //IGN d,X
 		{
 			readZeroPageX();
@@ -260,6 +304,21 @@ void CPU6502::executeOP()
 			cycles += 6;
 			break;
 		}
+		case 0x17: //SLO ASL and then ORA, zeroPageX
+		{
+			int addr = zeroPageX();
+			byte val = readZeroPageX();
+			C = (val & 0x80) == 0x80;
+			val = (val << 1) & 0xff;
+			memory->write(addr, val);
+
+			val = A | val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 6;
+			break;
+		}
 		case 0x18: //CLC clear carry flag
 		{
 			C = 0;
@@ -280,6 +339,21 @@ void CPU6502::executeOP()
 		{
 			PC++;
 			cycles += 2;
+			break;
+		}
+		case 0x1b: //SLO ASL and then ORA, absoluteY
+		{
+			int addr = absoluteY();
+			byte val = readAbsoluteY();
+			C = (val & 0x80) == 0x80;
+			val = (val << 1) & 0xff;
+			memory->write(addr, val);
+
+			val = A | val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 7;
 			break;
 		}
 		case 0x1c: //IGN a,X
@@ -305,6 +379,21 @@ void CPU6502::executeOP()
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
 			memory->write(absoluteX(), val);
+			cycles += 7;
+			break;
+		}
+		case 0x1f: //SLO ASL and then ORA, absoluteX
+		{
+			int addr = absoluteX();
+			byte val = readAbsoluteX();
+			C = (val & 0x80) == 0x80;
+			val = (val << 1) & 0xff;
+			memory->write(addr, val);
+
+			val = A | val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
 			cycles += 7;
 			break;
 		}
