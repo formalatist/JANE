@@ -1482,6 +1482,20 @@ void CPU6502::executeOP()
 			cycles += 5;
 			break;
 		}
+		case 0xc7: //DCP decremet and compare, zeroPAge
+		{
+			int addr = zeroPage();
+			byte val = readZeroPage();
+			val -= 1;
+			memory->write(addr, val);
+
+			byte result = A - val;
+			Z = result == 0;
+			N = (result & 0x80) == 0x80;
+			C = A >= val;
+			cycles += 5;
+			break;
+		}
 		case 0xc8: //INY increment Y register
 		{
 			Y = Y + 1;
@@ -1539,6 +1553,20 @@ void CPU6502::executeOP()
 			cycles += 6;
 			break;
 		}
+		case 0xcf: //DCP decrement and compare, absolute
+		{
+			int addr = absolute();
+			byte val = readAbsolute();
+			val -= 1;
+			memory->write(addr, val);
+
+			byte result = A - val;
+			Z = result == 0;
+			N = (result & 0x80) == 0x80;
+			C = A >= val;
+			cycles += 6;
+			break;
+		}
 		case 0xd0: //BNE Branch of not equal
 		{
 			byte val = readRelative();
@@ -1574,6 +1602,20 @@ void CPU6502::executeOP()
 			cycles += 5;
 			break;
 		}
+		case 0xd3: //DCP decremet and compare, indirectY
+		{
+			int addr = indirectY();
+			byte val = readIndirectY();
+			val -= 1;
+			memory->write(addr, val);
+
+			byte result = A - val;
+			Z = result == 0;
+			N = (result & 0x80) == 0x80;
+			C = A >= val;
+			cycles += 8;
+			break;
+		}
 		case 0xd4: //IGN d,X
 		{
 			readZeroPageX();
@@ -1596,6 +1638,20 @@ void CPU6502::executeOP()
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
 			memory->write(addr, val);
+			cycles += 6;
+			break;
+		}
+		case 0xd7: //DCP decrement and compare, zeroPageX
+		{
+			int addr = zeroPageX();
+			byte val = readZeroPageX();
+			val -= 1;
+			memory->write(addr, val);
+
+			byte result = A - val;
+			Z = result == 0;
+			N = (result & 0x80) == 0x80;
+			C = A >= val;
 			cycles += 6;
 			break;
 		}
@@ -1622,6 +1678,20 @@ void CPU6502::executeOP()
 			cycles += 2;
 			break;
 		}
+		case 0xdb: //DCP decrement and compare, absoluteY
+		{
+			int addr = absoluteY();
+			byte val = readAbsoluteY();
+			val -= 1;
+			memory->write(addr, val);
+
+			byte result = A - val;
+			Z = result == 0;
+			N = (result & 0x80) == 0x80;
+			C = A >= val;
+			cycles += 7;
+			break;
+		}
 		case 0xdc: //IGN a,X
 		{
 			readAbsoluteX();
@@ -1644,6 +1714,20 @@ void CPU6502::executeOP()
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
 			memory->write(addr, val);
+			cycles += 7;
+			break;
+		}
+		case 0xdf: //DCP decrement and compare, absoluteX
+		{
+			int addr = absoluteX();
+			byte val = readAbsoluteX();
+			val -= 1;
+			memory->write(addr, val);
+
+			byte result = A - val;
+			Z = result == 0;
+			N = (result & 0x80) == 0x80;
+			C = A >= val;
 			cycles += 7;
 			break;
 		}
