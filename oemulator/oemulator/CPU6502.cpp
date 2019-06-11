@@ -1805,6 +1805,21 @@ void CPU6502::executeOP()
 			cycles += 5;
 			break;
 		}
+		case 0xe7: //ISC increment and subtract with carry, zeroPage
+		{
+			int addr = zeroPage();
+			byte val = (readZeroPage() + 1) & 0xff;
+			memory->write(addr, val);
+
+			short sVal = A - val - (1 - C);
+			C = (sVal >= 0);
+			Z = (sVal & 0xff) == 0;
+			N = ((sVal & 0xff) & 0x80) == 0x80;
+			V = ((A ^ val) & 0x80) != 0 && ((A^sVal) & 0x80) != 0;
+			A = sVal & 0xff;
+			cycles += 5;
+			break;
+		}
 		case 0xe8: //INX increment X register
 		{
 			X = X + 1;
@@ -1875,6 +1890,21 @@ void CPU6502::executeOP()
 			cycles += 6;
 			break;
 		}
+		case 0xef: //ISC increment and subtract with carry, absolute
+		{
+			int addr = absolute();
+			byte val = (readAbsolute() + 1) & 0xff;
+			memory->write(addr, val);
+
+			short sVal = A - val - (1 - C);
+			C = (sVal >= 0);
+			Z = (sVal & 0xff) == 0;
+			N = ((sVal & 0xff) & 0x80) == 0x80;
+			V = ((A ^ val) & 0x80) != 0 && ((A^sVal) & 0x80) != 0;
+			A = sVal & 0xff;
+			cycles += 6;
+			break;
+		}
 		case 0xf0: //BEQ Branch if equal. (counter to d0)
 		{
 			byte val = readRelative();
@@ -1937,6 +1967,21 @@ void CPU6502::executeOP()
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
 			memory->write(zeroPageXAddr, val);
+			cycles += 6;
+			break;
+		}
+		case 0xf7: //ISC increment and subtract with carry, zeroPageX
+		{
+			int addr = zeroPageX();
+			byte val = (readZeroPageX() + 1) & 0xff;
+			memory->write(addr, val);
+
+			short sVal = A - val - (1 - C);
+			C = (sVal >= 0);
+			Z = (sVal & 0xff) == 0;
+			N = ((sVal & 0xff) & 0x80) == 0x80;
+			V = ((A ^ val) & 0x80) != 0 && ((A^sVal) & 0x80) != 0;
+			A = sVal & 0xff;
 			cycles += 6;
 			break;
 		}
