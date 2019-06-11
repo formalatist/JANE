@@ -1942,6 +1942,21 @@ void CPU6502::executeOP()
 			cycles += 5;
 			break;
 		}
+		case 0xf3: //ISC increment and subtract with carry, indirectY
+		{
+			int addr = indirectY();
+			byte val = (readIndirectY() + 1) & 0xff;
+			memory->write(addr, val);
+
+			short sVal = A - val - (1 - C);
+			C = (sVal >= 0);
+			Z = (sVal & 0xff) == 0;
+			N = ((sVal & 0xff) & 0x80) == 0x80;
+			V = ((A ^ val) & 0x80) != 0 && ((A^sVal) & 0x80) != 0;
+			A = sVal & 0xff;
+			cycles += 8;
+			break;
+		}
 		case 0xf4: //IGN d,X
 		{
 			readZeroPageX();
@@ -2010,6 +2025,21 @@ void CPU6502::executeOP()
 			cycles += 2;
 			break;
 		}
+		case 0xfb: //ISC increment and subtract with carry, absoluteY
+		{
+			int addr = absoluteY();
+			byte val = (readAbsoluteY() + 1) & 0xff;
+			memory->write(addr, val);
+
+			short sVal = A - val - (1 - C);
+			C = (sVal >= 0);
+			Z = (sVal & 0xff) == 0;
+			N = ((sVal & 0xff) & 0x80) == 0x80;
+			V = ((A ^ val) & 0x80) != 0 && ((A^sVal) & 0x80) != 0;
+			A = sVal & 0xff;
+			cycles += 7;
+			break;
+		}
 		case 0xfc: //IGN a,X
 		{
 			readAbsoluteX();
@@ -2035,6 +2065,21 @@ void CPU6502::executeOP()
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
 			memory->write(abosluteXAddr, val);
+			cycles += 7;
+			break;
+		}
+		case 0xff: //ISC increment and subtract with carry, absoluteX
+		{
+			int addr = absoluteX();
+			byte val = (readAbsoluteX() + 1) & 0xff;
+			memory->write(addr, val);
+
+			short sVal = A - val - (1 - C);
+			C = (sVal >= 0);
+			Z = (sVal & 0xff) == 0;
+			N = ((sVal & 0xff) & 0x80) == 0x80;
+			V = ((A ^ val) & 0x80) != 0 && ((A^sVal) & 0x80) != 0;
+			A = sVal & 0xff;
 			cycles += 7;
 			break;
 		}
