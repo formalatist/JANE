@@ -82,7 +82,7 @@ void CPU6502::executeOP()
 			cycles += 7;
 			break;
 		}
-		case 0x1: //ORA logival inclusive OR indirect X
+		case 0x1: //ORA logical inclusive OR indirect X
 		{
 			byte val = A | readIndirectX();
 			A = val;
@@ -90,6 +90,22 @@ void CPU6502::executeOP()
 			N = (val & 0x80) == 0x80;
 			cycles += 6;
 
+			break;
+		}
+		case 0x3: //SLO ASL and then ORA, indirectX
+		{
+			byte val = readIndirectX();
+			C = (val & 0x80) == 0x80;
+			val = (val << 1) & 0xff;
+			//Z = val == 0;
+			//N = (val & 0x80) == 0x80;
+			memory->write(indirectX(), val);
+
+			val = A | val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 8;
 			break;
 		}
 		case 0x4: //2 byte NOP
