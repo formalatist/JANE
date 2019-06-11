@@ -1759,6 +1759,21 @@ void CPU6502::executeOP()
 			cycles += 2;
 			break;
 		}
+		case 0xe3: //ISC increment and subtract with carry, indirectX
+		{
+			int addr = indirectX();
+			byte val = (readIndirectX() + 1) & 0xff;
+			memory->write(addr, val);
+
+			short sVal = A - val - (1 - C);
+			C = (sVal >= 0);
+			Z = (sVal & 0xff) == 0;
+			N = ((sVal & 0xff) & 0x80) == 0x80;
+			V = ((A ^ val) & 0x80) != 0 && ((A^sVal) & 0x80) != 0;
+			A = sVal & 0xff;
+			cycles += 8;
+			break;
+		}
 		case 0xe4: //CPX compare X register, zeroPage
 		{
 			byte val = readZeroPage();

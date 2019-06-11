@@ -137,9 +137,9 @@ int main(int argc, char** argv) {
 	SDL_Event event;
 	byte input = 0;
 
-	nes.step(7500);
+	nes.step(6350);
 	nes.cpu->printCallLog = true;
-	nes.step(1500);
+	nes.step(5);
 	run = false;
 
 	while (run) {
