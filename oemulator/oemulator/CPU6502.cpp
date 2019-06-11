@@ -1439,6 +1439,20 @@ void CPU6502::executeOP()
 			cycles += 2;
 			break;
 		}
+		case 0xc3: //DCP decremet and compare, indirectX
+		{
+			int addr = indirectX();
+			byte val = readIndirectX();
+			val -= 1;
+			memory->write(addr, val);
+
+			byte result = A - val;
+			Z = result == 0;
+			N = (result & 0x80) == 0x80;
+			C = A >= val;
+			cycles += 8;
+			break;
+		}
 		case 0xc4: //CPY compare Y register, zeroPage
 		{
 			byte val = readZeroPage();
