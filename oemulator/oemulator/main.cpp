@@ -24,7 +24,7 @@ long getFileSize(FILE *file)
 
 
 int main(int argc, char** argv) {
-	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\Ice Climber.nes";
+	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\sprite_ram.nes";
 
 	unsigned char* fileBuffer;
 	FILE* file = NULL;
