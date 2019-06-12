@@ -1133,6 +1133,24 @@ void CPU6502::executeOP()
 			cycles += 5;
 			break;
 		}
+		case 0x67: //RRA ROR and ADC, zeroPage
+		{
+			int addr = zeroPage();
+			byte val = readZeroPage();
+			bool tempC = C;
+			C = val & 1;
+			val = (val >> 1) | (tempC << 7);
+			memory->write(addr, val);
+
+			int sVal = A + val + C;
+			Z = (sVal & 0xFF) == 0;
+			C = sVal > 0xff;
+			N = (sVal & 0x80) == 0x80;
+			V = (((A ^ sVal) & (val ^ sVal)) & 0x80) == 0x80;
+			A = sVal & 0xff;
+			cycles += 5;
+			break;
+		}
 		case 0x68: //PLA pull accumulator
 		{
 			A = pullByte();
@@ -1198,6 +1216,24 @@ void CPU6502::executeOP()
 			cycles += 2;
 			break;
 		}
+		case 0x6f: //RRA ROR and ADC, absolute
+		{
+			int addr = absolute();
+			byte val = readAbsolute();
+			bool tempC = C;
+			C = val & 1;
+			val = (val >> 1) | (tempC << 7);
+			memory->write(addr, val);
+
+			int sVal = A + val + C;
+			Z = (sVal & 0xFF) == 0;
+			C = sVal > 0xff;
+			N = (sVal & 0x80) == 0x80;
+			V = (((A ^ sVal) & (val ^ sVal)) & 0x80) == 0x80;
+			A = sVal & 0xff;
+			cycles += 6;
+			break;
+		}
 		case 0x70: //BVS branch if overflow set
 		{
 			byte val = readRelative();
@@ -1236,6 +1272,24 @@ void CPU6502::executeOP()
 			cycles += 5;
 			break;
 		}
+		case 0x73: //RRA ROR and ADC, indirectY
+		{
+			int addr = indirectY();
+			byte val = readIndirectY();
+			bool tempC = C;
+			C = val & 1;
+			val = (val >> 1) | (tempC << 7);
+			memory->write(addr, val);
+
+			int sVal = A + val + C;
+			Z = (sVal & 0xFF) == 0;
+			C = sVal > 0xff;
+			N = (sVal & 0x80) == 0x80;
+			V = (((A ^ sVal) & (val ^ sVal)) & 0x80) == 0x80;
+			A = sVal & 0xff;
+			cycles += 8;
+			break;
+		}
 		case 0x74: //IGN d,X
 		{
 			readZeroPageX();
@@ -1267,6 +1321,24 @@ void CPU6502::executeOP()
 			cycles += 6;
 			break;
 		}
+		case 0x77: //RRA ROR and ADC, zeroPageX
+		{
+			int addr = zeroPageX();
+			byte val = readZeroPageX();
+			bool tempC = C;
+			C = val & 1;
+			val = (val >> 1) | (tempC << 7);
+			memory->write(addr, val);
+
+			int sVal = A + val + C;
+			Z = (sVal & 0xFF) == 0;
+			C = sVal > 0xff;
+			N = (sVal & 0x80) == 0x80;
+			V = (((A ^ sVal) & (val ^ sVal)) & 0x80) == 0x80;
+			A = sVal & 0xff;
+			cycles += 6;
+			break;
+		}
 		case 0x78: //SEI - Set interrupt disable, implied
 		{
 			IntDisable = 1;
@@ -1290,6 +1362,24 @@ void CPU6502::executeOP()
 		{
 			PC++;
 			cycles += 2;
+			break;
+		}
+		case 0x7b: //RRA ROR and ADC, absoluteY
+		{
+			int addr = absoluteY();
+			byte val = readAbsoluteY();
+			bool tempC = C;
+			C = val & 1;
+			val = (val >> 1) | (tempC << 7);
+			memory->write(addr, val);
+
+			int sVal = A + val + C;
+			Z = (sVal & 0xFF) == 0;
+			C = sVal > 0xff;
+			N = (sVal & 0x80) == 0x80;
+			V = (((A ^ sVal) & (val ^ sVal)) & 0x80) == 0x80;
+			A = sVal & 0xff;
+			cycles += 7;
 			break;
 		}
 		case 0x7c: //IGN a,X
@@ -1320,6 +1410,24 @@ void CPU6502::executeOP()
 			N = (val & 0x80) == 0x80;
 			Z = A == 0; //this might not be correct for this instruction
 			memory->write(addr, val);
+			cycles += 7;
+			break;
+		}
+		case 0x7f: //RRA ROR and ADC, absoluteX
+		{
+			int addr = absoluteX();
+			byte val = readAbsoluteX();
+			bool tempC = C;
+			C = val & 1;
+			val = (val >> 1) | (tempC << 7);
+			memory->write(addr, val);
+
+			int sVal = A + val + C;
+			Z = (sVal & 0xFF) == 0;
+			C = sVal > 0xff;
+			N = (sVal & 0x80) == 0x80;
+			V = (((A ^ sVal) & (val ^ sVal)) & 0x80) == 0x80;
+			A = sVal & 0xff;
 			cycles += 7;
 			break;
 		}
