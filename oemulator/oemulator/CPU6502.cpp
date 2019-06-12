@@ -428,6 +428,23 @@ void CPU6502::executeOP()
 			cycles += 6;
 			break;
 		}
+		case 0x23: //RLA ROL and AND, indirectX
+		{
+			int addr = indirectX();
+			byte val = readIndirectX();
+			bool tempC = C;
+			C = (val & 0x80) == 0x80;
+			val = ((val << 1) | tempC) & 0xff;
+
+			memory->write(addr, val);
+
+			val = A & val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 8;
+			break;
+		}
 		case 0x24: //BIT bit test, zeroPage
 		{
 			byte val = readZeroPage();
@@ -456,6 +473,23 @@ void CPU6502::executeOP()
 			N = (val & 0x80) == 0x80;
 			Z = val == 0;
 			memory->write(addr, val);
+			cycles += 5;
+			break;
+		}
+		case 0x27: //RLA ROL and AND, zeroPage
+		{
+			int addr = zeroPage();
+			byte val = readZeroPage();
+			bool tempC = C;
+			C = (val & 0x80) == 0x80;
+			val = ((val << 1) | tempC) & 0xff;
+
+			memory->write(addr, val);
+
+			val = A & val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
 			cycles += 5;
 			break;
 		}
@@ -518,6 +552,23 @@ void CPU6502::executeOP()
 			cycles += 6;
 			break;
 		}
+		case 0x2f: //RLA ROL and AND, absolute
+		{
+			int addr = absolute();
+			byte val = readAbsolute();
+			bool tempC = C;
+			C = (val & 0x80) == 0x80;
+			val = ((val << 1) | tempC) & 0xff;
+
+			memory->write(addr, val);
+
+			val = A & val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 6;
+			break;
+		}
 		case 0x30: //BMI Branch if minus
 		{
 			byte val = readRelative();
@@ -553,6 +604,23 @@ void CPU6502::executeOP()
 			cycles += 5;
 			break;
 		}
+		case 0x33: //RLA ROL and AND, indirectY
+		{
+			int addr = indirectY();
+			byte val = readIndirectY();
+			bool tempC = C;
+			C = (val & 0x80) == 0x80;
+			val = ((val << 1) | tempC) & 0xff;
+
+			memory->write(addr, val);
+
+			val = A & val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 8;
+			break;
+		}
 		case 0x34: //IGN d,X
 		{
 			readZeroPageX();
@@ -581,6 +649,23 @@ void CPU6502::executeOP()
 			cycles += 6;
 			break;
 		}
+		case 0x37: //RLA ROL and AND, zeroPageX
+		{
+			int addr = zeroPageX();
+			byte val = readZeroPageX();
+			bool tempC = C;
+			C = (val & 0x80) == 0x80;
+			val = ((val << 1) | tempC) & 0xff;
+
+			memory->write(addr, val);
+
+			val = A & val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 6;
+			break;
+		}
 		case 0x38: //SEC set carry flag
 		{
 			C = 1;
@@ -601,6 +686,23 @@ void CPU6502::executeOP()
 		{
 			PC++;
 			cycles += 2;
+			break;
+		}
+		case 0x3b: //RLA ROL and AND, absoluteY
+		{
+			int addr = absoluteY();
+			byte val = readAbsoluteY();
+			bool tempC = C;
+			C = (val & 0x80) == 0x80;
+			val = ((val << 1) | tempC) & 0xff;
+
+			memory->write(addr, val);
+
+			val = A & val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 7;
 			break;
 		}
 		case 0x3c: //IGN a,X
@@ -629,6 +731,23 @@ void CPU6502::executeOP()
 			Z = val == 0;
 			memory->write(addr, val);
 			cycles += 6;
+			break;
+		}
+		case 0x3f: //RLA ROL and AND, absoluteX
+		{
+			int addr = absoluteX();
+			byte val = readAbsoluteX();
+			bool tempC = C;
+			C = (val & 0x80) == 0x80;
+			val = ((val << 1) | tempC) & 0xff;
+
+			memory->write(addr, val);
+
+			val = A & val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 7;
 			break;
 		}
 		case 0x40: //RTO return from interrupt
