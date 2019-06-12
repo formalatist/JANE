@@ -140,9 +140,6 @@ int main(int argc, char** argv) {
 	nes.step(100000);
 	//nes.cpu->printCallLog = true;
 	nes.step(20);
-	for (int i = 0; i < 1024; i++) {
-		std::cout << nes.ppu->memory->read(i + 0x2000);
-	}
 	//run = false;
 
 	while (run) {
