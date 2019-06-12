@@ -70,6 +70,20 @@ void CPU6502::executeOP()
 			<< "   " << (int)memory->memory[PC + 1] << std::endl;
 	}
 	
+	/*byte code = memory->memory[PC];
+	if (code == 0x26
+		|| code == 0x36
+		|| code == 0x3e
+		|| code == 0x2e
+		|| code == 0x2a
+		|| code == 0x6a
+		|| code == 0x66
+		|| code == 0x76
+		|| code == 0x6e
+		|| code == 0x7e) {
+		std::cout << "######USED ROL" << std::endl;
+	}*/
+
 	switch (memory->memory[PC])
 	{
 		case 0x0: //BRK force interrupt, implied
@@ -434,13 +448,14 @@ void CPU6502::executeOP()
 		}
 		case 0x26: //ROL Rotate left, zeroPage
 		{
+			int addr = zeroPage();
 			byte val = readZeroPage();
 			bool tempC = C;
 			C = (val & 0x80) == 0x80;
 			val = ((val << 1) | tempC) & 0xff;
 			N = (val & 0x80) == 0x80;
 			Z = val == 0;
-			memory->write(zeroPage(), val);
+			memory->write(addr, val);
 			cycles += 5;
 			break;
 		}
@@ -555,13 +570,14 @@ void CPU6502::executeOP()
 		}
 		case 0x36: //ROL rotate left, zeroPageX
 		{
+			int addr = zeroPageX();
 			byte val = readZeroPageX();
 			bool tempC = C;
 			C = (val & 0x80) == 0x80;
 			val = ((val << 1) | tempC) & 0xff;
 			N = (val & 0x80) == 0x80;
 			Z = val == 0;
-			memory->write(zeroPageX(), val);
+			memory->write(addr, val);
 			cycles += 6;
 			break;
 		}
@@ -604,13 +620,14 @@ void CPU6502::executeOP()
 		}
 		case 0x3e: //ROL rotate left, AbosluteX
 		{
+			int addr = absoluteX();
 			byte val = readAbsoluteX();
 			bool tempC = C;
 			C = (val & 0x80) == 0x80;
 			val = ((val << 1) | tempC) & 0xff;
 			N = (val & 0x80) == 0x80;
 			Z = val == 0;
-			memory->write(absoluteX(), val);
+			memory->write(addr, val);
 			cycles += 6;
 			break;
 		}
@@ -647,12 +664,13 @@ void CPU6502::executeOP()
 		}
 		case 0x46: //LSR logical shift right, zeroPage
 		{
+			int addr = zeroPage();
 			byte val = readZeroPage();
 			C = val & 1;
 			val = (val >> 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(zeroPage(), val);
+			memory->write(addr, val);
 			cycles += 5;
 			break;
 		}
@@ -703,12 +721,13 @@ void CPU6502::executeOP()
 		}
 		case 0x4e: //LSR logical shift right, absolute
 		{
+			int addr = absolute();
 			byte val = readAbsolute();
 			C = val & 1;
 			val = (val >> 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(absolute(), val);
+			memory->write(addr, val);
 			cycles += 6;
 			break;
 		}
@@ -764,12 +783,13 @@ void CPU6502::executeOP()
 		}
 		case 0x56: //LSR logical shift right, zeroPageX
 		{
+			int addr = zeroPageX();
 			byte val = readZeroPageX();
 			C = val & 1;
 			val = (val >> 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(zeroPageX(), val);
+			memory->write(addr, val);
 			cycles += 6;
 			break;
 		}
@@ -812,12 +832,13 @@ void CPU6502::executeOP()
 		}
 		case 0x5e: //LSR logical shift right, absolueX
 		{
+			int addr = absoluteX();
 			byte val = readAbsoluteX();
 			C = val & 1;
 			val = (val >> 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(absoluteX(), val);
+			memory->write(addr, val);
 			cycles += 7;
 			break;
 		}
@@ -858,14 +879,15 @@ void CPU6502::executeOP()
 			cycles += 3;
 			break;
 		}
-		case 0x66: //ROR rotate right, zeroPAge
+		case 0x66: //ROR rotate right, zeroPage
 		{
+			int addr = zeroPage();
 			byte val = readZeroPage();
 			bool tempC = C;
 			C = val & 1;
 			val = (val >> 1) | (tempC << 7);
 			N = (val & 0x80) == 0x80;
-			memory->write(zeroPage(), val);
+			memory->write(addr, val);
 			cycles += 5;
 			break;
 		}
@@ -923,13 +945,14 @@ void CPU6502::executeOP()
 		}
 		case 0x6e: //ROR rotate right, absolute
 		{
+			int addr = absolute();
 			byte val = readAbsolute();
 			bool tempC = C;
 			C = val & 1;
 			val = (val >> 1) | (tempC << 7);
 			N = (val & 0x80) == 0x80;
 			Z = A == 0; //this might not be correct for this instruction
-			memory->write(absolute(), val);
+			memory->write(addr, val);
 			cycles += 2;
 			break;
 		}
@@ -991,13 +1014,14 @@ void CPU6502::executeOP()
 		}
 		case 0x76: //ROR rotate right, zeroPageX
 		{
+			int addr = zeroPageX();
 			byte val = readZeroPageX();
 			bool tempC = C;
 			C = val & 1;
 			val = (val >> 1) | (tempC << 7);
 			N = (val & 0x80) == 0x80;
 			Z = A == 0; //this might not be correct for this instruction
-			memory->write(zeroPageX(), val);
+			memory->write(addr, val);
 			cycles += 6;
 			break;
 		}
@@ -1046,13 +1070,14 @@ void CPU6502::executeOP()
 		}
 		case 0x7e: //ROR rotate right, absoluteX
 		{
+			int addr = absoluteX();
 			byte val = readAbsoluteX();
 			bool tempC = C;
 			C = val & 1;
 			val = (val >> 1) | (tempC << 7);
 			N = (val & 0x80) == 0x80;
 			Z = A == 0; //this might not be correct for this instruction
-			memory->write(absoluteX(), val);
+			memory->write(addr, val);
 			cycles += 7;
 			break;
 		}
