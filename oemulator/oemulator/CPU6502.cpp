@@ -766,6 +766,21 @@ void CPU6502::executeOP()
 			cycles += 6;
 			break;
 		}
+		case 0x43: //SRE LSR and EOR, indirectX
+		{
+			int addr = indirectX();
+			byte val = readIndirectX();
+			C = val & 1;
+			val = (val >> 1) & 0xff;
+			memory->write(addr, val);
+
+			val = A ^ val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 8;
+			break;
+		}
 		case 0x44: //2 byte NOP
 		{
 			readZeroPage(); //reads zeroPage and discards it
@@ -790,6 +805,21 @@ void CPU6502::executeOP()
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
 			memory->write(addr, val);
+			cycles += 5;
+			break;
+		}
+		case 0x47: //SRE LSR and EOR, zeroPage
+		{
+			int addr = zeroPage();
+			byte val = readZeroPage();
+			C = val & 1;
+			val = (val >> 1) & 0xff;
+			memory->write(addr, val);
+
+			val = A ^ val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
 			cycles += 5;
 			break;
 		}
@@ -850,6 +880,21 @@ void CPU6502::executeOP()
 			cycles += 6;
 			break;
 		}
+		case 0x4f: //SRE LSR and EOR, absolute
+		{
+			int addr = absolute();
+			byte val = readAbsolute();
+			C = val & 1;
+			val = (val >> 1) & 0xff;
+			memory->write(addr, val);
+
+			val = A ^ val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 6;
+			break;
+		}
 		case 0x50:
 		{
 			byte val = readRelative();
@@ -885,6 +930,21 @@ void CPU6502::executeOP()
 			cycles += 5;
 			break;
 		}
+		case 0x53: //SRE LSR and EOR, indirectY
+		{
+			int addr = indirectY();
+			byte val = readIndirectY();
+			C = val & 1;
+			val = (val >> 1) & 0xff;
+			memory->write(addr, val);
+
+			val = A ^ val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 8;
+			break;
+		}
 		case 0x54: //IGN d,X
 		{
 			readZeroPageX();
@@ -912,6 +972,21 @@ void CPU6502::executeOP()
 			cycles += 6;
 			break;
 		}
+		case 0x57: //SRE LSR and EOR, zeroPageX
+		{
+			int addr = zeroPageX();
+			byte val = readZeroPageX();
+			C = val & 1;
+			val = (val >> 1) & 0xff;
+			memory->write(addr, val);
+
+			val = A ^ val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 6;
+			break;
+		}
 		case 0x58: //CLI clear interrupt disable
 		{
 			IntDisable = 0;
@@ -932,6 +1007,21 @@ void CPU6502::executeOP()
 		{
 			PC++;
 			cycles += 2;
+			break;
+		}
+		case 0x5b: //SRE LSR and EOR, absoluteY
+		{
+			int addr = absoluteY();
+			byte val = readAbsoluteY();
+			C = val & 1;
+			val = (val >> 1) & 0xff;
+			memory->write(addr, val);
+
+			val = A ^ val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 7;
 			break;
 		}
 		case 0x5c: //IGN a,X
@@ -961,6 +1051,21 @@ void CPU6502::executeOP()
 			cycles += 7;
 			break;
 		}
+		case 0x5f: //SRE LSR and EOR, absoluteX
+		{
+			int addr = absoluteX();
+			byte val = readAbsoluteX();
+			C = val & 1;
+			val = (val >> 1) & 0xff;
+			memory->write(addr, val);
+
+			val = A ^ val;
+			A = val;
+			Z = val == 0;
+			N = (val & 0x80) == 0x80;
+			cycles += 7;
+			break;
+		}
 		case 0x60: //RTS return from subroutine
 		{
 			PC = pullWord();
@@ -978,6 +1083,24 @@ void CPU6502::executeOP()
 			V = (((A ^ val) & (M ^ val)) & 0x80) == 0x80;
 			A = val & 0xff;
 			cycles += 6;
+			break;
+		}
+		case 0x63: //RRA ROR and ADC, indirectX
+		{
+			int addr = indirectX();
+			byte val = readIndirectX();
+			bool tempC = C;
+			C = val & 1;
+			val = (val >> 1) | (tempC << 7);
+			memory->write(addr, val);
+
+			int sVal = A + val + C;
+			Z = (sVal & 0xFF) == 0;
+			C = sVal > 0xff;
+			N = (sVal & 0x80) == 0x80;
+			V = (((A ^ sVal) & (val ^ sVal)) & 0x80) == 0x80;
+			A = sVal & 0xff;
+			cycles += 8;
 			break;
 		}
 		case 0x64: //2 byte NOP

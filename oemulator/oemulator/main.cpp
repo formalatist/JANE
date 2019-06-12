@@ -137,10 +137,10 @@ int main(int argc, char** argv) {
 	SDL_Event event;
 	byte input = 0;
 
-	/*nes.step(7400);
+	nes.step(8470);
 	nes.cpu->printCallLog = true;
 	nes.step(20);
-	run = false;*/
+	run = false;
 
 	while (run) {
 		start = clock();
