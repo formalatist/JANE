@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <iostream>
+#include <iomanip>
 
 class PPU;
 class CPU6502;

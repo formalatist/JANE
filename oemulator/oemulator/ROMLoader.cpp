@@ -24,6 +24,8 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 	int PRGROMSIZE = rom[4] * 16384;
 	int CHRROMSIZE = rom[5] * 8192;
 	ppuMemory->setMirror(rom[6]&1);
+	int mapperNumber = (rom[6] & 0xf0) | ((rom[7] & 0xf0) << 4);
+	std::cout << "Mapper number: " << std::dec << mapperNumber << std::endl;
 	
 	byte *prgROM = new byte[PRGROMSIZE];
 	//read in the prgROM
@@ -47,7 +49,7 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 	std::cout << std::hex << (int)memory->memory[0xfffc] << "  " << (memory->memory[0xfffd] << 8) << std::endl;
 	cpu.PC = memory->read(0xfffc) | ((memory->read(0xfffd) << 8));
 	//FOR NESTEST ONLY
-	cpu.PC = 0xC000;
+	//cpu.PC = 0xC000;
 }
 
 void ROMLoader::clearPPUReg()

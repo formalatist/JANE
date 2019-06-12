@@ -145,9 +145,10 @@ public:
 	byte spritePositions[8];
 	byte spritePriorities[8];
 	byte spriteIndexes[8];
+	PPUMemory* memory;
 
 private:
-	PPUMemory* memory;
+	//PPUMemory* memory;
 	NES* nes;
 
 	//sprite evaluation phase happens for the next scanline as cycles 1-256 are processed.

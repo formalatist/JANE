@@ -137,10 +137,13 @@ int main(int argc, char** argv) {
 	SDL_Event event;
 	byte input = 0;
 
-	nes.step(8980);
-	nes.cpu->printCallLog = true;
+	nes.step(100000);
+	//nes.cpu->printCallLog = true;
 	nes.step(20);
-	run = false;
+	for (int i = 0; i < 1024; i++) {
+		std::cout << nes.ppu->memory->read(i + 0x2000);
+	}
+	//run = false;
 
 	while (run) {
 		start = clock();

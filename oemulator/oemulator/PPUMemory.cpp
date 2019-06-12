@@ -49,7 +49,10 @@ void PPUMemory::write(int addr, byte val)
 			//<< "  step: " << (int)cpu->numSteps << std::endl;
 		//memory[addr] = val;
 	} else if(addr < 0x3000) { //Nametables 0-3 
-		//std::cout << "Write to nametable: addr: " << (int)addr << "  val: " << (int)val << std::endl;
+		if (val != 32 && val != 0) {
+			//std::cout << "Write to nametable: addr: " << (int)addr << "  val: " << std::dec << (int)val << std::endl;
+		}
+		
 		if (isMirrorVertical) {
 			int offset = ((addr > 0x23FF && addr < 0x2800) || addr > 0x2BFF) ? 0x400 : 0;
 			addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;

@@ -14,8 +14,8 @@ void PPU::step()
 {
 	advanceCounters();
 
-	bool isRendering = (MASK & (MASKShowBackground | MASKShowSprites))
-		== (MASKShowBackground | MASKShowSprites);
+	bool isRendering = ((MASK & MASKShowBackground) == MASKShowBackground)
+				|| ((MASK & MASKShowSprites) == MASKShowSprites);
 	bool isPreLine = scanLine == 261;
 	bool isVisibleLine = scanLine < 240; //lines are the Y of the pixel
 	bool isRenderedLine = isPreLine || isVisibleLine;
@@ -183,7 +183,7 @@ void PPU::writeRegiter(int addr, byte val)
 		NMIChange();
 	} else if (addr == 0x2001) { // PPUMASK
 		MASK = val;
-		//std::cout << "Write to MASK: " << (int)MASK << "  val:  " << (int)val << std::endl;
+		std::cout << "Write to MASK: " << std::dec << (int)MASK << "  val:  " << (int)val << std::endl;
 	} else if (addr == 0x2002) { // PPUSTATUS read only
 		//std::cout << "ERROR: Writing to 0x2002 PPUSTATUS. Val: " << val << std::endl;
 	} else if (addr == 0x2003) { // OAMADDR
