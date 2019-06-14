@@ -5,15 +5,16 @@ Mapper0::Mapper0(byte header[], byte rom[])
 	//setup PRG ROM
 	int PRGROMSize = header[4]; //size in 16kb units
 	std::cout << "PRG ROM SIZE: " << PRGROMSize << " * 16kb" << std::endl;
-	for (int i = 0; i < 0x3fff; i++) {
+	for (int i = 0; i < 0x4000; i++) {
 		PRGROM1[i] = rom[i];
 	}
 	if(PRGROMSize > 1) { //we have 32kb rom
-		for (int i = 0; i < 0x3fff; i++) {
-			PRGROM2[i] = rom[i + 0x3fff];
+		std::cout << "Two 16kb roms" << std::endl;
+		for (int i = 0; i < 0x4000; i++) {
+			PRGROM2[i] = rom[i + 0x4000];
 		}
 	} else { //only 16kb rom, mirror it in PRGROM2
-		for (int i = 0; i < 0x3fff; i++) {
+		for (int i = 0; i < 0x4000; i++) {
 			PRGROM2[i] = rom[i];
 		}
 	}
@@ -22,6 +23,7 @@ Mapper0::Mapper0(byte header[], byte rom[])
 void Mapper0::write(int addr, byte val)
 {
 	//PRGRAM is located at 0x6000-0x7fff
+	std::cout << "WRITE TO MAPPER: " << addr << "  val: " << val << std::endl;
 	PRGRAM[addr - 0x6000] = val;
 }
 

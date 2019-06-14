@@ -23,16 +23,33 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 	//this does NOT support RAM on the chip. only rom. add that later ;^)
 	int PRGROMSIZE = rom[4] * 16384;
 	int CHRROMSIZE = rom[5] * 8192;
-	ppuMemory->setMirror(rom[6]&1);
-	int mapperNumber = ((rom[6] & 0xf0)>>4) | (rom[7] & 0xf0);
+	ppuMemory->setMirror(rom[6] & 1);
+	int mapperNumber = ((rom[6] & 0xf0) >> 4) | (rom[7] & 0xf0);
 	std::cout << "Mapper number: " << std::dec << mapperNumber << std::endl;
 
-	byte * rom2 = new byte[size - headerSize];
-	for (int i = 0; i < size - headerSize; i++) {
+	byte * rom2 = new byte[PRGROMSIZE];
+	for (int i = 0; i < PRGROMSIZE; i++) {
 		rom2[i] = rom[i + headerSize];
 	}
-	Mapper0 mapper = Mapper0(rom, rom2);
-	memory->setMapper(&mapper);
+	mapper = new Mapper0(rom, rom2);
+	memory->setMapper(mapper);
+
+	byte *prgROM = new byte[PRGROMSIZE];
+	//read in the prgROM
+	for (int i = 0; i < PRGROMSIZE; i++)
+	{
+		prgROM[i] = rom[i + headerSize];
+	}
+
+	//load the rom into the cpu
+	memory->loadMemory(prgROM, PRGROMSIZE, 0x8000);
+	memory->loadMemory(prgROM, PRGROMSIZE, 0xc000);
+
+	for (int i = 0; i < 100; i++) {
+		std::cout << (int)prgROM[i + 0x79e] << "  " << (int)rom2[i+0x79e]
+			<< "  " << (int)mapper->read(0x8000 + i)
+			<< "  " << (int)mapper->read(0xc000 + 0x079e + i) << std::endl;
+	}
 
 	byte * chrROM = new byte[CHRROMSIZE];
 	//read in the chrROM
