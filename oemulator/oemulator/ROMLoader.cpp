@@ -35,7 +35,7 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 	}
 	//load the rom into the cpu
 	memory->loadMemory(prgROM, PRGROMSIZE, 0x8000);
-	//memory->loadMemory(prgROM, PRGROMSIZE, 0xc000);
+	memory->loadMemory(prgROM, PRGROMSIZE, 0xc000);
 
 	byte * chrROM = new byte[CHRROMSIZE];
 	//read in the chrROM
