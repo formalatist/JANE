@@ -34,23 +34,6 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 	mapper = new Mapper0(rom, rom2);
 	memory->setMapper(mapper);
 
-	byte *prgROM = new byte[PRGROMSIZE];
-	//read in the prgROM
-	for (int i = 0; i < PRGROMSIZE; i++)
-	{
-		prgROM[i] = rom[i + headerSize];
-	}
-
-	//load the rom into the cpu
-	memory->loadMemory(prgROM, PRGROMSIZE, 0x8000);
-	memory->loadMemory(prgROM, PRGROMSIZE, 0xc000);
-
-	for (int i = 0; i < 100; i++) {
-		std::cout << (int)prgROM[i + 0x79e] << "  " << (int)rom2[i+0x79e]
-			<< "  " << (int)mapper->read(0x8000 + i)
-			<< "  " << (int)mapper->read(0xc000 + 0x079e + i) << std::endl;
-	}
-
 	byte * chrROM = new byte[CHRROMSIZE];
 	//read in the chrROM
 	for (int i = 0; i < CHRROMSIZE; i++) {
