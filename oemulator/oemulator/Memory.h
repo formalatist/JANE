@@ -5,8 +5,10 @@
 class PPU;
 class CPU6502;
 class Controller;
+class Mapper0;
 
 #include "NES.h"
+#include "Mapper0.h"
 
 typedef unsigned char byte;
 class Memory {
@@ -22,7 +24,7 @@ public:
 	//4000 - 401F = sound channels, joypads, and other IO
 	//6000 - 7FFF = cartridge PRG - RAM(if present), or PRG - ROM depending on mapper
 	//8000 - FFFF = cartridge memory, usually ROM.
-	byte memory[65536]; //the memory itself
+	byte memory[0x800]; //the memory itself
 	void loadMemory(std::vector<byte> rom, int offset);
 	void loadMemory(byte rom[], int romSize, int offset);
 
@@ -30,6 +32,8 @@ public:
 	byte read(int addr);
 
 	void connectController(Controller* c1_);
+
+	void setMapper(Mapper0* mapper_);
 
 
 	//for debug
@@ -40,4 +44,5 @@ private:
 	CPU6502* cpu;
 	PPU* ppu;
 	Controller* c1;
+	Mapper0* mapper;
 };

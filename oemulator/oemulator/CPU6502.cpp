@@ -84,14 +84,14 @@ void CPU6502::executeOP()
 		std::cout << "######USED ROL" << std::endl;
 	}*/
 
-	switch (memory->memory[PC])
+	switch (memory->read(PC))
 	{
 		case 0x0: //BRK force interrupt, implied
 		{
 			//NOTE: we save PC then flags to stack. so the stack is [flags | PCLO | PCHI]
 			push(PC);
 			pushStatus(1);
-			PC = memory->memory[0xfffe] | (memory->memory[0xffff] << 8);
+			PC = memory->read(0xfffe) | (memory->read(0xffff) << 8);
 			B = 1;
 			cycles += 7;
 			break;

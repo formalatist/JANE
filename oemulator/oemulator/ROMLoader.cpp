@@ -26,16 +26,13 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 	ppuMemory->setMirror(rom[6]&1);
 	int mapperNumber = ((rom[6] & 0xf0)>>4) | (rom[7] & 0xf0);
 	std::cout << "Mapper number: " << std::dec << mapperNumber << std::endl;
-	
-	byte *prgROM = new byte[PRGROMSIZE];
-	//read in the prgROM
-	for (int i = 0; i < PRGROMSIZE; i++)
-	{
-		prgROM[i] = rom[i + headerSize];
+
+	byte * rom2 = new byte[size - headerSize];
+	for (int i = 0; i < size - headerSize; i++) {
+		rom2[i] = rom[i + headerSize];
 	}
-	//load the rom into the cpu
-	memory->loadMemory(prgROM, PRGROMSIZE, 0x8000);
-	memory->loadMemory(prgROM, PRGROMSIZE, 0xc000);
+	Mapper0 mapper = Mapper0(rom, rom2);
+	memory->setMapper(&mapper);
 
 	byte * chrROM = new byte[CHRROMSIZE];
 	//read in the chrROM
