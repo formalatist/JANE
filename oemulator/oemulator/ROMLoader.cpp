@@ -23,30 +23,36 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 	//this does NOT support RAM on the chip. only rom. add that later ;^)
 	int PRGROMSIZE = rom[4] * 16384;
 	int CHRROMSIZE = rom[5] * 8192;
-	ppuMemory->setMirror(rom[6] & 1);
 	int mapperNumber = ((rom[6] & 0xf0) >> 4) | (rom[7] & 0xf0);
 	std::cout << "Mapper number: " << std::dec << mapperNumber << std::endl;
 
-	byte * rom2 = new byte[PRGROMSIZE];
-	for (int i = 0; i < PRGROMSIZE; i++) {
+	byte * rom2 = new byte[size-headerSize];
+	for (int i = 0; i < size-headerSize; i++) {
 		rom2[i] = rom[i + headerSize];
 	}
-	mapper = new Mapper0(rom, rom2);
-	memory->setMapper(mapper);
 
-	byte * chrROM = new byte[CHRROMSIZE];
-	//read in the chrROM
-	for (int i = 0; i < CHRROMSIZE; i++) {
-		chrROM[i] = rom[i + headerSize + PRGROMSIZE];
+	iNESHeader header = getHeader(rom);
+	if (mapperNumber == 0) {
+		mapper = new Mapper0(rom, rom2);
 	}
-	//load the rom into the ppu
-	ppuMemory->loadMemory(chrROM, CHRROMSIZE, 0x0000);
+	else if (mapperNumber == 3) {
+		mapper = new Mapper3(header, rom2);
+	}
+	memory->setMapper(mapper);
+	ppuMemory->setMapper(mapper);
+	ppuMemory->setMirror(header.verticalMirroring);
 
 	//set the PC to the init vector
 	std::cout << std::hex << (int)memory->memory[0xfffc] << "  " << (memory->memory[0xfffd] << 8) << std::endl;
 	cpu.PC = memory->read(0xfffc) | ((memory->read(0xfffd) << 8));
 	//FOR NESTEST ONLY
 	//cpu.PC = 0xC000;
+}
+
+iNESHeader ROMLoader::getHeader(byte rom[])
+{
+	iNESHeader header = iNESHeader(rom[4], rom[5], rom[6]&1, 0, 0, 0);
+	return header;
 }
 
 void ROMLoader::clearPPUReg()

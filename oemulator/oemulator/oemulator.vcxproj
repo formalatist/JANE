@@ -126,6 +126,8 @@
     <ClCompile Include="CPU6502.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Mapper0.cpp" />
+    <ClCompile Include="Mapper1.cpp" />
+    <ClCompile Include="Mapper3.cpp" />
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="NES.cpp" />
     <ClCompile Include="PPU.cpp" />
@@ -135,7 +137,10 @@
   <ItemGroup>
     <ClInclude Include="Controller.h" />
     <ClInclude Include="CPU6502.h" />
+    <ClInclude Include="Mapper.h" />
     <ClInclude Include="Mapper0.h" />
+    <ClInclude Include="Mapper1.h" />
+    <ClInclude Include="Mapper3.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="NES.h" />
     <ClInclude Include="PPU.h" />

@@ -5,6 +5,7 @@
 
 class PPU;
 class CPU6502;
+class Mapper;
 
 #include "NES.h"
 
@@ -33,6 +34,7 @@ public:
 	byte read(int addr);
 
 	void setMirror(bool mirror);
+	void setMapper(Mapper* mapper_);
 
 	//for debug
 	bool printReads = false;
@@ -46,5 +48,6 @@ public:
 	CPU6502* cpu;
 private:
 	PPU* ppu;
+	Mapper* mapper;
 	bool isMirrorVertical;
 };

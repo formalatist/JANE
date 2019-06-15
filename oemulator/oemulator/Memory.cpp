@@ -117,7 +117,7 @@ void Memory::connectController(Controller * c1_)
 	c1 = c1_;
 }
 
-void Memory::setMapper(Mapper0 * mapper_)
+void Memory::setMapper(Mapper * mapper_)
 {
 	mapper = mapper_;
 }

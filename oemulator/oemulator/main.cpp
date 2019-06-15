@@ -6,6 +6,7 @@
 #include "ROMLoader.h"
 #include <chrono>
 #include <ctime>
+#include <string>
 
 bool running = true;
 const int FPS = 30;
@@ -26,13 +27,14 @@ long getFileSize(FILE *file)
 
 int main(int argc, char** argv) {
   
-	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\Donkey Kong Jr. Math .nes";
+	std::string game = "super mario bros";
+	std::string filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\" + game + ".nes";
 
 
 	unsigned char* fileBuffer;
 	FILE* file = NULL;
 
-	if ((file = fopen(filePath, "rb")) == NULL) {
+	if ((file = fopen(filePath.c_str(), "rb")) == NULL) {
 		std::cout << "Could not open file at path: " << filePath << std::endl;
 		std::cin.get();
 	}

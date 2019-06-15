@@ -22,6 +22,9 @@
     <Filter Include="Source Files\NES emulator\Mappers">
       <UniqueIdentifier>{cca67855-4be9-4076-b366-c2ad9fd51bf8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\NES emulator\Mappers">
+      <UniqueIdentifier>{47533f7f-cf9a-4a2b-8b96-194151706aa5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -51,6 +54,12 @@
     <ClCompile Include="Mapper0.cpp">
       <Filter>Source Files\NES emulator\Mappers</Filter>
     </ClCompile>
+    <ClCompile Include="Mapper1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Mapper3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPU6502.h">
@@ -75,7 +84,16 @@
       <Filter>Header Files\NES emulator</Filter>
     </ClInclude>
     <ClInclude Include="Mapper0.h">
-      <Filter>Header Files\NES emulator</Filter>
+      <Filter>Header Files\NES emulator\Mappers</Filter>
+    </ClInclude>
+    <ClInclude Include="Mapper.h">
+      <Filter>Header Files\NES emulator\Mappers</Filter>
+    </ClInclude>
+    <ClInclude Include="Mapper1.h">
+      <Filter>Header Files\NES emulator\Mappers</Filter>
+    </ClInclude>
+    <ClInclude Include="Mapper3.h">
+      <Filter>Header Files\NES emulator\Mappers</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -14,11 +14,13 @@ public:
 
 	void loadROM(byte rom[], int size, CPU6502& cpu);
 
+	iNESHeader getHeader(byte rom[]);
+
 	//in future the PPU might be setting these itself
 	void clearPPUReg();
 
 	//FOR DEBUG, MOVE TO SENSIBLE PLACE
-	Mapper0* mapper;
+	Mapper* mapper;
 
 private:
 	Memory* memory;

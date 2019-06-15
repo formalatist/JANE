@@ -48,6 +48,7 @@ void PPUMemory::write(int addr, byte val)
 			//<< (int)cpu->memory->read(cpu->PC)
 			//<< "  step: " << (int)cpu->numSteps << std::endl;
 		//memory[addr] = val;
+		mapper->write(addr, val);
 	} else if(addr < 0x3000) { //Nametables 0-3 
 		if (val != 32 && val != 0) {
 			//std::cout << "Write to nametable: addr: " << (int)addr << "  val: " << std::dec << (int)val << std::endl;
@@ -101,7 +102,8 @@ byte PPUMemory::read(int addr)
 {
 	addr %= 0x4000;
 	if(addr < 0x2000) { //pattern tables
-		return memory[addr];
+		//return memory[addr];
+		return mapper->read(addr);
 	} else if (addr < 0x3000) { //nametables
 		if (isMirrorVertical) {
 			int offset = ((addr > 0x23FF && addr < 0x2800) || addr > 0x2BFF) ? 0x400 : 0;
@@ -152,4 +154,9 @@ byte PPUMemory::read(int addr)
 void PPUMemory::setMirror(bool mirror)
 {
 	isMirrorVertical = mirror;
+}
+
+void PPUMemory::setMapper(Mapper* mapper_)
+{
+	mapper = mapper_;
 }

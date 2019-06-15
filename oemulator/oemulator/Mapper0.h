@@ -23,4 +23,7 @@ private:
 	//Last 16kb of PRG ROM (if mapper is NROM-256) or mirror of
 	// 0x8000-0xBFFF (if mapper is NROM-128), located at 0xC000-0xFFFF
 	byte PRGROM2[s16KB];
+
+	//CHRROM at 0x0000-0x1fff, 8KB
+	byte CHRROM[s8KB];
 };

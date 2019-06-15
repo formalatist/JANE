@@ -11,14 +11,15 @@ public:
 private:
 	//standard 8kb PRGRAM at 0x6000-0x7fff;
 	byte PRGRAM[s8KB];
-	//Mapped to CPU 0x8000-0xbfff and 0xc000-0xffff (16kb units)
+	//Mapped to CPU 0x8000-0xbfff and 0xc000-0xffff (16kb/32kb units)
 	byte PRGROM[0x40000];
 	int currentPRGBank;
 	int numPRGBanks;
-	//Mapped to PPU 0x000-0x0fff and 0x1000-0x1fff (4kb units)
+	//Mapped to PPU 0x000-0x0fff and 0x1000-0x1fff (2kb/4kb units)
 	byte CHRROM[0x20000];
 	int currentCHRBank;
 	int numCHRBanks;
 
-	int shiftRegister;
+	int shiftRegister; //internal register that holds 5 bits
+	int shiftRegisterWriteCounter; 
 };

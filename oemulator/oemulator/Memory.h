@@ -8,7 +8,8 @@ class Controller;
 class Mapper0;
 
 #include "NES.h"
-#include "Mapper0.h"
+#include "Mapper0.h" //TOTO: MOVE THESE
+#include "Mapper3.h"
 
 typedef unsigned char byte;
 class Memory {
@@ -33,7 +34,7 @@ public:
 
 	void connectController(Controller* c1_);
 
-	void setMapper(Mapper0* mapper_);
+	void setMapper(Mapper* mapper_);
 
 	//for debug
 	bool printReads = false;
@@ -43,5 +44,5 @@ private:
 	CPU6502* cpu;
 	PPU* ppu;
 	Controller* c1;
-	Mapper0* mapper;
+	Mapper* mapper;
 };

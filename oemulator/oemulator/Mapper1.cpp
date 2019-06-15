@@ -10,6 +10,11 @@ Mapper1::Mapper1(iNESHeader header, byte rom[])
 	shiftRegister = 0;
 }
 
+byte Mapper1::read(int addr)
+{
+	return byte();
+}
+
 void Mapper1::write(int addr, byte val)
 {
 	if(addr <= 0x7fff) { //PRGRAM

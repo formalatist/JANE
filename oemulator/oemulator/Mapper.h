@@ -16,7 +16,7 @@ public:
 //TODO: add support for NES 2.0 and rename this to just header
 struct iNESHeader {
 	//the entire header
-	byte fullHeader[16];
+	//byte fullHeader[16];
 	//number of 16384 byte units of PRG ROM
 	int numPRGROMUnits;
 	//number of 8192 byte units of CHR ROM
@@ -28,4 +28,9 @@ struct iNESHeader {
 	bool hasTrainer; //dont support this?
 	//should the mirroring bit be ignored, if so use 4-screen VRAM
 	bool ignoreMirroring;
+
+	iNESHeader(int nPRGROM, int nCHRROM,
+		bool vM, bool bb, bool t, bool iM) : numPRGROMUnits(nPRGROM),
+		numCHRROMUnits(nCHRROM), verticalMirroring(vM), hasBatteryBackedPRGRAM(bb),
+		hasTrainer(t), ignoreMirroring(iM) {}
 };
