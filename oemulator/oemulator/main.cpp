@@ -26,7 +26,7 @@ long getFileSize(FILE *file)
 
 int main(int argc, char** argv) {
   
-	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\super mario bros.nes";
+	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\Donkey Kong Jr. Math .nes";
 
 
 	unsigned char* fileBuffer;
@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
 	SDL_Window* mainWindow = NULL;
 	SDL_Surface* mainWindowSurface = NULL;
 	SDL_Surface* scaledMainWindowSurface = NULL;
-	mainWindow = SDL_CreateWindow("ØMULATOR", 1024, 512,
+	mainWindow = SDL_CreateWindow("ØMULATOR", 512, 256,
 		512*SCALE, 240*SCALE,
 		SDL_WINDOW_SHOWN);
 	mainWindowSurface = SDL_GetWindowSurface(mainWindow);
