@@ -151,7 +151,7 @@ int main(int argc, char** argv) {
 	//nes.cpu->printCallLog = true;
 	//nes.step(20);
 	//run = false;
-
+	char* dir;
 	while (run) {
 		start = clock();
 		c1.releaseButton(0xFF);
@@ -231,6 +231,13 @@ int main(int argc, char** argv) {
 					std::cout << 8 << std::endl;
 					break;
 				}
+			} else if(event.type == SDL_DROPFILE) { // a file was droppen on the window
+				dir = event.drop.file;
+				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+					"Loading ROMs by dropping not implemented yet :(",
+					dir,
+					mainWindow);
+				SDL_free(dir);
 			}
 		}
 		c1.pushButton(input);
