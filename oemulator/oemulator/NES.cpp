@@ -54,12 +54,14 @@ void NES::setScreen(SDL_Surface * screen_, SDL_Surface* scaledScreen_, SDL_Windo
 	window = window_;
 }
 
+//TODO: move this to a "display" object or something
 void NES::updateScreen()
 {
 	//int start = clock();
 	int s = 2;
 	for (int x = 0; x < 512; x++) {
 		for (int y = 0; y < 240; y++) {
+			//original scale = 1 rendering
 			/*Uint8 *targetPixel = (Uint8*)screen->pixels + (y)*screen->pitch
 				+ (x) * 4;
 			*(Uint32 *)targetPixel = ppu->pixels[x + y * 512];*/
