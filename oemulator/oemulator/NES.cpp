@@ -47,23 +47,43 @@ void NES::stepSeconds(float seconds)
 	}
 }
 
-void NES::setScreen(SDL_Surface * screen_, SDL_Window* window_)
+void NES::setScreen(SDL_Surface * screen_, SDL_Surface* scaledScreen_, SDL_Window* window_)
 {
 	screen = screen_;
+	scaledScreen = scaledScreen_;
 	window = window_;
 }
 
 void NES::updateScreen()
 {
 	//int start = clock();
+	int s = 2;
 	for (int x = 0; x < 512; x++) {
 		for (int y = 0; y < 240; y++) {
-
-			Uint8 *targetPixel = (Uint8*)screen->pixels + (y )*screen->pitch
+			/*Uint8 *targetPixel = (Uint8*)screen->pixels + (y)*screen->pitch
 				+ (x) * 4;
+			*(Uint32 *)targetPixel = ppu->pixels[x + y * 512];*/
+
+			Uint8 *targetPixel = (Uint8*)screen->pixels + (y*s)*screen->pitch
+				+ (x*s) * 4;
+			*(Uint32 *)targetPixel = ppu->pixels[x + y * 512];
+			targetPixel = (Uint8*)screen->pixels + (y*s + 1)*screen->pitch
+				+ (x*s) * 4;
+			*(Uint32 *)targetPixel = ppu->pixels[x + y * 512];
+			targetPixel = (Uint8*)screen->pixels + (y*s)*screen->pitch
+				+ (x*s+1) * 4;
+			*(Uint32 *)targetPixel = ppu->pixels[x + y * 512];
+			targetPixel = (Uint8*)screen->pixels + (y*s + 1)*screen->pitch
+				+ (x*s+1) * 4;
 			*(Uint32 *)targetPixel = ppu->pixels[x + y * 512];
 		}
 	}
+	SDL_Rect rect;
+	rect.x = 0;
+	rect.y = 0;
+	rect.w = 512 * 2;
+	rect.h = 240 * 2;
+	//SDL_BlitScaled(screen, 0, scaledScreen, &rect);
 	SDL_UpdateWindowSurface(window);
 	//std::cout << "Frame time: " << (clock() - start) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
 }

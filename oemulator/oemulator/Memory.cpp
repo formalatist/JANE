@@ -72,8 +72,10 @@ void Memory::write(int addr, byte val)
 		//TODO implement audio
 	}
 	else {
-		std::cout << "Unhandeled write to address: " << addr << ". Value: " << val << std::endl;
-		std::cout << "PC: " << std::hex << cpu->PC << std::endl;
+		//memory[addr] = val;
+		mapper->write(addr, val);
+		//std::cout << "Unhandeled write to address: " << addr << ". Value: " << val << std::endl;
+		//std::cout << "PC: " << std::hex << cpu->PC << std::endl;
 		//cpu->printCallLog = true; uncomment to start printing callLog after unhandled write
 	}
 	if (printWrites) {
@@ -99,7 +101,13 @@ byte Memory::read(int addr)
 	} else if (addr == 0x4016) { //read controller
 		return c1->readController();
 	} else if (addr >= 0x6000) { //area for a mapper to take care of
-		return memory[addr];
+		//std::cout << "READING ROM, addr: " << addr << " actual value: " <<(int) memory[addr] 
+			//<< "  mapper val: " <<(int) mapper->read(addr) << std::endl;
+		//return memory[addr];
+		//std::cout << "READING MAPPER: " << addr << std::endl;
+		//byte val = mapper->read(addr);
+		//std::cout << "Value: " << val << std::endl;
+		return mapper->read(addr);
 	}
 	return 0;
 }
@@ -107,4 +115,9 @@ byte Memory::read(int addr)
 void Memory::connectController(Controller * c1_)
 {
 	c1 = c1_;
+}
+
+void Memory::setMapper(Mapper0 * mapper_)
+{
+	mapper = mapper_;
 }

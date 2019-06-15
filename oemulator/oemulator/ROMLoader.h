@@ -17,6 +17,9 @@ public:
 	//in future the PPU might be setting these itself
 	void clearPPUReg();
 
+	//FOR DEBUG, MOVE TO SENSIBLE PLACE
+	Mapper0* mapper;
+
 private:
 	Memory* memory;
 	PPUMemory* ppuMemory;

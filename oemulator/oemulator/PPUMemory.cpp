@@ -75,7 +75,16 @@ void PPUMemory::write(int addr, byte val)
 		}
 		memory[addr] = val;
 	} else if (addr < 0x3F20) { //palette table
-		//std::cout << "PALETTE WRITE: addr: " << (int)addr << "  val: " << (int)val << std::endl;
+		//From nesdev: Addresses $3F10/$3F14/$3F18/$3F1C are mirrors of $3F00/$3F04/$3F08/$3F0C
+		if (addr == 0x3f10) {
+			addr = 0x3f00;
+		} else if (addr == 0x3f14) {
+			addr = 0x3f04;
+		} else if (addr == 0x3f18) {
+			addr = 0x3f08;
+		} else if (addr == 0x3f1c) {
+			addr = 0x3f0c;
+		}
 		memory[addr] = val;
 	} else if(addr < 0x4000) { //mirrors of palette
 		memory[addr % 0x20 + 0x3F00] = val;
@@ -116,6 +125,20 @@ byte PPUMemory::read(int addr)
 		return memory[addr];
 	} else if(addr < 0x3F20) { //palette
 		//std::cout << "PALETTE READ: addr: " << (int)addr << "  val: " << (int)memory[addr] << std::endl;
+		//int addrOverRepeatArea = addr - 0x3f00;
+		//addr = 0x3f00 + addrOverRepeatArea % 0x10;
+		if (addr == 0x3f10) {
+			addr = 0x3f00;
+		}
+		else if (addr == 0x3f14) {
+			addr = 0x3f04;
+		}
+		else if (addr == 0x3f18) {
+			addr = 0x3f08;
+		}
+		else if (addr == 0x3f1c) {
+			addr = 0x3f0c;
+		}
 		return memory[addr];
 	} else if(addr < 0x4000) { //mirrors of palette
 		//std::cout << "PALETTE READ: addr: " << (int)addr << "  val: " << (int)memory[addr] << std::endl;

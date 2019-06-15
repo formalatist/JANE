@@ -38,6 +38,7 @@ public:
 	bool printReads = false;
 	bool printWrites = false;
 
+
 	//TODO: Refractor. communication should just happen via
 	//the NES itself
 	//has to be public so that PPU can use its reference

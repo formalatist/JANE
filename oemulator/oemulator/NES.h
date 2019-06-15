@@ -18,7 +18,7 @@ public:
 	//do one whole frame
 	void stepFrame();
 
-	void setScreen(SDL_Surface* screen_, SDL_Window* window_);
+	void setScreen(SDL_Surface* screen_, SDL_Surface* scaledScreen_, SDL_Window* window_);
 	void updateScreen();
 
 	void connectController(Controller* controller);
@@ -32,5 +32,6 @@ public:
 
 private:
 	SDL_Surface* screen;
+	SDL_Surface* scaledScreen;
 	SDL_Window* window;
 };

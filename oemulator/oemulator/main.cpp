@@ -10,6 +10,7 @@
 bool running = true;
 const int FPS = 30;
 int tickCounter = 0;
+const int SCALE = 2;
 
 
 long getFileSize(FILE *file)
@@ -24,7 +25,9 @@ long getFileSize(FILE *file)
 
 
 int main(int argc, char** argv) {
-	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\donkey-kong.nes";
+  
+	const char* filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\super mario bros.nes";
+
 
 	unsigned char* fileBuffer;
 	FILE* file = NULL;
@@ -65,11 +68,18 @@ int main(int argc, char** argv) {
 	//create the screen
 	SDL_Window* mainWindow = NULL;
 	SDL_Surface* mainWindowSurface = NULL;
-	mainWindow = SDL_CreateWindow("ØMULATOR", 1024, 512,
-		512, 240,
+	SDL_Surface* scaledMainWindowSurface = NULL;
+	mainWindow = SDL_CreateWindow("Ã˜MULATOR", 1024, 512,
+		512*SCALE, 240*SCALE,
 		SDL_WINDOW_SHOWN);
 	mainWindowSurface = SDL_GetWindowSurface(mainWindow);
-	nes.setScreen(mainWindowSurface, mainWindow);
+	/*Uint32 rmask = 0xff000000;
+	Uint32 gmask = 0x00ff0000;
+	Uint32 bmask = 0x0000ff00;
+	Uint32 amask = 0x000000ff;
+	mainWindowSurface = SDL_CreateRGBSurface(0,512, 240,
+		32, rmask, gmask, bmask, amask);*/
+	nes.setScreen(mainWindowSurface, scaledMainWindowSurface, mainWindow);
 	nes.updateScreen();
 
 	
@@ -137,9 +147,9 @@ int main(int argc, char** argv) {
 	SDL_Event event;
 	byte input = 0;
 
-	nes.step(100000);
+	//nes.step(1000000);
 	//nes.cpu->printCallLog = true;
-	nes.step(20);
+	//nes.step(20);
 	//run = false;
 
 	while (run) {
