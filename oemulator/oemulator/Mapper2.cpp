@@ -10,7 +10,7 @@ Mapper2::Mapper2(iNESHeader header, byte rom[])
 	}
 
 	//setup CHR
-	for (int i = 0; i < s8KB; i++) {
+	for (int i = 0; i < s8KB*header.numCHRROMUnits; i++) {
 		CHRROM[i] = rom[i + s16KB*header.numPRGROMUnits];
 	}
 }
