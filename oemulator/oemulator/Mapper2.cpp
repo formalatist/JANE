@@ -34,6 +34,6 @@ void Mapper2::write(int addr, byte val)
 		CHRROM[addr] = val;
 	}
 	else if (addr >= 0x8000 && addr <= 0xffff) {
-		PRGBank1 = val & 0xf;
+		PRGBank1 = val & 0x7;
 	}
 }

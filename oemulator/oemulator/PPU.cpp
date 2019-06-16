@@ -636,6 +636,7 @@ void PPU::blitPixel()
 	else {
 		if ((spriteIndexes[spriteIndex] == 0) && x < 255) {
 			STATUS |= STATUSSpriteZeroHit;
+			//std::cout << "SPRITE 0 HIT scanline: " <<std::dec<< (int)scanLine << "  PC: " << memory->cpu->PC << std::endl;
 		}
 		if (spritePriorities[spriteIndex] == 0) {
 			color = spritePixel | 0x10;
