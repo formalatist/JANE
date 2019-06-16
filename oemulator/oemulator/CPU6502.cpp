@@ -2653,7 +2653,7 @@ byte CPU6502::pullByte()
 void CPU6502::NOP()
 {
 	//only increments the PC
-	std::cout << "NOP: opcode: " << (int)memory->read(PC) << std::endl;
+	//std::cout << "NOP: opcode: " << (int)memory->read(PC) << std::endl;
 	PC++;
 }
 

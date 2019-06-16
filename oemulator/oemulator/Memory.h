@@ -25,7 +25,7 @@ public:
 	//4000 - 401F = sound channels, joypads, and other IO
 	//6000 - 7FFF = cartridge PRG - RAM(if present), or PRG - ROM depending on mapper
 	//8000 - FFFF = cartridge memory, usually ROM.
-	byte memory[0xffff+1]; //the memory itself
+	byte memory[0xffff+1]; //the memory itself. //TODO: this shoul only be 2kb
 	void loadMemory(std::vector<byte> rom, int offset);
 	void loadMemory(byte rom[], int romSize, int offset);
 

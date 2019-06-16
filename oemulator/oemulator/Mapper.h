@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 
 typedef unsigned char byte;
 const int s2KB = 0x800;

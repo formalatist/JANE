@@ -29,7 +29,7 @@ void Mapper0::write(int addr, byte val)
 {
 	//PRGRAM is located at 0x6000-0x7fff
 	std::cout << "WRITE TO MAPPER: " << addr << "  val: " << val << std::endl;
-	PRGRAM[addr - 0x6000] = val;
+	//PRGRAM[addr - 0x6000] = val;
 }
 
 byte Mapper0::read(int addr)
