@@ -60,6 +60,9 @@
     <ClCompile Include="Mapper3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Mapper2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CPU6502.h">
@@ -93,6 +96,9 @@
       <Filter>Header Files\NES emulator\Mappers</Filter>
     </ClInclude>
     <ClInclude Include="Mapper3.h">
+      <Filter>Header Files\NES emulator\Mappers</Filter>
+    </ClInclude>
+    <ClInclude Include="Mapper2.h">
       <Filter>Header Files\NES emulator\Mappers</Filter>
     </ClInclude>
   </ItemGroup>

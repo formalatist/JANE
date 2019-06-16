@@ -35,6 +35,9 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 	if (mapperNumber == 0) {
 		mapper = new Mapper0(rom, rom2);
 	}
+	else if (mapperNumber == 2) {
+		mapper = new Mapper2(header, rom2);
+	}
 	else if (mapperNumber == 3) {
 		mapper = new Mapper3(header, rom2);
 	}

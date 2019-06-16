@@ -7,6 +7,10 @@ const int s4KB = 0x1000;
 const int s8KB = 0x2000;
 const int s16KB = 0x4000;
 const int s32KB = 0x8000;
+const int s64KB = 0x10000;
+const int s128KB = 0x20000;
+const int s256KB = 0x40000;
+const int s512KB = 0x80000;
 
 class Mapper {
 public:

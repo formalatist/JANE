@@ -27,7 +27,7 @@ long getFileSize(FILE *file)
 
 int main(int argc, char** argv) {
   
-	std::string game = "arkanoid";
+	std::string game = "castlevania";
 	std::string filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\" + game + ".nes";
 
 
@@ -125,8 +125,8 @@ int main(int argc, char** argv) {
 			int address1 = (y % 8) | (1 << 3) | (col << 4 & 0b11110000) | (row << 8 & 0xF00) | 0x1000;
 			int address2 = (y % 8) | (col << 4 & 0b11110000) | (row << 8 & 0xF00) | 0x1000;
 			int xOffset = 7 - x % 8;
-			int color = (nes.ppuMemory->memory[address1] >> xOffset & 1)
-				+ 2 * (nes.ppuMemory->memory[address2] >> xOffset & 1);
+			int color = (nes.ppuMemory->read(address1) >> xOffset & 1)
+				+ 2 * (nes.ppuMemory->read(address2) >> xOffset & 1);
 			color = colors2[color];
 			for (int x1 = 0; x1 < 4; x1++) {
 				for (int y1 = 0; y1 < 4; y1++) {
