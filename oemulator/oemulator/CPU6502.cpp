@@ -1907,6 +1907,9 @@ void CPU6502::executeOP()
 		}
 		case 0xbc: //LDY load Y register, absoluteX
 		{
+			int addr = absoluteX();
+			cycles += wasPageCrossed(addr - X, addr);
+
 			Y = readAbsoluteX();
 			Z = Y == 0;
 			N = (Y & 0x80) == 0x80;
@@ -1926,6 +1929,9 @@ void CPU6502::executeOP()
 		}
 		case 0xbe: //LDX load X register, absoluteY
 		{
+			int addr = absoluteY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			X = readAbsoluteY();
 			Z = X == 0;
 			N = (X & 0x80) == 0x80;
@@ -2122,6 +2128,9 @@ void CPU6502::executeOP()
 		}
 		case 0xd1: //CMP indirectY
 		{
+			int addr = indirectY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte val = readIndirectY();
 			C = A >= val;
 			Z = A == val;
@@ -2192,6 +2201,9 @@ void CPU6502::executeOP()
 		}
 		case 0xd9: //CMP compare, absoluteY
 		{
+			int addr = absoluteY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte val = readAbsoluteY();
 			C = A >= val;
 			Z = A == val;
@@ -2227,6 +2239,9 @@ void CPU6502::executeOP()
 		}
 		case 0xdd: //CMP compare, absoluteX
 		{
+			int addr = absoluteX();
+			cycles += wasPageCrossed(addr - X, addr);
+
 			byte val = readAbsoluteX();
 			C = A >= val;
 			Z = A == val;
@@ -2459,6 +2474,9 @@ void CPU6502::executeOP()
 		}
 		case 0xf1: //SBC subtract with carry, indirectY
 		{
+			int addr = indirectY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte M = readIndirectY();
 			short val = A - M - (1 - C);
 			C = (val >= 0);
@@ -2536,6 +2554,9 @@ void CPU6502::executeOP()
 		}
 		case 0xf9: //SBC subtract with carry, absoluteY
 		{
+			int addr = absoluteY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte M = readAbsoluteY();
 			short val = A - M - (1 - C);
 			C = (val >= 0);
@@ -2575,6 +2596,9 @@ void CPU6502::executeOP()
 		}
 		case 0xfd: //SBC subtract with carry, absoluteX
 		{
+			int addr = absoluteX();
+			cycles += wasPageCrossed(addr - X, addr);
+
 			byte M = readAbsoluteX();
 			short val = A - M - (1 - C);
 			C = (val >= 0);
