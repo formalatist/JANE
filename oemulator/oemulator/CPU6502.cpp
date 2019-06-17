@@ -1216,7 +1216,7 @@ void CPU6502::executeOP()
 			N = (val & 0x80) == 0x80;
 			Z = A == 0; //this might not be correct for this instruction
 			memory->write(addr, val);
-			cycles += 2;
+			cycles += 6;
 			break;
 		}
 		case 0x6f: //RRA ROR and ADC, absolute
