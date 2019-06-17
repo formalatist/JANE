@@ -1291,6 +1291,9 @@ void CPU6502::executeOP()
 		}
 		case 0x71: //ADC add with carry, indirectY
 		{
+			int addr = indirectY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte M = readIndirectY();
 			int val = A + M + C;
 			Z = (val & 0xFF) == 0;
@@ -1377,6 +1380,9 @@ void CPU6502::executeOP()
 		}
 		case 0x79: //ADC add with carry, absoluteY
 		{
+			int addr = absoluteY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte M = readAbsoluteY();
 			int val = A + M + C;
 			Z = (val & 0xFF) == 0;
@@ -1419,6 +1425,9 @@ void CPU6502::executeOP()
 		}
 		case 0x7d: //ADC add with carry, absoluteX
 		{
+			int addr = absoluteX();
+			cycles += wasPageCrossed(addr - X, addr);
+
 			byte M = readAbsoluteX();
 			int val = A + M + C;
 			Z = (val & 0xFF) == 0;
