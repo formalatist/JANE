@@ -1825,6 +1825,9 @@ void CPU6502::executeOP()
 		}
 		case 0xb1: //LDA load accumulator, indirectY
 		{
+			int addr = indirectY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			A = readIndirectY();
 			Z = A == 0;
 			N = (A & 0x80) == 0x80;
@@ -1884,6 +1887,9 @@ void CPU6502::executeOP()
 		}
 		case 0xb9: //LDA load accumulator, absoluteY
 		{
+			int addr = absoluteY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			A = readAbsoluteY();
 			Z = A == 0;
 			N = (A & 0x80) == 0x80;
@@ -1909,6 +1915,9 @@ void CPU6502::executeOP()
 		}
 		case 0xbd: //LDA load accumulator, abosluteX
 		{
+			int addr = absoluteX();
+			cycles += wasPageCrossed(addr - X, addr);
+
 			A = readAbsoluteX();
 			Z = A == 0;
 			N = (A & 0x80) == 0x80;
