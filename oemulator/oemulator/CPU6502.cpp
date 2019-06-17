@@ -943,6 +943,9 @@ void CPU6502::executeOP()
 		}
 		case 0x51: //EOR exclusive or, indirectY
 		{
+			int addr = indirectY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte val = A ^ readIndirectY();
 			A = val;
 			Z = val == 0;
@@ -1016,6 +1019,9 @@ void CPU6502::executeOP()
 		}
 		case 0x59: //EOR exclusive or, absoluteY
 		{
+			int addr = absoluteY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte val = A ^ readAbsoluteY();
 			A = val;
 			Z = val == 0;
@@ -1052,6 +1058,9 @@ void CPU6502::executeOP()
 		}
 		case 0x5d: //EOR exclusive or, absoluteX
 		{
+			int addr = absoluteX();
+			cycles += wasPageCrossed(addr - X, addr);
+
 			byte val = A ^ readAbsoluteX();
 			A = val;
 			Z = val == 0;
