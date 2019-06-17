@@ -27,7 +27,7 @@ long getFileSize(FILE *file)
 
 int main(int argc, char** argv) {
   
-	std::string game = "castlevania";
+	std::string game = "cpu_timing_test";
 	std::string filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\" + game + ".nes";
 
 

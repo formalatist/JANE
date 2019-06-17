@@ -28,8 +28,11 @@ Mapper0::Mapper0(byte header[], byte rom[])
 void Mapper0::write(int addr, byte val)
 {
 	//PRGRAM is located at 0x6000-0x7fff
-	std::cout << "WRITE TO MAPPER: " << addr << "  val: " << val << std::endl;
+	//std::cout << "WRITE TO MAPPER: " << addr << "  val: " << val << std::endl;
 	//PRGRAM[addr - 0x6000] = val;
+	if(addr <= 0x1fff) { //allow writing to CHRROM incase its RAM
+		CHRROM[addr] = val;
+	}
 }
 
 byte Mapper0::read(int addr)
