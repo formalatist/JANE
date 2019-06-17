@@ -608,6 +608,9 @@ void CPU6502::executeOP()
 		}
 		case 0x31: //AND logical and, indirectY
 		{
+			int addr = indirectY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte val = A & readIndirectY();
 			A = val;
 			Z = val == 0;
@@ -686,6 +689,9 @@ void CPU6502::executeOP()
 		}
 		case 0x39: //AND logical and, AbosluteY
 		{
+			int addr = absoluteY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte val = A & readAbsoluteY();
 			A = val;
 			Z = val == 0;
@@ -724,6 +730,9 @@ void CPU6502::executeOP()
 		}
 		case 0x3d: //AND logical and, abosluteX
 		{
+			int addr = absoluteX();
+			cycles += wasPageCrossed(addr - X, addr);
+
 			byte val = A & readAbsoluteX();
 			A = val;
 			Z = val == 0;
