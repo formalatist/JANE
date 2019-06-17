@@ -271,6 +271,9 @@ void CPU6502::executeOP()
 		}
 		case 0x11: //ORA logical inclusive or, indirct Y
 		{
+			int addr = indirectY();
+			cycles += wasPageCrossed(addr - Y, addr); //add 1 cycle for crossing page
+
 			byte val = A | readIndirectY();
 			A = val;
 			Z = val == 0;
@@ -344,6 +347,8 @@ void CPU6502::executeOP()
 		}
 		case 0x19: //ORA logical inclusive or, absoluteY
 		{
+			int addr = absoluteY();
+			cycles += wasPageCrossed(addr - Y, addr);
 			byte val = A | readAbsoluteY();
 			A = val;
 			Z = val == 0;
@@ -380,6 +385,9 @@ void CPU6502::executeOP()
 		}
 		case 0x1d: //ORA logival incluive or, absoluteX
 		{
+			int addr = absoluteX();
+			cycles += wasPageCrossed(addr - X, addr);
+
 			byte val = A | readAbsoluteX();
 			A = val;
 			Z = val == 0;
@@ -2827,4 +2835,12 @@ byte CPU6502::readByte()
 	byte val = memory->read(PC + 1);
 	PC += 2;
 	return val;
+}
+
+byte CPU6502::wasPageCrossed(int addrSubReg, int addr)
+{
+	//addrSubReg should be the final addr minus whatever register was added to the low byte, i.e addr - Y
+	//we check if the high bytes are equal, if not it meant that 
+	//the register added to the low byte affected the high byte => a page was crossed
+	return (addrSubReg & 0xff00) != (addr & 0xff00);
 }

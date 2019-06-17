@@ -119,4 +119,7 @@ private:
 
 	int readWord();
 	byte readByte();
+
+	//function to check if a page boundary was crossed, returns 1 if a page was crossed, 0 if not
+	byte wasPageCrossed(int addrSubReg, int addr);
 };
