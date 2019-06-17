@@ -27,7 +27,7 @@ long getFileSize(FILE *file)
 
 int main(int argc, char** argv) {
   
-	std::string game = "nestest";
+	std::string game = "mario_brothers";
 	std::string filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\" + game + ".nes";
 
 
@@ -250,8 +250,8 @@ int main(int argc, char** argv) {
 		//std::cout << "Nes took: " << (clock() - start2) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
 		duration = (clock() - duration) / ((double)CLOCKS_PER_SEC) * 1000;
 		//std::cout << "Duration: " << duration<< std::endl;
-		if (duration < 16.6667) {
-			SDL_Delay(16.6667 - duration);
+		if (duration < 14.2/*16.6667*/) {
+			SDL_Delay(14.2/*16.6667*/ - duration);
 			//std::cout << "test  " << duration << std::endl;
 		}
 		std::cout << "\rFPS: " << std::setprecision(3) << 1.0 / ((clock() - duration2) / ((double)CLOCKS_PER_SEC)) 
