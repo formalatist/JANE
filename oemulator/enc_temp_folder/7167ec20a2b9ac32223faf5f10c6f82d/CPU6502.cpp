@@ -851,7 +851,7 @@ void CPU6502::executeOP()
 			N = (val & 0x80) == 0x80;
 			A = val;
 			PC++;
-			cycles += 2;
+			cycles += 5;
 			break;
 		}
 		case 0x4c: //JMP jump
