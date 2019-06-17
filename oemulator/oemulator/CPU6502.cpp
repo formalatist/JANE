@@ -139,12 +139,13 @@ void CPU6502::executeOP()
 		}
 		case 0x6: //ASL Arithmetic shift left, zero page
 		{
+			int addr = zeroPage();
 			byte val = readZeroPage();
 			C = (val & 0x80) == 0x80;
 			val = (val << 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(memory->read(PC + 1), val);
+			memory->write(addr, val);
 			cycles += 5;
 			break;
 		}
@@ -307,14 +308,15 @@ void CPU6502::executeOP()
 			cycles += 4;
 			break;
 		}
-		case 0x16: //ASL arithmetic shift left
+		case 0x16: //ASL arithmetic shift left, zeroPageX
 		{
+			int addr = zeroPageX();
 			byte val = readZeroPageX();
 			C = (val & 0x80) == 0x80;
 			val = (val << 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(zeroPageX(), val);
+			memory->write(addr, val);
 			cycles += 6;
 			break;
 		}
@@ -387,12 +389,13 @@ void CPU6502::executeOP()
 		}
 		case 0x1e: //ASL arithmetic shift left, abosluteX
 		{
+			int addr = absoluteX();
 			byte val = readAbsoluteX();
 			C = (val & 0x80) == 0x80;
 			val = (val << 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(absoluteX(), val);
+			memory->write(addr, val);
 			cycles += 7;
 			break;
 		}
@@ -730,7 +733,7 @@ void CPU6502::executeOP()
 			N = (val & 0x80) == 0x80;
 			Z = val == 0;
 			memory->write(addr, val);
-			cycles += 6;
+			cycles += 7;
 			break;
 		}
 		case 0x3f: //RLA ROL and AND, absoluteX
