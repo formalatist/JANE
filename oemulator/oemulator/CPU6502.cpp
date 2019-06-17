@@ -139,12 +139,13 @@ void CPU6502::executeOP()
 		}
 		case 0x6: //ASL Arithmetic shift left, zero page
 		{
+			int addr = zeroPage();
 			byte val = readZeroPage();
 			C = (val & 0x80) == 0x80;
 			val = (val << 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(memory->read(PC + 1), val);
+			memory->write(addr, val);
 			cycles += 5;
 			break;
 		}
@@ -270,6 +271,9 @@ void CPU6502::executeOP()
 		}
 		case 0x11: //ORA logical inclusive or, indirct Y
 		{
+			int addr = indirectY();
+			cycles += wasPageCrossed(addr - Y, addr); //add 1 cycle for crossing page
+
 			byte val = A | readIndirectY();
 			A = val;
 			Z = val == 0;
@@ -307,14 +311,15 @@ void CPU6502::executeOP()
 			cycles += 4;
 			break;
 		}
-		case 0x16: //ASL arithmetic shift left
+		case 0x16: //ASL arithmetic shift left, zeroPageX
 		{
+			int addr = zeroPageX();
 			byte val = readZeroPageX();
 			C = (val & 0x80) == 0x80;
 			val = (val << 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(zeroPageX(), val);
+			memory->write(addr, val);
 			cycles += 6;
 			break;
 		}
@@ -342,6 +347,8 @@ void CPU6502::executeOP()
 		}
 		case 0x19: //ORA logical inclusive or, absoluteY
 		{
+			int addr = absoluteY();
+			cycles += wasPageCrossed(addr - Y, addr);
 			byte val = A | readAbsoluteY();
 			A = val;
 			Z = val == 0;
@@ -378,6 +385,9 @@ void CPU6502::executeOP()
 		}
 		case 0x1d: //ORA logival incluive or, absoluteX
 		{
+			int addr = absoluteX();
+			cycles += wasPageCrossed(addr - X, addr);
+
 			byte val = A | readAbsoluteX();
 			A = val;
 			Z = val == 0;
@@ -387,12 +397,13 @@ void CPU6502::executeOP()
 		}
 		case 0x1e: //ASL arithmetic shift left, abosluteX
 		{
+			int addr = absoluteX();
 			byte val = readAbsoluteX();
 			C = (val & 0x80) == 0x80;
 			val = (val << 1) & 0xff;
 			Z = val == 0;
 			N = (val & 0x80) == 0x80;
-			memory->write(absoluteX(), val);
+			memory->write(addr, val);
 			cycles += 7;
 			break;
 		}
@@ -597,6 +608,9 @@ void CPU6502::executeOP()
 		}
 		case 0x31: //AND logical and, indirectY
 		{
+			int addr = indirectY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte val = A & readIndirectY();
 			A = val;
 			Z = val == 0;
@@ -675,6 +689,9 @@ void CPU6502::executeOP()
 		}
 		case 0x39: //AND logical and, AbosluteY
 		{
+			int addr = absoluteY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte val = A & readAbsoluteY();
 			A = val;
 			Z = val == 0;
@@ -713,6 +730,9 @@ void CPU6502::executeOP()
 		}
 		case 0x3d: //AND logical and, abosluteX
 		{
+			int addr = absoluteX();
+			cycles += wasPageCrossed(addr - X, addr);
+
 			byte val = A & readAbsoluteX();
 			A = val;
 			Z = val == 0;
@@ -730,7 +750,7 @@ void CPU6502::executeOP()
 			N = (val & 0x80) == 0x80;
 			Z = val == 0;
 			memory->write(addr, val);
-			cycles += 6;
+			cycles += 7;
 			break;
 		}
 		case 0x3f: //RLA ROL and AND, absoluteX
@@ -848,7 +868,7 @@ void CPU6502::executeOP()
 			N = (val & 0x80) == 0x80;
 			A = val;
 			PC++;
-			cycles += 5;
+			cycles += 2;
 			break;
 		}
 		case 0x4c: //JMP jump
@@ -923,6 +943,9 @@ void CPU6502::executeOP()
 		}
 		case 0x51: //EOR exclusive or, indirectY
 		{
+			int addr = indirectY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte val = A ^ readIndirectY();
 			A = val;
 			Z = val == 0;
@@ -996,6 +1019,9 @@ void CPU6502::executeOP()
 		}
 		case 0x59: //EOR exclusive or, absoluteY
 		{
+			int addr = absoluteY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte val = A ^ readAbsoluteY();
 			A = val;
 			Z = val == 0;
@@ -1032,6 +1058,9 @@ void CPU6502::executeOP()
 		}
 		case 0x5d: //EOR exclusive or, absoluteX
 		{
+			int addr = absoluteX();
+			cycles += wasPageCrossed(addr - X, addr);
+
 			byte val = A ^ readAbsoluteX();
 			A = val;
 			Z = val == 0;
@@ -1213,7 +1242,7 @@ void CPU6502::executeOP()
 			N = (val & 0x80) == 0x80;
 			Z = A == 0; //this might not be correct for this instruction
 			memory->write(addr, val);
-			cycles += 2;
+			cycles += 6;
 			break;
 		}
 		case 0x6f: //RRA ROR and ADC, absolute
@@ -1262,6 +1291,9 @@ void CPU6502::executeOP()
 		}
 		case 0x71: //ADC add with carry, indirectY
 		{
+			int addr = indirectY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte M = readIndirectY();
 			int val = A + M + C;
 			Z = (val & 0xFF) == 0;
@@ -1348,6 +1380,9 @@ void CPU6502::executeOP()
 		}
 		case 0x79: //ADC add with carry, absoluteY
 		{
+			int addr = absoluteY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte M = readAbsoluteY();
 			int val = A + M + C;
 			Z = (val & 0xFF) == 0;
@@ -1390,6 +1425,9 @@ void CPU6502::executeOP()
 		}
 		case 0x7d: //ADC add with carry, absoluteX
 		{
+			int addr = absoluteX();
+			cycles += wasPageCrossed(addr - X, addr);
+
 			byte M = readAbsoluteX();
 			int val = A + M + C;
 			Z = (val & 0xFF) == 0;
@@ -1787,6 +1825,9 @@ void CPU6502::executeOP()
 		}
 		case 0xb1: //LDA load accumulator, indirectY
 		{
+			int addr = indirectY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			A = readIndirectY();
 			Z = A == 0;
 			N = (A & 0x80) == 0x80;
@@ -1846,6 +1887,9 @@ void CPU6502::executeOP()
 		}
 		case 0xb9: //LDA load accumulator, absoluteY
 		{
+			int addr = absoluteY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			A = readAbsoluteY();
 			Z = A == 0;
 			N = (A & 0x80) == 0x80;
@@ -1863,6 +1907,9 @@ void CPU6502::executeOP()
 		}
 		case 0xbc: //LDY load Y register, absoluteX
 		{
+			int addr = absoluteX();
+			cycles += wasPageCrossed(addr - X, addr);
+
 			Y = readAbsoluteX();
 			Z = Y == 0;
 			N = (Y & 0x80) == 0x80;
@@ -1871,6 +1918,9 @@ void CPU6502::executeOP()
 		}
 		case 0xbd: //LDA load accumulator, abosluteX
 		{
+			int addr = absoluteX();
+			cycles += wasPageCrossed(addr - X, addr);
+
 			A = readAbsoluteX();
 			Z = A == 0;
 			N = (A & 0x80) == 0x80;
@@ -1879,6 +1929,9 @@ void CPU6502::executeOP()
 		}
 		case 0xbe: //LDX load X register, absoluteY
 		{
+			int addr = absoluteY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			X = readAbsoluteY();
 			Z = X == 0;
 			N = (X & 0x80) == 0x80;
@@ -2075,6 +2128,9 @@ void CPU6502::executeOP()
 		}
 		case 0xd1: //CMP indirectY
 		{
+			int addr = indirectY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte val = readIndirectY();
 			C = A >= val;
 			Z = A == val;
@@ -2145,6 +2201,9 @@ void CPU6502::executeOP()
 		}
 		case 0xd9: //CMP compare, absoluteY
 		{
+			int addr = absoluteY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte val = readAbsoluteY();
 			C = A >= val;
 			Z = A == val;
@@ -2180,6 +2239,9 @@ void CPU6502::executeOP()
 		}
 		case 0xdd: //CMP compare, absoluteX
 		{
+			int addr = absoluteX();
+			cycles += wasPageCrossed(addr - X, addr);
+
 			byte val = readAbsoluteX();
 			C = A >= val;
 			Z = A == val;
@@ -2412,6 +2474,9 @@ void CPU6502::executeOP()
 		}
 		case 0xf1: //SBC subtract with carry, indirectY
 		{
+			int addr = indirectY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte M = readIndirectY();
 			short val = A - M - (1 - C);
 			C = (val >= 0);
@@ -2489,6 +2554,9 @@ void CPU6502::executeOP()
 		}
 		case 0xf9: //SBC subtract with carry, absoluteY
 		{
+			int addr = absoluteY();
+			cycles += wasPageCrossed(addr - Y, addr);
+
 			byte M = readAbsoluteY();
 			short val = A - M - (1 - C);
 			C = (val >= 0);
@@ -2528,6 +2596,9 @@ void CPU6502::executeOP()
 		}
 		case 0xfd: //SBC subtract with carry, absoluteX
 		{
+			int addr = absoluteX();
+			cycles += wasPageCrossed(addr - X, addr);
+
 			byte M = readAbsoluteX();
 			short val = A - M - (1 - C);
 			C = (val >= 0);
@@ -2824,4 +2895,12 @@ byte CPU6502::readByte()
 	byte val = memory->read(PC + 1);
 	PC += 2;
 	return val;
+}
+
+byte CPU6502::wasPageCrossed(int addrSubReg, int addr)
+{
+	//addrSubReg should be the final addr minus whatever register was added to the low byte, i.e addr - Y
+	//we check if the high bytes are equal, if not it meant that 
+	//the register added to the low byte affected the high byte => a page was crossed
+	return (addrSubReg & 0xff00) != (addr & 0xff00);
 }
