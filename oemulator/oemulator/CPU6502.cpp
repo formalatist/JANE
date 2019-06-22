@@ -2637,8 +2637,8 @@ void CPU6502::executeOP()
 
 		default:
 		{
-			std::cout << "Doing unimplemented NOP: " << std::hex << PC << std::endl;
-			std::cout << "At step: " << numSteps << std::endl;
+			//std::cout << "Doing unimplemented NOP: " << std::hex << memory->read(PC) << std::endl;
+			//std::cout << "At step: " << numSteps << std::endl;
 			NOP();
 			break;
 		}
