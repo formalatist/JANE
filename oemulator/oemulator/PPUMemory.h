@@ -6,6 +6,7 @@
 class PPU;
 class CPU6502;
 class Mapper;
+enum MirrorMode;
 
 #include "NES.h"
 
@@ -50,4 +51,6 @@ private:
 	PPU* ppu;
 	Mapper* mapper;
 	bool isMirrorVertical;
+
+	int getMirroredAddress(int addr, MirrorMode mode);
 };

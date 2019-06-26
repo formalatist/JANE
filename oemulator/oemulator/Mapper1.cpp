@@ -19,6 +19,14 @@ Mapper1::Mapper1(iNESHeader header, byte rom[], PPUMemory* mem_)
 		CHRROM[i] = rom[i + numPRGBanks*s16KB];
 	}
 
+	//set mirroring
+	if (header.verticalMirroring) {
+		mirrorMode = Vertical;
+	}
+	else {
+		mirrorMode = Horizontal;
+	}
+
 	shiftRegister = 0;
 }
 
@@ -79,6 +87,16 @@ void Mapper1::writeRegister(int addr)
 		//add support for mirror types 3 and 4
 		//std::cout << "WRITING TO CONTROL REG" << std::endl;
 		//std::cout << "Mirror mode set to : " << (int)(shiftRegister & 0b11) << std::endl;
+		byte mirror = shiftRegister & 0b11;
+		if(mirror == 0) { //1-screen mirroring (nametable 0)
+			mirrorMode = Single0;
+		} else if(mirror == 1) { //1-screen mirroring (nametable 1)
+			mirrorMode = Single1;
+		} else if(mirror == 2) { //Vertical
+			mirrorMode = Vertical;
+		} else {
+			mirrorMode = Horizontal;
+		}
 
 		PRGSwapMode = shiftRegister & 0b100;
 		PRGBankSize = shiftRegister & 0b1000;

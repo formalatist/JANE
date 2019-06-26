@@ -12,6 +12,14 @@ Mapper3::Mapper3(iNESHeader header, byte rom[])
 		CHRROM[i] = rom[i + header.numPRGROMUnits*s16KB];
 	}
 	currentCHRBank = 0;
+
+	//set mirroring
+	if (header.verticalMirroring) {
+		mirrorMode = Vertical;
+	}
+	else {
+		mirrorMode = Horizontal;
+	}
 }
 
 byte Mapper3::read(int addr)

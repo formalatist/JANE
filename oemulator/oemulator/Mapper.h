@@ -12,10 +12,19 @@ const int s128KB = 0x20000;
 const int s256KB = 0x40000;
 const int s512KB = 0x80000;
 
+enum MirrorMode {
+	Horizontal,
+	Vertical,
+	Single0,
+	Single1,
+	Four
+};
+
 class Mapper {
 public:
 	virtual byte read(int addr) = 0;
 	virtual void write(int addr, byte val) = 0;
+	MirrorMode mirrorMode;
 };
 
 //TODO: add support for NES 2.0 and rename this to just header
