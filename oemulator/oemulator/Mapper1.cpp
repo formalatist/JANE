@@ -99,14 +99,14 @@ void Mapper1::writeRegister(int addr)
 			mirrorMode = Horizontal;
 		}
 
-		PRGSwapMode = shiftRegister & 0b100;
-		PRGBankSize = shiftRegister & 0b1000;
-		CHRBankSize = shiftRegister & 0b10000;
+		PRGSwapMode = (shiftRegister & 0b100) >> 2;
+		PRGBankSize = (shiftRegister & 0b1000) >> 3;
+		CHRBankSize = (shiftRegister & 0b10000) >> 4;
 	}
 	else if (addr <= 0xbfff) { // reg 1, CHR ROM bank register
 		std::cout << "WRITING TO REG 1" << std::endl;
 		if (CHRBankSize == 0) {
-			CHRBank1 = shiftRegister & 0b11110;
+			CHRBank1 = ((shiftRegister & 0b11110)>>1)*2;
 			CHRBank2 = CHRBank1 + 1;
 		}
 		else {
@@ -116,6 +116,7 @@ void Mapper1::writeRegister(int addr)
 	else if (addr <= 0xdfff) { // reg 2, CHR ROM bank register
 		std::cout << "WRITING TO REG 2" << std::endl;
 		if (CHRBankSize == 0) {
+			//CHRBank2 = shiftRegister;
 			std::cout << "WRITE TO CHR ROM REG 2 THAT WONT COUNT###############" << std::endl;
 		}
 		else {
@@ -125,7 +126,7 @@ void Mapper1::writeRegister(int addr)
 	else { // reg 3, PRG ROM bank register
 		//std::cout << "WRITING TO REG 3" << std::endl;
 		if (PRGBankSize == 0) {
-			PRGBank1 = shiftRegister & 0b1110;
+			PRGBank1 = ((shiftRegister & 0b1110) >> 1)*2;
 			PRGBank2 = PRGBank1 + 1;
 		}
 		else {
