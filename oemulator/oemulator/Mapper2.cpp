@@ -13,6 +13,14 @@ Mapper2::Mapper2(iNESHeader header, byte rom[])
 	for (int i = 0; i < s8KB*header.numCHRROMUnits; i++) {
 		CHRROM[i] = rom[i + s16KB*header.numPRGROMUnits];
 	}
+
+	//set mirroring
+	if (header.verticalMirroring) {
+		mirrorMode = Vertical;
+	}
+	else {
+		mirrorMode = Horizontal;
+	}
 }
 
 byte Mapper2::read(int addr)

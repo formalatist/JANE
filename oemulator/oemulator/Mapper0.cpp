@@ -1,10 +1,10 @@
 #include "Mapper0.h"
 
 //TODO switch to suing iNESHeader
-Mapper0::Mapper0(byte header[], byte rom[])
+Mapper0::Mapper0(iNESHeader header, byte rom[])
 {
 	//setup PRG ROM
-	int PRGROMSize = header[4]; //size in 16kb units
+	int PRGROMSize = header.numPRGROMUnits; //size in 16kb units
 	
 	for (int i = 0; i < s16KB; i++) {
 		PRGROM1[i] = rom[i];
@@ -22,6 +22,14 @@ Mapper0::Mapper0(byte header[], byte rom[])
 	//setup CHR ROM
 	for (int i = 0; i < s8KB; i++) {
 		CHRROM[i] = rom[i + PRGROMSize*s16KB];
+	}
+
+	//set mirror mode
+	if (header.verticalMirroring) {
+		mirrorMode = Vertical;
+	}
+	else {
+		mirrorMode = Horizontal;
 	}
 }
 

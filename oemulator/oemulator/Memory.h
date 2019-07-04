@@ -9,6 +9,7 @@ class Mapper0;
 
 #include "NES.h"
 #include "Mapper0.h" //TOTO: MOVE THESE
+#include "Mapper1.h"
 #include "Mapper2.h"
 #include "Mapper3.h"
 

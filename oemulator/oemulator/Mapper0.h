@@ -7,7 +7,7 @@ typedef unsigned char byte;
 class Mapper0 : public Mapper {
 public:
 	//constructor
-	Mapper0(byte header[], byte rom[]);
+	Mapper0(iNESHeader header, byte rom[]);
 
 	void write(int addr, byte val);
 	byte read(int addr);

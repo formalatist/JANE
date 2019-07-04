@@ -50,26 +50,28 @@ void PPUMemory::write(int addr, byte val)
 		//memory[addr] = val;
 		mapper->write(addr, val);
 	} else if(addr < 0x3000) { //Nametables 0-3 
-		if (isMirrorVertical) {
+		/*if (isMirrorVertical) {
 			int offset = ((addr > 0x23FF && addr < 0x2800) || addr > 0x2BFF) ? 0x400 : 0;
 			addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
 		}
 		else { //Horizontal mirror
 			int offset = addr > 0x27FF ? 0x800 : 0;
 			addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
-		}
+		}*/
+		addr = getMirroredAddress(addr, mapper->mirrorMode);
 		memory[addr] = val;
 	} else if (addr < 0x3F00) { //mirrors of them at(0x3000 - 0x3EFF)
 		//std::cout << "#######WRITE tO MIRROR OF NAMETABLE" << std::endl;
 		addr -= 0x1000;
-		if (isMirrorVertical) {
+		/*if (isMirrorVertical) {
 			int offset = ((addr > 0x23FF && addr < 0x2800) || addr > 0x2BFF) ? 0x400 : 0;
 			addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
 		}
 		else { //Horizontal mirror
 			int offset = addr > 0x27FF ? 0x800 : 0;
 			addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
-		}
+		}*/
+		addr = getMirroredAddress(addr, mapper->mirrorMode);
 		memory[addr] = val;
 	} else if (addr < 0x3F20) { //palette table
 		//From nesdev: Addresses $3F10/$3F14/$3F18/$3F1C are mirrors of $3F00/$3F04/$3F08/$3F0C
@@ -101,25 +103,27 @@ byte PPUMemory::read(int addr)
 		//return memory[addr];
 		return mapper->read(addr);
 	} else if (addr < 0x3000) { //nametables
-		if (isMirrorVertical) {
+		/*if (isMirrorVertical) {
 			int offset = ((addr > 0x23FF && addr < 0x2800) || addr > 0x2BFF) ? 0x400 : 0;
 			addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
 		}
 		else { //Horizontal mirror
 			int offset = addr > 0x27FF ? 0x800 : 0;
 			addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
-		}
+		}*/
+		addr = getMirroredAddress(addr, mapper->mirrorMode);
 		return memory[addr];
 	} else if(addr < 0x3F00) { //mirror of nametables
 		addr -= 0x1000;
-		if (isMirrorVertical) {
+		/*if (isMirrorVertical) {
 			int offset = ((addr > 0x23FF && addr < 0x2800) || addr > 0x2BFF) ? 0x400 : 0;
 			addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
 		}
 		else { //Horizontal mirror
 			int offset = addr > 0x27FF ? 0x800 : 0;
 			addr = ((addr - 0x2000) % 0x400) + offset + 0x2000;
-		}
+		}*/
+		addr = getMirroredAddress(addr, mapper->mirrorMode);
 		return memory[addr];
 	} else if(addr < 0x3F20) { //palette
 		//std::cout << "PALETTE READ: addr: " << (int)addr << "  val: " << (int)memory[addr] << std::endl;
@@ -155,4 +159,42 @@ void PPUMemory::setMirror(bool mirror)
 void PPUMemory::setMapper(Mapper* mapper_)
 {
 	mapper = mapper_;
+}
+
+int PPUMemory::getMirroredAddress(int addr, MirrorMode mode)
+{
+	int intraTableAddr = addr % 0x400;
+	int table = (addr - 0x2000) / 0x400; //current table
+
+	//update table based on mirroring mode
+	switch (mode)
+	{
+	case Horizontal:
+		if (table == 1) {
+			table = 0;
+		} else if (table == 2 || table == 3) {
+			table = 1;
+		}
+		break;
+	case Vertical:
+		if (table == 2) {
+			table = 0;
+		}
+		else if (table == 1 || table == 3) {
+			table = 1;
+		}
+		break;
+	case Single0:
+		table = 0;
+		break;
+	case Single1:
+		table = 1;
+		break;
+	case Four:
+		break;
+	default:
+		std::cout << "####### NO MIRROR MODE SET" << std::endl;
+		break;
+	}
+	return 0x2000 + table * 0x400 + intraTableAddr;
 }

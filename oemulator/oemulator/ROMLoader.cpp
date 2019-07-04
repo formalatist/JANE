@@ -33,7 +33,10 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 
 	iNESHeader header = getHeader(rom);
 	if (mapperNumber == 0) {
-		mapper = new Mapper0(rom, rom2);
+		mapper = new Mapper0(header, rom2);
+	}
+	else if (mapperNumber == 1) {
+		mapper = new Mapper1(header, rom2, ppuMemory);
 	}
 	else if (mapperNumber == 2) {
 		mapper = new Mapper2(header, rom2);
@@ -43,7 +46,6 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 	}
 	memory->setMapper(mapper);
 	ppuMemory->setMapper(mapper);
-	ppuMemory->setMirror(header.verticalMirroring);
 
 	//set the PC to the init vector
 	std::cout << std::hex << (int)memory->memory[0xfffc] << "  " << (memory->memory[0xfffd] << 8) << std::endl;

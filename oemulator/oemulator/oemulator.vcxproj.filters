@@ -55,13 +55,13 @@
       <Filter>Source Files\NES emulator\Mappers</Filter>
     </ClCompile>
     <ClCompile Include="Mapper1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Mapper3.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\NES emulator\Mappers</Filter>
     </ClCompile>
     <ClCompile Include="Mapper2.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\NES emulator\Mappers</Filter>
+    </ClCompile>
+    <ClCompile Include="Mapper3.cpp">
+      <Filter>Source Files\NES emulator\Mappers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
