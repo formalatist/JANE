@@ -27,7 +27,7 @@ long getFileSize(FILE *file)
 
 int main(int argc, char** argv) {
   
-	std::string game = "zelda";
+	std::string game = "bubble bobble";
 	std::string filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\" + game + ".nes";
 
 

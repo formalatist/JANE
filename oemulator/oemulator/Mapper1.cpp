@@ -5,7 +5,7 @@ Mapper1::Mapper1(iNESHeader header, byte rom[], PPUMemory* mem_)
 	mem = mem_;
 	//setup PRG banks
 	PRGBank1 = 0;
-	PRGBank2 = 0;
+	PRGBank2 = header.numPRGROMUnits-1;
 	numPRGBanks = header.numPRGROMUnits;
 	for (int i = 0; i < numPRGBanks*s16KB; i++) {
 		PRGROM[i] = rom[i];
@@ -66,7 +66,7 @@ void Mapper1::write(int addr, byte val)
 			shiftRegisterWriteCounter = 0;
 		} else { //bit 7 clear, update register
 			shiftRegisterWriteCounter++;
-			shiftRegister = (shiftRegister >> 1) || ((val & 1) << 4);
+			shiftRegister = (shiftRegister >> 1) | ((val & 1) << 4);
 
 			if (shiftRegisterWriteCounter == 5) { //copy shift register to 
 				//internal register selected by bits 14 and 13 of addr
@@ -86,8 +86,8 @@ void Mapper1::writeRegister(int addr)
 		//hook mappers up in such a way that
 		//they can control mirroring from here, then
 		//add support for mirror types 3 and 4
-		std::cout << "WRITING TO CONTROL REG" << std::endl;
-		std::cout << "Mirror mode set to : " << (int)(shiftRegister & 0b11) << std::endl;
+		//std::cout << "WRITING TO CONTROL REG" << std::endl;
+		//std::cout << "Mirror mode set to : " << (int)(shiftRegister & 0b11) << std::endl;
 		byte mirror = shiftRegister & 0b11;
 		if(mirror == 0) { //1-screen mirroring (nametable 0)
 			mirrorMode = Single0;
@@ -123,7 +123,7 @@ void Mapper1::writeRegister(int addr)
 		}
 	}
 	else { // reg 3, PRG ROM bank register
-		std::cout << "WRITING TO REG 3" << std::endl;
+		//std::cout << "WRITING TO REG 3" << std::endl;
 		if (PRGBankSize == 0) {
 			PRGBank1 = shiftRegister & 0b1110;
 			PRGBank2 = PRGBank1 + 1;
@@ -138,6 +138,6 @@ void Mapper1::writeRegister(int addr)
 				PRGBank2 = numPRGBanks-1;
 			}
 		}
-		std::cout << "PRGBank1 and 2 is now : " << PRGBank1 << "  " << PRGBank2 << std::endl;
+		//std::cout << "PRGBank1 and 2 is now : " << PRGBank1 << "  " << PRGBank2 << std::endl;
 	}
 }
