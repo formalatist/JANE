@@ -81,12 +81,13 @@ void Mapper1::write(int addr, byte val)
 
 void Mapper1::writeRegister(int addr)
 {
+	//std::cout << "WRITING TO REG" << std::endl;
 	if(addr <= 0x9fff) { // reg 0, Control register
 		//hook mappers up in such a way that
 		//they can control mirroring from here, then
 		//add support for mirror types 3 and 4
-		//std::cout << "WRITING TO CONTROL REG" << std::endl;
-		//std::cout << "Mirror mode set to : " << (int)(shiftRegister & 0b11) << std::endl;
+		std::cout << "WRITING TO CONTROL REG" << std::endl;
+		std::cout << "Mirror mode set to : " << (int)(shiftRegister & 0b11) << std::endl;
 		byte mirror = shiftRegister & 0b11;
 		if(mirror == 0) { //1-screen mirroring (nametable 0)
 			mirrorMode = Single0;
@@ -103,6 +104,7 @@ void Mapper1::writeRegister(int addr)
 		CHRBankSize = shiftRegister & 0b10000;
 	}
 	else if (addr <= 0xbfff) { // reg 1, CHR ROM bank register
+		std::cout << "WRITING TO REG 1" << std::endl;
 		if (CHRBankSize == 0) {
 			CHRBank1 = shiftRegister & 0b11110;
 			CHRBank2 = CHRBank1 + 1;
@@ -112,24 +114,30 @@ void Mapper1::writeRegister(int addr)
 		}
 	}
 	else if (addr <= 0xdfff) { // reg 2, CHR ROM bank register
+		std::cout << "WRITING TO REG 2" << std::endl;
 		if (CHRBankSize == 0) {
+			std::cout << "WRITE TO CHR ROM REG 2 THAT WONT COUNT###############" << std::endl;
 		}
 		else {
 			CHRBank2 = shiftRegister;
 		}
 	}
 	else { // reg 3, PRG ROM bank register
+		std::cout << "WRITING TO REG 3" << std::endl;
 		if (PRGBankSize == 0) {
 			PRGBank1 = shiftRegister & 0b1110;
 			PRGBank2 = PRGBank1 + 1;
 		}
 		else {
 			if(PRGSwapMode == 0) { // 0x8000-0xbfff fixed, 0xc000-0xffff swappable
+				PRGBank1 = 0;
 				PRGBank2 = shiftRegister & 0b1111;
 			}
 			else {
 				PRGBank1 = shiftRegister & 0b1111;
+				PRGBank2 = numPRGBanks-1;
 			}
 		}
+		std::cout << "PRGBank1 and 2 is now : " << PRGBank1 << "  " << PRGBank2 << std::endl;
 	}
 }
