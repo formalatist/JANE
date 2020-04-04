@@ -124,6 +124,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source Files\Display.cpp" />
     <ClCompile Include="Source Files\Controller.cpp" />
     <ClCompile Include="Source Files\CPU6502.cpp" />
     <ClCompile Include="Source Files\main.cpp" />
@@ -138,6 +139,7 @@
     <ClCompile Include="Source Files\ROMLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Header Files\Display.h" />
     <ClInclude Include="Header Files\Controller.h" />
     <ClInclude Include="Header Files\CPU6502.h" />
     <ClInclude Include="Header Files\Mapper.h" />

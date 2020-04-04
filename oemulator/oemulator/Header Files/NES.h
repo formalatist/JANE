@@ -4,6 +4,8 @@
 #include "Memory.h"
 #include "PPUMemory.h"
 #include "Controller.h"
+#include "Display.h"
+
 #include <SDL.h>
 
 class NES {
@@ -19,6 +21,7 @@ public:
 	void stepFrame();
 
 	void setScreen(SDL_Surface* screen_, SDL_Surface* scaledScreen_, SDL_Window* window_);
+	void setDisplay(Display *display_);
 	void updateScreen();
 
 	void connectController(Controller* controller);
@@ -31,6 +34,7 @@ public:
 	PPUMemory* ppuMemory;
 
 private:
+	Display *display;
 	SDL_Surface* screen;
 	SDL_Surface* scaledScreen;
 	SDL_Window* window;

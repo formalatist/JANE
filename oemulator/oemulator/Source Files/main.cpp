@@ -80,8 +80,13 @@ int main(int argc, char** argv) {
 	Uint32 amask = 0x000000ff;
 	mainWindowSurface = SDL_CreateRGBSurface(0,512, 240,
 		32, rmask, gmask, bmask, amask);*/
-	nes.setScreen(mainWindowSurface, scaledMainWindowSurface, mainWindow);
-	nes.updateScreen();
+	
+		
+	//nes.setScreen(mainWindowSurface, scaledMainWindowSurface, mainWindow);
+	Display display = Display("Test", 512, 240);
+	nes.setDisplay(&display);
+	//display.setScale(2);
+	//nes.updateScreen();
 
 	
 	SDL_Window* patternTableWindow = NULL;
