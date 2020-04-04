@@ -11,6 +11,8 @@ public:
 
 	void setScale(int newScale);
 
+	~Display();
+
 private:
 	SDL_Surface *windowSurface;
 	SDL_Window *window;

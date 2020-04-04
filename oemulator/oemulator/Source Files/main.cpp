@@ -62,31 +62,10 @@ int main(int argc, char** argv) {
 	nes.connectController(&c1);
 	ROMLoader loader = ROMLoader(nes.memory, nes.ppuMemory);
 	loader.loadROM(fileBuffer, fileSize, (*nes.cpu));
-
-	std::cout << "Starting PC at: 0x" << std::hex << nes.cpu->PC << std::endl;
-	
-
 	//create the screen
-	SDL_Window* mainWindow = NULL;
-	SDL_Surface* mainWindowSurface = NULL;
-	SDL_Surface* scaledMainWindowSurface = NULL;
-	mainWindow = SDL_CreateWindow("ØMULATOR", 512, 256,
-		512*SCALE, 240*SCALE,
-		SDL_WINDOW_SHOWN);
-	mainWindowSurface = SDL_GetWindowSurface(mainWindow);
-	/*Uint32 rmask = 0xff000000;
-	Uint32 gmask = 0x00ff0000;
-	Uint32 bmask = 0x0000ff00;
-	Uint32 amask = 0x000000ff;
-	mainWindowSurface = SDL_CreateRGBSurface(0,512, 240,
-		32, rmask, gmask, bmask, amask);*/
-	
-		
-	//nes.setScreen(mainWindowSurface, scaledMainWindowSurface, mainWindow);
 	Display display = Display("Test", 512, 240);
 	nes.setDisplay(&display);
-	//display.setScale(2);
-	//nes.updateScreen();
+	display.setScale(3);
 
 	
 	SDL_Window* patternTableWindow = NULL;
@@ -153,10 +132,6 @@ int main(int argc, char** argv) {
 	SDL_Event event;
 	byte input = 0;
 
-	//nes.step(1000000);
-	//nes.cpu->printCallLog = true;
-	//nes.step(20);
-	//run = false;
 	char* dir;
 	while (run) {
 		start = clock();
@@ -239,10 +214,6 @@ int main(int argc, char** argv) {
 				}
 			} else if(event.type == SDL_DROPFILE) { // a file was droppen on the window
 				dir = event.drop.file;
-				SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
-					"Loading ROMs by dropping not implemented yet :(",
-					dir,
-					mainWindow);
 				SDL_free(dir);
 			}
 		}
@@ -267,7 +238,6 @@ int main(int argc, char** argv) {
 
 	
 	SDL_DestroyWindow(patternTableWindow);
-	SDL_DestroyWindow(mainWindow);
 	SDL_Quit();
 	std::cin.get();
 
