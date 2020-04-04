@@ -27,79 +27,79 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="Source Files\Controller.cpp">
+      <Filter>Source Files\NES emulator</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\CPU6502.cpp">
+      <Filter>Source Files\NES emulator</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Mapper0.cpp">
+      <Filter>Source Files\NES emulator\Mappers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Mapper1.cpp">
+      <Filter>Source Files\NES emulator\Mappers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Mapper2.cpp">
+      <Filter>Source Files\NES emulator\Mappers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Mapper3.cpp">
+      <Filter>Source Files\NES emulator\Mappers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\Memory.cpp">
+      <Filter>Source Files\NES emulator</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\NES.cpp">
+      <Filter>Source Files\NES emulator</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\PPU.cpp">
+      <Filter>Source Files\NES emulator</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\PPUMemory.cpp">
+      <Filter>Source Files\NES emulator</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\ROMLoader.cpp">
+      <Filter>Source Files\NES emulator</Filter>
+    </ClCompile>
+    <ClCompile Include="Source Files\main.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="CPU6502.cpp">
-      <Filter>Source Files\NES emulator</Filter>
-    </ClCompile>
-    <ClCompile Include="ROMLoader.cpp">
-      <Filter>Source Files\NES emulator</Filter>
-    </ClCompile>
-    <ClCompile Include="PPU.cpp">
-      <Filter>Source Files\NES emulator</Filter>
-    </ClCompile>
-    <ClCompile Include="NES.cpp">
-      <Filter>Source Files\NES emulator</Filter>
-    </ClCompile>
-    <ClCompile Include="Memory.cpp">
-      <Filter>Source Files\NES emulator</Filter>
-    </ClCompile>
-    <ClCompile Include="PPUMemory.cpp">
-      <Filter>Source Files\NES emulator</Filter>
-    </ClCompile>
-    <ClCompile Include="Controller.cpp">
-      <Filter>Source Files\NES emulator</Filter>
-    </ClCompile>
-    <ClCompile Include="Mapper0.cpp">
-      <Filter>Source Files\NES emulator\Mappers</Filter>
-    </ClCompile>
-    <ClCompile Include="Mapper1.cpp">
-      <Filter>Source Files\NES emulator\Mappers</Filter>
-    </ClCompile>
-    <ClCompile Include="Mapper2.cpp">
-      <Filter>Source Files\NES emulator\Mappers</Filter>
-    </ClCompile>
-    <ClCompile Include="Mapper3.cpp">
-      <Filter>Source Files\NES emulator\Mappers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CPU6502.h">
+    <ClInclude Include="Header Files\Controller.h">
       <Filter>Header Files\NES emulator</Filter>
     </ClInclude>
-    <ClInclude Include="ROMLoader.h">
+    <ClInclude Include="Header Files\CPU6502.h">
       <Filter>Header Files\NES emulator</Filter>
     </ClInclude>
-    <ClInclude Include="PPU.h">
-      <Filter>Header Files\NES emulator</Filter>
-    </ClInclude>
-    <ClInclude Include="NES.h">
-      <Filter>Header Files\NES emulator</Filter>
-    </ClInclude>
-    <ClInclude Include="Memory.h">
-      <Filter>Header Files\NES emulator</Filter>
-    </ClInclude>
-    <ClInclude Include="PPUMemory.h">
-      <Filter>Header Files\NES emulator</Filter>
-    </ClInclude>
-    <ClInclude Include="Controller.h">
-      <Filter>Header Files\NES emulator</Filter>
-    </ClInclude>
-    <ClInclude Include="Mapper0.h">
+    <ClInclude Include="Header Files\Mapper.h">
       <Filter>Header Files\NES emulator\Mappers</Filter>
     </ClInclude>
-    <ClInclude Include="Mapper.h">
+    <ClInclude Include="Header Files\Mapper0.h">
       <Filter>Header Files\NES emulator\Mappers</Filter>
     </ClInclude>
-    <ClInclude Include="Mapper1.h">
+    <ClInclude Include="Header Files\Mapper1.h">
       <Filter>Header Files\NES emulator\Mappers</Filter>
     </ClInclude>
-    <ClInclude Include="Mapper3.h">
+    <ClInclude Include="Header Files\Mapper2.h">
       <Filter>Header Files\NES emulator\Mappers</Filter>
     </ClInclude>
-    <ClInclude Include="Mapper2.h">
+    <ClInclude Include="Header Files\Mapper3.h">
       <Filter>Header Files\NES emulator\Mappers</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Memory.h">
+      <Filter>Header Files\NES emulator</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\NES.h">
+      <Filter>Header Files\NES emulator</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\PPU.h">
+      <Filter>Header Files\NES emulator</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\PPUMemory.h">
+      <Filter>Header Files\NES emulator</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\ROMLoader.h">
+      <Filter>Header Files\NES emulator</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

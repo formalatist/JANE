@@ -68,7 +68,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Header Files;$(IncludePath)</IncludePath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -122,32 +124,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Controller.cpp" />
-    <ClCompile Include="CPU6502.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Mapper0.cpp" />
-    <ClCompile Include="Mapper1.cpp" />
-    <ClCompile Include="Mapper2.cpp" />
-    <ClCompile Include="Mapper3.cpp" />
-    <ClCompile Include="Memory.cpp" />
-    <ClCompile Include="NES.cpp" />
-    <ClCompile Include="PPU.cpp" />
-    <ClCompile Include="PPUMemory.cpp" />
-    <ClCompile Include="ROMLoader.cpp" />
+    <ClCompile Include="Source Files\Controller.cpp" />
+    <ClCompile Include="Source Files\CPU6502.cpp" />
+    <ClCompile Include="Source Files\main.cpp" />
+    <ClCompile Include="Source Files\Mapper0.cpp" />
+    <ClCompile Include="Source Files\Mapper1.cpp" />
+    <ClCompile Include="Source Files\Mapper2.cpp" />
+    <ClCompile Include="Source Files\Mapper3.cpp" />
+    <ClCompile Include="Source Files\Memory.cpp" />
+    <ClCompile Include="Source Files\NES.cpp" />
+    <ClCompile Include="Source Files\PPU.cpp" />
+    <ClCompile Include="Source Files\PPUMemory.cpp" />
+    <ClCompile Include="Source Files\ROMLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Controller.h" />
-    <ClInclude Include="CPU6502.h" />
-    <ClInclude Include="Mapper.h" />
-    <ClInclude Include="Mapper0.h" />
-    <ClInclude Include="Mapper1.h" />
-    <ClInclude Include="Mapper2.h" />
-    <ClInclude Include="Mapper3.h" />
-    <ClInclude Include="Memory.h" />
-    <ClInclude Include="NES.h" />
-    <ClInclude Include="PPU.h" />
-    <ClInclude Include="PPUMemory.h" />
-    <ClInclude Include="ROMLoader.h" />
+    <ClInclude Include="Header Files\Controller.h" />
+    <ClInclude Include="Header Files\CPU6502.h" />
+    <ClInclude Include="Header Files\Mapper.h" />
+    <ClInclude Include="Header Files\Mapper0.h" />
+    <ClInclude Include="Header Files\Mapper1.h" />
+    <ClInclude Include="Header Files\Mapper2.h" />
+    <ClInclude Include="Header Files\Mapper3.h" />
+    <ClInclude Include="Header Files\Memory.h" />
+    <ClInclude Include="Header Files\NES.h" />
+    <ClInclude Include="Header Files\PPU.h" />
+    <ClInclude Include="Header Files\PPUMemory.h" />
+    <ClInclude Include="Header Files\ROMLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
