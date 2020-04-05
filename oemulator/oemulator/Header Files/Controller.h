@@ -16,10 +16,6 @@ public:
 	void onKeyDown(SDL_Keycode keycode);
 	void onKeyUp(SDL_Keycode keycode);
 
-	void pushButton(byte val);
-	void releaseButton(byte val);
-	void releaseAll();
-
 	byte readController();
 	void writeController(byte val);
 
@@ -34,4 +30,8 @@ private:
 	int strobe;
 	//how keyboard keys map to nes controller buttons
 	std::map<SDL_Keycode, byte> keyMap;
+
+	void pushButton(byte val);
+	void releaseButton(byte val);
+	void releaseAll();
 };

@@ -81,91 +81,20 @@ int main(int argc, char** argv) {
 	char* dir;
 	while (run) {
 		start = clock();
-		//c1.releaseButton(0xFF);
+
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				run = false;
-			}
-			else if (event.type == SDL_KEYDOWN) {
-				std::cout << "KEYDOWN############" << event.key.keysym.sym << std::endl;
-				switch (event.key.keysym.sym) {
-				case SDLK_a:		
-					input |= 0x1;
-					std::cout << 1 << " JUMP (A)" << std::endl;
-					break;
-				case SDLK_b:
-					input |= 0x2;
-					std::cout << 2 << std::endl;
-					break;
-				case SDLK_s:
-					input |= 0x4;
-					std::cout << 3 << " DOWN" << std::endl;
-					break;
-				case SDLK_SPACE:
-					input |= 0x8;
-					std::cout << 4 << " START" << std::endl;
-					break;
-				case SDLK_UP:
-					input |= 0x10;
-					std::cout << 5 << " UP" << std::endl;
-					break;
-				case SDLK_DOWN:
-					input |= 0x20;
-					std::cout << 6 << " DOWN" << std::endl;
-					break;
-				case SDLK_LEFT:
-					input |= 0x40;
-					std::cout << 7 << " LEFT" << std::endl;
-					break;
-				case SDLK_RIGHT:
-					input |= 0x80;
-					std::cout << 8 << " RIGHT" << std::endl;
-					break;
-				}
+			} else if (event.type == SDL_KEYDOWN) {
 				c1.onKeyDown(event.key.keysym.sym);
 			} else if (event.type == SDL_KEYUP) {
 				c1.onKeyUp(event.key.keysym.sym);
-				std::cout << "KEYUP############" << event.key.keysym.sym << std::endl;
-				switch (event.key.keysym.sym) {
-				case SDLK_a:
-					input &= ~0x1;
-					std::cout << 1 << std::endl;
-					break;
-				case SDLK_b:
-					input &= ~0x2;
-					std::cout << 2 << std::endl;
-					break;
-				case SDLK_s:
-					input &= ~0x4;
-					std::cout << 3 << std::endl;
-					break;
-				case SDLK_SPACE:
-					input &= ~0x8;
-					std::cout << 4 << std::endl;
-					break;
-				case SDLK_UP:
-					input &= ~0x10;
-					std::cout << 5 << std::endl;
-					break;
-				case SDLK_DOWN:
-					input &= ~0x20;
-					std::cout << 6 << std::endl;
-					break;
-				case SDLK_LEFT:
-					input &= ~0x40;
-					std::cout << 7 << std::endl;
-					break;
-				case SDLK_RIGHT:
-					input &= ~0x80;
-					std::cout << 8 << std::endl;
-					break;
-				}
 			} else if(event.type == SDL_DROPFILE) { // a file was droppen on the window
 				dir = event.drop.file;
 				SDL_free(dir);
 			}
 		}
-		//c1.pushButton(input);
+
 		start2 = clock()/double(CLOCKS_PER_SEC) * 1000;
 		double duration = clock();
 		double duration2 = clock();
