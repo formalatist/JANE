@@ -63,6 +63,9 @@
     <ClCompile Include="Source Files\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source Files\Display.cpp">
+      <Filter>Source Files\NES emulator</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Header Files\Controller.h">
@@ -99,6 +102,9 @@
       <Filter>Header Files\NES emulator</Filter>
     </ClInclude>
     <ClInclude Include="Header Files\ROMLoader.h">
+      <Filter>Header Files\NES emulator</Filter>
+    </ClInclude>
+    <ClInclude Include="Header Files\Display.h">
       <Filter>Header Files\NES emulator</Filter>
     </ClInclude>
   </ItemGroup>

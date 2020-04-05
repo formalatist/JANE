@@ -54,9 +54,16 @@ void NES::setScreen(SDL_Surface * screen_, SDL_Surface* scaledScreen_, SDL_Windo
 	window = window_;
 }
 
+void NES::setDisplay(Display * display_)
+{
+	display = display_;
+}
+
 //TODO: move this to a "display" object or something
 void NES::updateScreen()
 {
+	display->updateScreen(ppu->pixels);
+	return;
 	//int start = clock();
 	int s = 2;
 	for (int x = 0; x < 512; x++) {
