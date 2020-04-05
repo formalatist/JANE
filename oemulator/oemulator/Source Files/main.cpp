@@ -56,17 +56,18 @@ int main(int argc, char** argv) {
 	std::cout <<( static_cast<int>(fileBuffer[7]) & 0x4) << 
 		(static_cast<int>(fileBuffer[7]) & 0x8) << std::endl;
 
-	//create the cpu
+	//create the NES
 	NES nes = NES();
+	//create a controller
 	Controller c1 = Controller();
-	nes.connectController(&c1);
+	nes.connectController(&c1); //connect it
+	//load a rom
 	ROMLoader loader = ROMLoader(nes.memory, nes.ppuMemory);
 	loader.loadROM(fileBuffer, fileSize, (*nes.cpu));
 	//create the screen
 	Display display = Display("NES Emulator", 256, 240);
 	nes.setDisplay(&display);
 	display.setScale(3);
-	display.showPatternTable((nes.ppuMemory->memory));
 	
 	tickCounter = SDL_GetTicks();
 	int frame = 0;
@@ -80,7 +81,7 @@ int main(int argc, char** argv) {
 	char* dir;
 	while (run) {
 		start = clock();
-		c1.releaseButton(0xFF);
+		//c1.releaseButton(0xFF);
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				run = false;
@@ -121,7 +122,9 @@ int main(int argc, char** argv) {
 					std::cout << 8 << " RIGHT" << std::endl;
 					break;
 				}
+				c1.onKeyDown(event.key.keysym.sym);
 			} else if (event.type == SDL_KEYUP) {
+				c1.onKeyUp(event.key.keysym.sym);
 				std::cout << "KEYUP############" << event.key.keysym.sym << std::endl;
 				switch (event.key.keysym.sym) {
 				case SDLK_a:
@@ -162,7 +165,7 @@ int main(int argc, char** argv) {
 				SDL_free(dir);
 			}
 		}
-		c1.pushButton(input);
+		//c1.pushButton(input);
 		start2 = clock()/double(CLOCKS_PER_SEC) * 1000;
 		double duration = clock();
 		double duration2 = clock();
