@@ -27,7 +27,7 @@ long getFileSize(FILE *file)
 
 int main(int argc, char** argv) {
   
-	std::string game = "Zelda";
+	std::string game = "Super mario bros";
 	std::string filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\" + game + ".nes";
 
 	unsigned char* fileBuffer;
@@ -66,6 +66,7 @@ int main(int argc, char** argv) {
 	Display display = Display("NES Emulator", 256, 240);
 	nes.setDisplay(&display);
 	display.setScale(3);
+	display.showPatternTable((nes.ppuMemory->memory));
 	
 	tickCounter = SDL_GetTicks();
 	int frame = 0;
