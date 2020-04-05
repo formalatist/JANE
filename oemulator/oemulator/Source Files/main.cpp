@@ -61,6 +61,8 @@ int main(int argc, char** argv) {
 	//create a controller
 	Controller c1 = Controller();
 	nes.connectController(&c1); //connect it
+	std::string keysFilePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\keyBindingsTest.txt";
+	c1.setKeyMap(keysFilePath);
 	//load a rom
 	ROMLoader loader = ROMLoader(nes.memory, nes.ppuMemory);
 	loader.loadROM(fileBuffer, fileSize, (*nes.cpu));

@@ -1,19 +1,28 @@
 #include "Controller.h"
 
 Controller::Controller(){
-	keyMap[SDLK_a] = 0x1;
-	keyMap[SDLK_b] = 0x2;
-	keyMap[SDLK_s] = 0x4;
-	keyMap[SDLK_SPACE] = 0x8;
-	keyMap[SDLK_UP] = 0x10;
-	keyMap[SDLK_DOWN] = 0x20;
-	keyMap[SDLK_LEFT] = 0x40;
-	keyMap[SDLK_RIGHT] = 0x80;
 }
 
 void Controller::setMemory(Memory * mem_)
 {
 	mem = mem_;
+}
+
+void Controller::setKeyMap(std::string filePath)
+{
+	std::ifstream fileStream(filePath);
+	std::string line;
+	while (std::getline(fileStream, line)) {
+		std::istringstream stringStream(line);
+		std::string SDLKeyName;
+		std::string NESButton;
+		if (stringStream >> SDLKeyName >> NESButton) {
+			std::cout << "SDLKeyName: " << SDLKeyName << " NESButton: " << NESButton << " Buttonmap at: " << (int)buttonMap.at(NESButton) << std::endl;
+			//TODO: there could be some error checking to prevent crashing on malformed keyMap files
+			keyMap[SDL_GetKeyFromName(SDLKeyName.c_str())] = buttonMap.at(NESButton);
+		}
+	}
+	fileStream.close();
 }
 
 void Controller::onKeyDown(SDL_Keycode keycode)
