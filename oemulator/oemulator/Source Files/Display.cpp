@@ -15,8 +15,7 @@ Display::Display(const char *windowName, int width_, int height_)
 
 void Display::updateScreen(int *pixels)
 {
-	int s = 2;
-	for (int x = 0; x < 512; x++) {
+	for (int x = 0; x < 256; x++) {
 		for (int y = 0; y < 240; y++) {
 			for (int subX = 0; subX < scale; subX++) {
 				for (int subY = 0; subY < scale; subY++) {

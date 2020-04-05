@@ -646,7 +646,7 @@ void PPU::blitPixel()
 		}
 	}
 
-	pixels[xPos + yPos * (512)] = PaletteLookup[memory->read((spritePixel | 0x10)+0x3F00)];
+	//pixels[xPos + yPos * (512)] = PaletteLookup[memory->read((spritePixel | 0x10)+0x3F00)];
 	
-	pixels[xPos + 256 + yPos * 512] = PaletteLookup[memory->read(color + 0x3F00)];
+	pixels[xPos + yPos * 512] = PaletteLookup[memory->read(color + 0x3F00)];
 }

@@ -63,65 +63,9 @@ int main(int argc, char** argv) {
 	ROMLoader loader = ROMLoader(nes.memory, nes.ppuMemory);
 	loader.loadROM(fileBuffer, fileSize, (*nes.cpu));
 	//create the screen
-	Display display = Display("Test", 512, 240);
+	Display display = Display("NES Emulator", 256, 240);
 	nes.setDisplay(&display);
 	display.setScale(3);
-
-	
-	SDL_Window* patternTableWindow = NULL;
-	SDL_Surface* patternTableSurface = NULL;
-
-	patternTableWindow = SDL_CreateWindow("PatternTable", 0, 0,
-		1024, 512,
-		SDL_WINDOW_SHOWN);
-
-	patternTableSurface = SDL_GetWindowSurface(patternTableWindow);
-	int colors[4] = { 0x666666, 0xFFCCC5, 0x1412A7, 0xB53120 };
-	for (int x = 0; x < 128; x++) {
-		for (int y = 0; y < 128; y++) {
-			int col = x / 8;
-			int row = y / 8;
-			int address1 = (y%8 ) | (1 << 3) | (col << 4 & 0b11110000) | (row << 8 & 0xF00) ;
-			int address2 = (y % 8) | (col << 4 & 0b11110000) | (row << 8 & 0xF00);
-			int xOffset = 7 - x % 8;
-			int color = (nes.ppuMemory->read(address1)>>xOffset & 1)
-				+ 2*(nes.ppuMemory->read(address2)>>xOffset & 1);
-			if (color < 0 || color > 3) {
-				std::cout << "ERROR: " << color << std::endl;
-			}
-			color = colors[color];
-			for (int x1 = 0; x1 < 4; x1++) {
-				for (int y1 = 0; y1 < 4; y1++) {
-					Uint8 *targetPixel = (Uint8*)patternTableSurface->pixels + (y*4 + y1)*patternTableSurface->pitch
-						+ (x*4 + x1) * 4;
-					*(Uint32 *)targetPixel = color;
-				}
-			}
-		}
-	}
-
-    int colors2[4] = { 0, 0x48CDDE, 0xB71E7B, 0x4240FF };
-	for (int x = 128; x < 256; x++) {
-		for (int y = 0; y < 128; y++) {
-			int col = x / 8;
-			int row = y / 8;
-			int address1 = (y % 8) | (1 << 3) | (col << 4 & 0b11110000) | (row << 8 & 0xF00) | 0x1000;
-			int address2 = (y % 8) | (col << 4 & 0b11110000) | (row << 8 & 0xF00) | 0x1000;
-			int xOffset = 7 - x % 8;
-			int color = (nes.ppuMemory->read(address1) >> xOffset & 1)
-				+ 2 * (nes.ppuMemory->read(address2) >> xOffset & 1);
-			color = colors2[color];
-			for (int x1 = 0; x1 < 4; x1++) {
-				for (int y1 = 0; y1 < 4; y1++) {
-					Uint8 *targetPixel = (Uint8*)patternTableSurface->pixels + (y * 4 + y1)*patternTableSurface->pitch
-						+ (x * 4 + x1) * 4;
-					*(Uint32 *)targetPixel = color;
-				}
-			}
-		}
-	}
-
-	SDL_UpdateWindowSurface(patternTableWindow);
 	
 	tickCounter = SDL_GetTicks();
 	int frame = 0;
@@ -236,8 +180,6 @@ int main(int argc, char** argv) {
 		//std::cout << "Frame took: " << (clock() - start) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
 	}
 
-	
-	SDL_DestroyWindow(patternTableWindow);
 	SDL_Quit();
 	std::cin.get();
 
