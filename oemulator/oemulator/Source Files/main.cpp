@@ -59,17 +59,17 @@ int main(int argc, char** argv) {
 	//create the NES
 	NES nes = NES();
 	//create a controller
-	Controller c1 = Controller();
-	nes.connectController(&c1); //connect it
+	Controller controller = Controller();
+	nes.connectController(&controller); //connect it
 	std::string keysFilePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\keyBindingsTest.txt";
-	c1.setKeyMap(keysFilePath);
+	controller.setKeyMap(keysFilePath);
 	//load a rom
 	ROMLoader loader = ROMLoader(nes.memory, nes.ppuMemory);
 	loader.loadROM(fileBuffer, fileSize, (*nes.cpu));
 	//create the screen
 	Display display = Display("NES Emulator", 256, 240);
 	nes.setDisplay(&display);
-	display.setScale(3);
+	display.setScale(4);
 	
 	tickCounter = SDL_GetTicks();
 	int frame = 0;
@@ -88,9 +88,9 @@ int main(int argc, char** argv) {
 			if (event.type == SDL_QUIT) {
 				run = false;
 			} else if (event.type == SDL_KEYDOWN) {
-				c1.onKeyDown(event.key.keysym.sym);
+				controller.onKeyDown(event.key.keysym.sym);
 			} else if (event.type == SDL_KEYUP) {
-				c1.onKeyUp(event.key.keysym.sym);
+				controller.onKeyUp(event.key.keysym.sym);
 			} else if(event.type == SDL_DROPFILE) { // a file was droppen on the window
 				dir = event.drop.file;
 				SDL_free(dir);
@@ -101,18 +101,13 @@ int main(int argc, char** argv) {
 		double duration = clock();
 		double duration2 = clock();
 		nes.stepSeconds(0.016f);
-		//std::cout << "Nes took: " << (clock() - start2) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
 		duration = (clock() - duration) / ((double)CLOCKS_PER_SEC) * 1000;
-		//std::cout << "Duration: " << duration<< std::endl;
 		if (duration < 14.2/*16.6667*/) {
 			SDL_Delay(14.2/*16.6667*/ - duration);
-			//std::cout << "test  " << duration << std::endl;
 		}
 		std::cout << "\rFPS: " << std::setprecision(3) << 1.0 / ((clock() - duration2) / ((double)CLOCKS_PER_SEC)) 
 			<< "/" << std::setprecision(4) << 1.0 / (duration / 1000.0);// << std::endl;
 		frame++;
-		//std::cout << frame << std::endl;
-		//std::cout << "Frame took: " << (clock() - start) / double(CLOCKS_PER_SEC) * 1000 << std::endl;
 	}
 
 	SDL_Quit();
