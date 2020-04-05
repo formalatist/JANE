@@ -75,15 +75,11 @@ int main(int argc, char** argv) {
 	int frame = 0;
 	int frameTime = 0;
 	bool run = true;
-	int start = 0;
-	int start2 = 0;
 	SDL_Event event;
 	byte input = 0;
 
 	char* dir;
 	while (run) {
-		start = clock();
-
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				run = false;
@@ -97,7 +93,6 @@ int main(int argc, char** argv) {
 			}
 		}
 
-		start2 = clock()/double(CLOCKS_PER_SEC) * 1000;
 		double duration = clock();
 		double duration2 = clock();
 		nes.stepSeconds(0.016f);
