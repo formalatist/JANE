@@ -1,5 +1,7 @@
 #pragma once
 #include <SDL.h>
+#include "imgui_sdl.h"
+#include "imgui.h"
 
 class Display {
 
@@ -24,6 +26,8 @@ private:
 
 	SDL_Surface *patternTableWindowSurface;
 	SDL_Window *patternTableWindow;
+
+	SDL_Renderer * renderer;
 
 	int width;
 	int height;

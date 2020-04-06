@@ -127,6 +127,12 @@
     <ClCompile Include="Source Files\Display.cpp" />
     <ClCompile Include="Source Files\Controller.cpp" />
     <ClCompile Include="Source Files\CPU6502.cpp" />
+    <ClCompile Include="Source Files\example.cpp" />
+    <ClCompile Include="Source Files\imgui.cpp" />
+    <ClCompile Include="Source Files\imgui_demo.cpp" />
+    <ClCompile Include="Source Files\imgui_draw.cpp" />
+    <ClCompile Include="Source Files\imgui_sdl.cpp" />
+    <ClCompile Include="Source Files\imgui_widgets.cpp" />
     <ClCompile Include="Source Files\main.cpp" />
     <ClCompile Include="Source Files\Mapper0.cpp" />
     <ClCompile Include="Source Files\Mapper1.cpp" />
@@ -142,6 +148,13 @@
     <ClInclude Include="Header Files\Display.h" />
     <ClInclude Include="Header Files\Controller.h" />
     <ClInclude Include="Header Files\CPU6502.h" />
+    <ClInclude Include="Header Files\imconfig.h" />
+    <ClInclude Include="Header Files\imgui.h" />
+    <ClInclude Include="Header Files\imgui_internal.h" />
+    <ClInclude Include="Header Files\imgui_sdl.h" />
+    <ClInclude Include="Header Files\imstb_rectpack.h" />
+    <ClInclude Include="Header Files\imstb_textedit.h" />
+    <ClInclude Include="Header Files\imstb_truetype.h" />
     <ClInclude Include="Header Files\Mapper.h" />
     <ClInclude Include="Header Files\Mapper0.h" />
     <ClInclude Include="Header Files\Mapper1.h" />

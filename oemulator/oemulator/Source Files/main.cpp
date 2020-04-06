@@ -78,6 +78,8 @@ int main(int argc, char** argv) {
 	SDL_Event event;
 	byte input = 0;
 
+	
+
 	char* dir;
 	while (run) {
 		while (SDL_PollEvent(&event)) {
@@ -103,6 +105,8 @@ int main(int argc, char** argv) {
 		std::cout << "\rFPS: " << std::setprecision(3) << 1.0 / ((clock() - duration2) / ((double)CLOCKS_PER_SEC)) 
 			<< "/" << std::setprecision(4) << 1.0 / (duration / 1000.0);// << std::endl;
 		frame++;
+
+
 	}
 
 	SDL_Quit();

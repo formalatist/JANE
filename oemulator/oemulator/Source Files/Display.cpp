@@ -2,6 +2,7 @@
 
 Display::Display(const char *windowName, int width_, int height_)
 {
+	SDL_Init(SDL_INIT_EVERYTHING);
 	width = width_;
 	height = height_;
 
@@ -11,6 +12,12 @@ Display::Display(const char *windowName, int width_, int height_)
 		SDL_WINDOW_SHOWN);
 	//create surface for rendering to it
 	windowSurface = SDL_GetWindowSurface(window);
+
+
+
+	ImGui::CreateContext();
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	ImGuiSDL::Initialize(renderer, width, height);
 }
 
 void Display::updateScreen(int *pixels)
@@ -27,7 +34,26 @@ void Display::updateScreen(int *pixels)
 			}
 		}
 	}
-	SDL_UpdateWindowSurface(window);
+	//SDL_UpdateWindowSurface(window);
+
+	SDL_Texture *t = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_TARGET, width*scale, height*scale);
+
+	SDL_UpdateTexture(t, NULL, windowSurface->pixels, windowSurface->pitch);
+	SDL_RenderCopy(renderer, t, NULL, NULL);
+	
+	ImGui::NewFrame();
+
+	ImGui::ShowDemoWindow();
+
+
+	SDL_SetRenderDrawColor(renderer, 0,0,0, 255);
+	//SDL_RenderClear(renderer);
+
+	ImGui::Render();
+	ImGuiSDL::Render(ImGui::GetDrawData());
+
+	SDL_RenderPresent(renderer);
+	SDL_DestroyTexture(t);
 }
 
 void Display::setScale(int newScale)
