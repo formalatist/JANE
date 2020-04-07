@@ -1,4 +1,4 @@
-#include "Mapper0.h"
+#include "Mappers/Mapper0.h"
 
 //TODO switch to suing iNESHeader
 Mapper0::Mapper0(iNESHeader header, byte rom[])

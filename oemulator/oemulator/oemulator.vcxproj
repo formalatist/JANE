@@ -69,7 +69,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Header Files;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Source Files;$(IncludePath);C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Header Files</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core;$(IncludePath);C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Header Files</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -124,47 +127,47 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source Files\Display.cpp" />
-    <ClCompile Include="Source Files\Controller.cpp" />
-    <ClCompile Include="Source Files\CPU6502.cpp" />
-    <ClCompile Include="Source Files\example.cpp" />
-    <ClCompile Include="Source Files\imgui.cpp" />
-    <ClCompile Include="Source Files\imgui_demo.cpp" />
-    <ClCompile Include="Source Files\imgui_draw.cpp" />
-    <ClCompile Include="Source Files\imgui_sdl.cpp" />
-    <ClCompile Include="Source Files\imgui_widgets.cpp" />
-    <ClCompile Include="Source Files\main.cpp" />
-    <ClCompile Include="Source Files\Mapper0.cpp" />
-    <ClCompile Include="Source Files\Mapper1.cpp" />
-    <ClCompile Include="Source Files\Mapper2.cpp" />
-    <ClCompile Include="Source Files\Mapper3.cpp" />
-    <ClCompile Include="Source Files\Memory.cpp" />
-    <ClCompile Include="Source Files\NES.cpp" />
-    <ClCompile Include="Source Files\PPU.cpp" />
-    <ClCompile Include="Source Files\PPUMemory.cpp" />
-    <ClCompile Include="Source Files\ROMLoader.cpp" />
+    <ClCompile Include="Core\Source Files\Display.cpp" />
+    <ClCompile Include="Core\Source Files\Controller.cpp" />
+    <ClCompile Include="Core\Source Files\CPU6502.cpp" />
+    <ClCompile Include="UI\Source Files\example.cpp" />
+    <ClCompile Include="UI\Source Files\imgui.cpp" />
+    <ClCompile Include="UI\Source Files\imgui_demo.cpp" />
+    <ClCompile Include="UI\Source Files\imgui_draw.cpp" />
+    <ClCompile Include="UI\Source Files\imgui_sdl.cpp" />
+    <ClCompile Include="UI\Source Files\imgui_widgets.cpp" />
+    <ClCompile Include="Core\Source Files\main.cpp" />
+    <ClCompile Include="Core\Source Files\Mappers\Mapper0.cpp" />
+    <ClCompile Include="Core\Source Files\Mappers\Mapper1.cpp" />
+    <ClCompile Include="Core\Source Files\Mappers\Mapper2.cpp" />
+    <ClCompile Include="Core\Source Files\Mappers\Mapper3.cpp" />
+    <ClCompile Include="Core\Source Files\Memory.cpp" />
+    <ClCompile Include="Core\Source Files\NES.cpp" />
+    <ClCompile Include="Core\Source Files\PPU.cpp" />
+    <ClCompile Include="Core\Source Files\PPUMemory.cpp" />
+    <ClCompile Include="Core\Source Files\ROMLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Header Files\Display.h" />
-    <ClInclude Include="Header Files\Controller.h" />
-    <ClInclude Include="Header Files\CPU6502.h" />
-    <ClInclude Include="Header Files\imconfig.h" />
-    <ClInclude Include="Header Files\imgui.h" />
-    <ClInclude Include="Header Files\imgui_internal.h" />
-    <ClInclude Include="Header Files\imgui_sdl.h" />
-    <ClInclude Include="Header Files\imstb_rectpack.h" />
-    <ClInclude Include="Header Files\imstb_textedit.h" />
-    <ClInclude Include="Header Files\imstb_truetype.h" />
-    <ClInclude Include="Header Files\Mapper.h" />
-    <ClInclude Include="Header Files\Mapper0.h" />
-    <ClInclude Include="Header Files\Mapper1.h" />
-    <ClInclude Include="Header Files\Mapper2.h" />
-    <ClInclude Include="Header Files\Mapper3.h" />
-    <ClInclude Include="Header Files\Memory.h" />
-    <ClInclude Include="Header Files\NES.h" />
-    <ClInclude Include="Header Files\PPU.h" />
-    <ClInclude Include="Header Files\PPUMemory.h" />
-    <ClInclude Include="Header Files\ROMLoader.h" />
+    <ClInclude Include="Core\Header Files\Display.h" />
+    <ClInclude Include="Core\Header Files\Controller.h" />
+    <ClInclude Include="Core\Header Files\CPU6502.h" />
+    <ClInclude Include="UI\Header Files\imconfig.h" />
+    <ClInclude Include="UI\Header Files\imgui.h" />
+    <ClInclude Include="UI\Header Files\imgui_internal.h" />
+    <ClInclude Include="UI\Header Files\imgui_sdl.h" />
+    <ClInclude Include="UI\Header Files\imstb_rectpack.h" />
+    <ClInclude Include="UI\Header Files\imstb_textedit.h" />
+    <ClInclude Include="UI\Header Files\imstb_truetype.h" />
+    <ClInclude Include="Core\Header Files\Mappers\Mapper.h" />
+    <ClInclude Include="Core\Header Files\Mappers\Mapper0.h" />
+    <ClInclude Include="Core\Header Files\Mappers\Mapper1.h" />
+    <ClInclude Include="Core\Header Files\Mappers\Mapper2.h" />
+    <ClInclude Include="Core\Header Files\Mappers\Mapper3.h" />
+    <ClInclude Include="Core\Header Files\Memory.h" />
+    <ClInclude Include="Core\Header Files\NES.h" />
+    <ClInclude Include="Core\Header Files\PPU.h" />
+    <ClInclude Include="Core\Header Files\PPUMemory.h" />
+    <ClInclude Include="Core\Header Files\ROMLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
