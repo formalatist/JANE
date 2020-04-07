@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
 	//create the screen
 	Display display = Display("NES Emulator", 256, 240);
 	nes.setDisplay(&display);
-	display.setScale(10);
+	display.setScale(3);
 	
 	tickCounter = SDL_GetTicks();
 	int frame = 0;

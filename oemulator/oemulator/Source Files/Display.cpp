@@ -10,52 +10,28 @@ Display::Display(const char *windowName, int width_, int height_)
 	window = SDL_CreateWindow(windowName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		width, height,
 		SDL_WINDOW_SHOWN);
-	//create surface for rendering to it
-	windowSurface = SDL_GetWindowSurface(window);
-
-
-	ImGui::CreateContext();
+	
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	//create texture for rendering to it
+	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_TARGET, width, height);
+	
+	ImGui::CreateContext();
 	ImGuiSDL::Initialize(renderer, width, height);
-	t = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_TARGET, width, height);
 }
 
 void Display::updateScreen(int *pixels)
 {
-	int subY = 0;
-	int subX = 0;
-	for (int x = 0; x < 256; x++) {
-		for (int y = 0; y < 240; y++) {
-			/*for (int subX = 0; subX < scale; subX++) {
-				for (int subY = 0; subY < scale; subY++) {
-					Uint8 *targetPixel = (Uint8*)windowSurface->pixels 
-						+ (y*scale + subY)*windowSurface->pitch
-						+ (x*scale + subX) * 4;
-					*(Uint32 *)targetPixel = pixels[x + y * 512];
-				}
-			}*/
-		}
-	}
-	//SDL_UpdateWindowSurface(window);
-	
-	
-
-	SDL_UpdateTexture(t, NULL, pixels, 256*4);
-	SDL_RenderCopy(renderer, t, NULL, NULL);
+	SDL_UpdateTexture(texture, NULL, pixels, 256*4);
+	SDL_RenderCopy(renderer, texture, NULL, NULL);
 	
 	ImGui::NewFrame();
 
 	ImGui::ShowDemoWindow();
 
-
-	SDL_SetRenderDrawColor(renderer, 0,0,0, 0);
-	//SDL_RenderClear(renderer);
-
 	ImGui::Render();
 	ImGuiSDL::Render(ImGui::GetDrawData());
 
 	SDL_RenderPresent(renderer);
-	//SDL_DestroyTexture(t);
 }
 
 void Display::setScale(int newScale)
@@ -63,8 +39,6 @@ void Display::setScale(int newScale)
 	scale = newScale;
 	SDL_SetWindowSize(window,
 		width*scale, height*scale);
-	//SDL_FreeSurface(windowSurface);
-	//windowSurface = SDL_GetWindowSurface(window);
 }
 
 //TODO: properly implement
@@ -124,4 +98,5 @@ Display::~Display()
 {
 	SDL_DestroyWindow(window);
 	SDL_DestroyWindow(patternTableWindow);
+	SDL_DestroyTexture(texture);
 }
