@@ -14,31 +14,33 @@ Display::Display(const char *windowName, int width_, int height_)
 	windowSurface = SDL_GetWindowSurface(window);
 
 
-
 	ImGui::CreateContext();
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	ImGuiSDL::Initialize(renderer, width, height);
+	t = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_TARGET, width, height);
 }
 
 void Display::updateScreen(int *pixels)
 {
+	int subY = 0;
+	int subX = 0;
 	for (int x = 0; x < 256; x++) {
 		for (int y = 0; y < 240; y++) {
-			for (int subX = 0; subX < scale; subX++) {
+			/*for (int subX = 0; subX < scale; subX++) {
 				for (int subY = 0; subY < scale; subY++) {
 					Uint8 *targetPixel = (Uint8*)windowSurface->pixels 
 						+ (y*scale + subY)*windowSurface->pitch
 						+ (x*scale + subX) * 4;
 					*(Uint32 *)targetPixel = pixels[x + y * 512];
 				}
-			}
+			}*/
 		}
 	}
 	//SDL_UpdateWindowSurface(window);
+	
+	
 
-	SDL_Texture *t = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_TARGET, width*scale, height*scale);
-
-	SDL_UpdateTexture(t, NULL, windowSurface->pixels, windowSurface->pitch);
+	SDL_UpdateTexture(t, NULL, pixels, 256*4);
 	SDL_RenderCopy(renderer, t, NULL, NULL);
 	
 	ImGui::NewFrame();
@@ -46,14 +48,14 @@ void Display::updateScreen(int *pixels)
 	ImGui::ShowDemoWindow();
 
 
-	SDL_SetRenderDrawColor(renderer, 0,0,0, 255);
+	SDL_SetRenderDrawColor(renderer, 0,0,0, 0);
 	//SDL_RenderClear(renderer);
 
 	ImGui::Render();
 	ImGuiSDL::Render(ImGui::GetDrawData());
 
 	SDL_RenderPresent(renderer);
-	SDL_DestroyTexture(t);
+	//SDL_DestroyTexture(t);
 }
 
 void Display::setScale(int newScale)
@@ -61,8 +63,8 @@ void Display::setScale(int newScale)
 	scale = newScale;
 	SDL_SetWindowSize(window,
 		width*scale, height*scale);
-	SDL_FreeSurface(windowSurface);
-	windowSurface = SDL_GetWindowSurface(window);
+	//SDL_FreeSurface(windowSurface);
+	//windowSurface = SDL_GetWindowSurface(window);
 }
 
 //TODO: properly implement

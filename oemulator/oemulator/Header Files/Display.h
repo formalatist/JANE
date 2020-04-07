@@ -28,6 +28,7 @@ private:
 	SDL_Window *patternTableWindow;
 
 	SDL_Renderer * renderer;
+	SDL_Texture *t;
 
 	int width;
 	int height;

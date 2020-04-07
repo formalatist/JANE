@@ -646,7 +646,8 @@ void PPU::blitPixel()
 		}
 	}
 
+	//this way of drawing sprites on the left for debugging would not work again without readjusting the width of the pixels array. Also changing the draw method in Display
 	//pixels[xPos + yPos * (512)] = PaletteLookup[memory->read((spritePixel | 0x10)+0x3F00)];
 	
-	pixels[xPos + yPos * 512] = PaletteLookup[memory->read(color + 0x3F00)];
+	pixels[xPos + yPos * 256] = PaletteLookup[memory->read(color + 0x3F00)];
 }
