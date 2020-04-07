@@ -21,13 +21,13 @@ public:
 	~Display();
 
 private:
-	SDL_Surface *windowSurface;
 	SDL_Window *window;
 
 	SDL_Surface *patternTableWindowSurface;
 	SDL_Window *patternTableWindow;
 
 	SDL_Renderer * renderer;
+	SDL_Texture *texture;
 
 	int width;
 	int height;

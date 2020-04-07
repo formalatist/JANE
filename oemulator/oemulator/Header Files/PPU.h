@@ -99,7 +99,7 @@ public:
 	byte OAM[256];
 
 	//video buffer
-	int pixels[256 * 240*2];
+	int pixels[256 * 240];
 
 
 	//which cycle we are on (0-340). 341 cycles per scanline 
