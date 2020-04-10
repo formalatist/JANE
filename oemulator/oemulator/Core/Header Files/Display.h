@@ -1,7 +1,5 @@
 #pragma once
 #include <SDL.h>
-#include "imgui_sdl.h"
-#include "imgui.h"
 
 class Display {
 

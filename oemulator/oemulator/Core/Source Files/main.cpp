@@ -56,6 +56,8 @@ int main(int argc, char** argv) {
 	std::cout <<( static_cast<int>(fileBuffer[7]) & 0x4) << 
 		(static_cast<int>(fileBuffer[7]) & 0x8) << std::endl;
 
+	SDL_Init(SDL_INIT_EVERYTHING);
+
 	//create the NES
 	NES nes = NES();
 	//create a controller
