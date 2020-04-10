@@ -26,6 +26,11 @@ void Display::setScale(int newScale)
 	scale = newScale;
 	SDL_SetWindowSize(window,
 		width*scale, height*scale);
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyTexture(texture);
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_TARGET, width, height);
+	//SDL_SetRenderTarget(renderer, texture);
 }
 
 //TODO: properly implement
@@ -79,6 +84,11 @@ void Display::showPatternTable(unsigned char *ppuMemory)
 	}
 
 	SDL_UpdateWindowSurface(patternTableWindow);
+}
+
+SDL_Renderer * Display::getRenderer()
+{
+	return renderer;
 }
 
 Display::~Display()

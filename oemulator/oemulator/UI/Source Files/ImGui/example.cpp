@@ -1,8 +1,8 @@
 #include "SDL.h"
 //#undef main
 
-#include "imgui.h"
-#include "imgui_sdl.h"
+#include "ImGui/imgui.h"
+#include "ImGui/imgui_sdl.h"
 
 int main()
 {

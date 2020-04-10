@@ -16,6 +16,8 @@ public:
 
 	void hidePatternTable();
 
+	SDL_Renderer *getRenderer();
+
 	~Display();
 
 private:

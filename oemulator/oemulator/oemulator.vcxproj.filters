@@ -36,9 +36,6 @@
     <ClCompile Include="Core\Source Files\Display.cpp">
       <Filter>Source Files\NES emulator</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Source Files\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Core\Source Files\Memory.cpp">
       <Filter>Source Files\NES emulator</Filter>
     </ClCompile>
@@ -54,24 +51,6 @@
     <ClCompile Include="Core\Source Files\ROMLoader.cpp">
       <Filter>Source Files\NES emulator</Filter>
     </ClCompile>
-    <ClCompile Include="UI\Source Files\example.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Source Files\imgui.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Source Files\imgui_demo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Source Files\imgui_draw.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Source Files\imgui_sdl.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="UI\Source Files\imgui_widgets.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Core\Source Files\Mappers\Mapper0.cpp">
       <Filter>Source Files\NES emulator\Mappers</Filter>
     </ClCompile>
@@ -83,6 +62,30 @@
     </ClCompile>
     <ClCompile Include="Core\Source Files\Mappers\Mapper3.cpp">
       <Filter>Source Files\NES emulator\Mappers</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Source Files\ImGui\example.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Source Files\ImGui\imgui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Source Files\ImGui\imgui_demo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Source Files\ImGui\imgui_draw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Source Files\ImGui\imgui_sdl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Source Files\ImGui\imgui_widgets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Header Files\GUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -110,27 +113,6 @@
     <ClInclude Include="Core\Header Files\ROMLoader.h">
       <Filter>Header Files\NES emulator</Filter>
     </ClInclude>
-    <ClInclude Include="UI\Header Files\imconfig.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Header Files\imgui.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Header Files\imgui_internal.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Header Files\imgui_sdl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Header Files\imstb_rectpack.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Header Files\imstb_textedit.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="UI\Header Files\imstb_truetype.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Core\Header Files\Mappers\Mapper.h">
       <Filter>Header Files\NES emulator\Mappers</Filter>
     </ClInclude>
@@ -145,6 +127,30 @@
     </ClInclude>
     <ClInclude Include="Core\Header Files\Mappers\Mapper3.h">
       <Filter>Header Files\NES emulator\Mappers</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Header Files\ImGui\imconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Header Files\ImGui\imgui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Header Files\ImGui\imgui_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Header Files\ImGui\imgui_sdl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Header Files\ImGui\imstb_rectpack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Header Files\ImGui\imstb_textedit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Header Files\ImGui\imstb_truetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Header Files\GUI.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,8 +1,8 @@
-#include "imgui_sdl.h"
+#include "ImGui/imgui_sdl.h"
 
 #include "SDL.h"
 
-#include "imgui.h"
+#include "ImGui/imgui.h"
 
 #include <map>
 #include <list>
