@@ -26,11 +26,7 @@ void Display::setScale(int newScale)
 	scale = newScale;
 	SDL_SetWindowSize(window,
 		width*scale, height*scale);
-	SDL_DestroyRenderer(renderer);
-	SDL_DestroyTexture(texture);
-	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_TARGET, width, height);
-	//SDL_SetRenderTarget(renderer, texture);
+	SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 }
 
 //TODO: properly implement

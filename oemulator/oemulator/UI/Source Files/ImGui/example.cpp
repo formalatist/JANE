@@ -57,6 +57,7 @@ int main()
 		io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
 		io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
 		io.MouseWheel = static_cast<float>(wheel);
+		
 
 		ImGui::NewFrame();
 

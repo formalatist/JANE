@@ -1,15 +1,35 @@
 #define _CRT_SECURE_NO_DEPRECATE
-#include <SDL.h>
-#include <stdio.h>
-#include <iostream>
-#include <iomanip>
-#include "ROMLoader.h"
+#define SDL_MAIN_HANDLED
 #include "GUI.h"
-#include <chrono>
-#include <ctime>
-#include <string>
+#undef main
+//#include "ImGui/imgui_impl_sdl.h"
 
-/*bool running = true;
+GUI::GUI(SDL_Renderer * renderer_, int width_, int height_)
+{
+	renderer = renderer_;
+	width = width_;
+	height = height_;
+
+	ImGui::CreateContext();
+	ImGuiSDL::Initialize(renderer, width, height);
+}
+
+void GUI::draw()
+{
+	ImGui::NewFrame();
+
+	//ImGui::ShowDemoWindow();
+	showMainMenu();
+
+	ImGui::Render();
+	ImGuiSDL::Render(ImGui::GetDrawData());
+
+	SDL_RenderPresent(renderer);
+}
+
+
+
+bool emulatorRunning = false;
 const int FPS = 30;
 int tickCounter = 0;
 const int SCALE = 4;
@@ -25,9 +45,22 @@ long getFileSize(FILE *file)
 	return lEndPos;
 }
 
+ROMInfo *getROMInfos() {
+	std::string path("C:/Users/Oivind/Documents/GitHub/oemulator/roms");
+	std::string ext(".nes");
+	
+	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(path))
+	{
+		if (p.path().extension() == ext) {
+			std::cout << p << '\n';
+		}
+	}
+	return 0;
+}
+
 
 int main(int argc, char** argv) {
-  
+
 	std::string game = "Super mario bros";
 	std::string filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\" + game + ".nes";
 
@@ -54,11 +87,11 @@ int main(int argc, char** argv) {
 
 
 
-	std::cout <<( static_cast<int>(fileBuffer[7]) & 0x4) << 
+	std::cout << (static_cast<int>(fileBuffer[7]) & 0x4) <<
 		(static_cast<int>(fileBuffer[7]) & 0x8) << std::endl;
 
-	SDL_Init(SDL_INIT_EVERYTHING);
 
+	SDL_Init(SDL_INIT_EVERYTHING);
 	//create the NES
 	NES nes = NES();
 	//create a controller
@@ -75,8 +108,10 @@ int main(int argc, char** argv) {
 	display.setScale(SCALE);
 
 	//create the GUI
-	GUI gui = GUI(display.getRenderer(), 256*SCALE, 240*SCALE);
-	
+	GUI gui = GUI(display.getRenderer(), 256 * SCALE, 240 * SCALE);
+
+	getROMInfos();
+
 	tickCounter = SDL_GetTicks();
 	int frame = 0;
 	int frameTime = 0;
@@ -89,11 +124,14 @@ int main(int argc, char** argv) {
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				run = false;
-			} else if (event.type == SDL_KEYDOWN) {
+			}
+			else if (event.type == SDL_KEYDOWN) {
 				controller.onKeyDown(event.key.keysym.sym);
-			} else if (event.type == SDL_KEYUP) {
+			}
+			else if (event.type == SDL_KEYUP) {
 				controller.onKeyUp(event.key.keysym.sym);
-			} else if(event.type == SDL_DROPFILE) { // a file was droppen on the window
+			}
+			else if (event.type == SDL_DROPFILE) { // a file was droppen on the window
 				dir = event.drop.file;
 				SDL_free(dir);
 			}
@@ -107,17 +145,17 @@ int main(int argc, char** argv) {
 		io.MousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
 		io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
 		io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
+		
 
 		double duration = clock();
-		double duration2 = clock();
-		nes.stepSeconds(0.016667f);
+		if (emulatorRunning) {
+			nes.stepSeconds(0.016667f);
+		}
 		gui.draw();
 		duration = (clock() - duration) / ((double)CLOCKS_PER_SEC) * 1000;
 		if (duration < 16.6667) {
 			SDL_Delay(16.6667 - duration);
 		}
-		std::cout << "\rFPS: " << std::setprecision(3) << 1.0 / ((clock() - duration2) / ((double)CLOCKS_PER_SEC)) 
-			<< "/" << std::setprecision(4) << 1.0 / (duration / 1000.0);// << std::endl;
 		frame++;
 	}
 
@@ -127,4 +165,28 @@ int main(int argc, char** argv) {
 	delete[] fileBuffer;
 	return 0;
 }
-*/
+
+void GUI::showMainMenu()
+{
+	ImGui::SetNextWindowPos(ImVec2(0, 0));
+	ImGui::SetNextWindowSize(ImVec2(width, height));
+	if (!ImGui::Begin("Main menu")) {
+		ImGui::End();
+		return;
+	}
+
+	ImGui::Columns(4, NULL);
+
+	char * text = "test0";
+	for (int i = 0; i < 16; i++) {
+		if (i % 4 == 0) {
+			ImGui::Separator();
+		}
+		ImGui::Button("Button", ImVec2(width/4, height/4));
+		ImGui::Text(text);
+		ImGui::NextColumn();
+	}
+
+	ImGui::Text("This is a text");
+	ImGui::End();
+}

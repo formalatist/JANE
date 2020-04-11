@@ -87,6 +87,12 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UI\Source Files\ImGui\imgui_impl_sdl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="UI\Source Files\GUI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Header Files\Controller.h">
@@ -149,7 +155,16 @@
     <ClInclude Include="UI\Header Files\ImGui\imstb_truetype.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="UI\Source Files\ImGui\imgui_impl_sdl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Header Files\ImGui\imgui_impl_sdl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="UI\Header Files\GUI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Header Files\ROMInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
