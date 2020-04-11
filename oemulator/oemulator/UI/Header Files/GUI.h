@@ -14,13 +14,15 @@
 class GUI {
 
 public:
-	GUI(SDL_Renderer *renderer_, int width_, int height_);
+	GUI(SDL_Renderer *renderer, int width_, int height_);
 
 	void draw();
 
 	void showMainMenu();
 
 	std::vector<ROMInfo> ROMInfos;
+
+	NES nes;
 
 private:
 	SDL_Renderer *renderer;

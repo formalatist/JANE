@@ -130,7 +130,6 @@
     <ClCompile Include="Core\Source Files\Display.cpp" />
     <ClCompile Include="Core\Source Files\Controller.cpp" />
     <ClCompile Include="Core\Source Files\CPU6502.cpp" />
-    <ClCompile Include="UI\Header Files\GUI.cpp" />
     <ClCompile Include="UI\Source Files\GUI.cpp" />
     <ClCompile Include="UI\Source Files\ImGui\example.cpp" />
     <ClCompile Include="UI\Source Files\ImGui\imgui.cpp" />

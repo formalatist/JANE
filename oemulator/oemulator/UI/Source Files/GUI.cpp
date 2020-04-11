@@ -56,6 +56,7 @@ int main(int argc, char** argv) {
 
 
 	SDL_Init(SDL_INIT_EVERYTHING);
+	
 	//create the NES
 	NES nes = NES();
 	//create a controller
@@ -74,6 +75,7 @@ int main(int argc, char** argv) {
 
 	//create the GUI
 	GUI gui = GUI(display.getRenderer(), 256 * SCALE, 240 * SCALE);
+	gui.nes = nes;
 	
 	gui.ROMInfos = getROMInfos();
 
@@ -94,6 +96,9 @@ int main(int argc, char** argv) {
 			}
 			else if (event.type == SDL_KEYDOWN) {
 				controller.onKeyDown(event.key.keysym.sym);
+				if (event.key.keysym.sym == SDLK_q) {
+					emulatorRunning = false;
+				}
 			}
 			else if (event.type == SDL_KEYUP) {
 				controller.onKeyUp(event.key.keysym.sym);
@@ -154,8 +159,11 @@ void GUI::showMainMenu()
 		if (i % 4 == 0) {
 			ImGui::Separator();
 		}
-		if (ImGui::Button("Button", ImVec2(width / 4, height / 4))) {
+		if (ImGui::Button(std::to_string(i).c_str(), ImVec2(width / 4, height / 4))) {
 			emulatorRunning = true;
+			ROMLoader l = ROMLoader(nes.memory, nes.ppuMemory);
+			l.loadROMFromFile(ROMInfos[i].ROMPath, *(nes.cpu));
+			std::cout << ROMInfos[i].ROMName << std::endl;
 		}
 		ImGui::Text(ROMInfos[i].ROMName.c_str());
 		ImGui::NextColumn();
