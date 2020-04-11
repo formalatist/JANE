@@ -145,11 +145,33 @@ void GUI::showMainMenu()
 	if (emulatorRunning) {
 		return;
 	}
+
+	static bool rebindKeysVisible = false;
+
+	if (rebindKeysVisible) {
+		//showRebindKeys();
+	}
+
 	ImGui::SetNextWindowPos(ImVec2(0, 0));
 	ImGui::SetNextWindowSize(ImVec2(width, height));
-	if (!ImGui::Begin("Main menu")) {
+
+	if (!ImGui::Begin("ROM Select", NULL, ImGuiWindowFlags_MenuBar
+											| ImGuiWindowFlags_NoCollapse)) {
 		ImGui::End();
 		return;
+	}
+
+	if (ImGui::BeginMenuBar()) {
+		if (ImGui::BeginMenu("Menu")) {
+
+			ImGui::MenuItem("Rebind keys", NULL, &rebindKeysVisible);
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Tools")) {
+			ImGui::MenuItem("Test", NULL);
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
 	}
 
 	ImGui::Columns(4, NULL);
@@ -171,4 +193,12 @@ void GUI::showMainMenu()
 
 	ImGui::Text("This is a text");
 	ImGui::End();
+}
+
+void GUI::showRebindKeys()
+{
+	ImGui::SetNextWindowPos(ImVec2(0, 0));
+	ImGui::SetNextWindowSize(ImVec2(width, height));
+
+	
 }

@@ -20,6 +20,8 @@ public:
 
 	void showMainMenu();
 
+	void showRebindKeys();
+
 	std::vector<ROMInfo> ROMInfos;
 
 	NES nes;

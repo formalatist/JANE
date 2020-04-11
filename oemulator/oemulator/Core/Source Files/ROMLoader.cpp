@@ -44,6 +44,9 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 	else if (mapperNumber == 3) {
 		mapper = new Mapper3(header, rom2);
 	}
+	else {
+		throw std::runtime_error("No mapper available for this ROM file ;(");
+	}
 	memory->setMapper(mapper);
 	ppuMemory->setMapper(mapper);
 
