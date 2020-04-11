@@ -4,6 +4,7 @@
 #include <ImGui/imgui.h>
 #include <fstream>
 #include <iostream>
+#include <vector>
 //FIX: Update compiler to atleast c++17?
 #include <experimental/filesystem>
 
@@ -18,6 +19,8 @@ public:
 	void draw();
 
 	void showMainMenu();
+
+	std::vector<ROMInfo> ROMInfos;
 
 private:
 	SDL_Renderer *renderer;
