@@ -10,20 +10,10 @@ GUI::GUI(SDL_Renderer * renderer_, int width_, int height_)
 	renderer = renderer_;
 	width = width_;
 	height = height_;
-
-	ImGui::CreateContext();
-	ImGuiSDL::Initialize(renderer, width, height);
 }
 
 void GUI::draw()
 {
-	ImGui::NewFrame();
-
-	//ImGui::ShowDemoWindow();
-	showMainMenu();
-
-	ImGui::Render();
-	ImGuiSDL::Render(ImGui::GetDrawData());
 
 	SDL_RenderPresent(renderer);
 }
@@ -94,7 +84,6 @@ int main(int argc, char** argv) {
 
 	char* dir;
 	while (run) {
-		ImGuiIO& io = ImGui::GetIO();
 
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
@@ -111,22 +100,13 @@ int main(int argc, char** argv) {
 			}
 			else if (event.type == SDL_MOUSEWHEEL)
 			{
-				io.MouseWheel = static_cast<float>(event.wheel.y);
+				//TODO: handle mousewheel
 			}
 			else if (event.type == SDL_DROPFILE) { // a file was droppen on the window
 				dir = event.drop.file;
 				SDL_free(dir);
 			}
 		}
-
-		int mouseX;
-		int mouseY;
-		const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
-		io.DeltaTime = 0.016f;
-		io.MousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
-		io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
-		io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
-		
 
 		double duration = clock();
 		if (emulatorRunning | true) {
@@ -152,65 +132,9 @@ int main(int argc, char** argv) {
 
 void GUI::showMainMenu()
 {
-	if (emulatorRunning) {
-		return;
-	}
-
-	static bool rebindKeysVisible = false;
-	//SDL_RenderF
-	if (rebindKeysVisible) {
-		//showRebindKeys();
-	}
-
-	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::SetNextWindowSize(ImVec2(width, height));
-
-	if (!ImGui::Begin("ROM Select", NULL, ImGuiWindowFlags_MenuBar
-											| ImGuiWindowFlags_NoCollapse)) {
-		ImGui::End();
-		return;
-	}
-
-	if (ImGui::BeginMenuBar()) {
-		if (ImGui::BeginMenu("Menu")) {
-
-			ImGui::MenuItem("Rebind keys", NULL, &rebindKeysVisible);
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Tools")) {
-			ImGui::MenuItem("Test", NULL);
-			ImGui::EndMenu();
-		}
-		ImGui::EndMenuBar();
-	}
-
-	ImGui::Columns(4, NULL);
-
-	//SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_TARGET, width, height);
-
-	int numROMS = ROMInfos.size();
-	for (int i = 0; i < numROMS; i++) {
-		if (i % 4 == 0) {
-			ImGui::Separator();
-		}
-		if (ImGui::Button(std::to_string(i).c_str(), ImVec2(width / 4, height / 4))) {
-			emulatorRunning = true;
-			ROMLoader l = ROMLoader(nes.memory, nes.ppuMemory);
-			l.loadROMFromFile(ROMInfos[i].ROMPath, *(nes.cpu));
-			std::cout << ROMInfos[i].ROMName << std::endl;
-		}
-		ImGui::Text(ROMInfos[i].ROMName.c_str());
-		ImGui::NextColumn();
-	}
-
-	ImGui::Text("This is a text");
-	ImGui::End();
 }
 
 void GUI::showRebindKeys()
 {
-	ImGui::SetNextWindowPos(ImVec2(0, 0));
-	ImGui::SetNextWindowSize(ImVec2(width, height));
-
 	
 }
