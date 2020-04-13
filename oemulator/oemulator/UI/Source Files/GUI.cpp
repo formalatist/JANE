@@ -1,5 +1,7 @@
 #define SDL_MAIN_HANDLED
 #include "GUI.h"
+#include <SDL_image.h>
+
 #undef main
 //#include "ImGui/imgui_impl_sdl.h"
 
@@ -147,7 +149,7 @@ void GUI::showMainMenu()
 	}
 
 	static bool rebindKeysVisible = false;
-
+	//SDL_RenderF
 	if (rebindKeysVisible) {
 		//showRebindKeys();
 	}
@@ -175,6 +177,8 @@ void GUI::showMainMenu()
 	}
 
 	ImGui::Columns(4, NULL);
+
+	//SDL_Texture *texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_TARGET, width, height);
 
 	int numROMS = ROMInfos.size();
 	for (int i = 0; i < numROMS; i++) {

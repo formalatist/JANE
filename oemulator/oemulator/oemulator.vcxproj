@@ -69,10 +69,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Source Files;$(IncludePath);C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Header Files</IncludePath>
+    <LibraryPath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core;$(IncludePath);C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Header Files</IncludePath>
+    <LibraryPath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LibraryPath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LibraryPath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
