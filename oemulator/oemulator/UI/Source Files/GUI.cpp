@@ -58,6 +58,7 @@ int main(int argc, char** argv) {
 
 
 	SDL_Init(SDL_INIT_EVERYTHING);
+	IMG_Init(IMG_INIT_PNG);
 	
 	//create the NES
 	NES nes = NES();
@@ -87,6 +88,9 @@ int main(int argc, char** argv) {
 	bool run = true;
 	SDL_Event event;
 	byte input = 0;
+
+	SDL_Surface *s = IMG_Load("C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\resources\\GUI\\MainMenuBackground.png");
+	SDL_Texture *tex = SDL_CreateTextureFromSurface(display.getRenderer(), s);
 
 	char* dir;
 	while (run) {
@@ -125,10 +129,14 @@ int main(int argc, char** argv) {
 		
 
 		double duration = clock();
-		if (emulatorRunning) {
+		if (emulatorRunning | true) {
 			nes.stepSeconds(0.016667f);
 		}
-		gui.draw(); 
+		
+		//gui.draw();
+		SDL_RenderCopy(display.getRenderer(), tex, NULL, NULL);
+		SDL_RenderPresent(display.getRenderer());
+
 		duration = (clock() - duration) / ((double)CLOCKS_PER_SEC) * 1000;
 		if (duration < 16.6667) {
 			SDL_Delay(16.6667 - duration);
