@@ -95,6 +95,9 @@ int main(int argc, char** argv) {
 	char* dir;
 	while (run) {
 
+		auto IO = &UI::input;
+		IO->LMBPressed = false;
+		IO->RMBPressed = false;
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				run = false;
@@ -108,6 +111,10 @@ int main(int argc, char** argv) {
 			else if (event.type == SDL_KEYUP) {
 				controller.onKeyUp(event.key.keysym.sym);
 			}
+			else if (event.type == SDL_MOUSEBUTTONDOWN) {
+				IO->LMBPressed = event.button.button == SDL_BUTTON_LEFT;
+				IO->RMBPressed = event.button.button == SDL_BUTTON_RIGHT;
+			}
 			else if (event.type == SDL_MOUSEWHEEL)
 			{
 				//TODO: handle mousewheel
@@ -118,19 +125,22 @@ int main(int argc, char** argv) {
 			}
 		}
 
-		//UI::UIInput IO = (UI::getInput());
-		auto IO = &UI::input;
-		SDL_GetMouseState(&(IO->mouseX), &(IO->mouseY));
+		//update mouseposition and LMB and RMB
+		int buttons = SDL_GetMouseState(&(IO->mouseX), &(IO->mouseY));
+		IO->mouseX /= SCALE;
+		IO->mouseY /= SCALE;
+		IO->LMBDown = (buttons & (SDL_BUTTON(SDL_BUTTON_LEFT))) == SDL_BUTTON(SDL_BUTTON_LEFT);
+		IO->RMBDown = (buttons & (SDL_BUTTON(SDL_BUTTON_RIGHT))) == SDL_BUTTON(SDL_BUTTON_RIGHT);
 
 		double duration = clock();
 		if (emulatorRunning | true) {
 			nes.stepSeconds(0.016667f);
 		}
-
+		
 		//gui.draw();
 		//TEST for new ui system
 		fsm->getState()->update(0.016f);
-		fsm->getState()->draw(display.getRenderer());
+		fsm->getState()->draw(display.getRenderer(), SCALE);
 
 		SDL_RenderCopy(display.getRenderer(), tex, NULL, NULL);
 		SDL_RenderPresent(display.getRenderer());

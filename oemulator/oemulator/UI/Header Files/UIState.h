@@ -12,7 +12,7 @@ namespace UI {
 		UIState(FSM<UIState> *FSM_) : FSM(FSM_) {}
 
 		virtual void update(float d) = 0;
-		virtual void draw(SDL_Renderer *renderer) = 0;
+		virtual void draw(SDL_Renderer *renderer, int scale) = 0;
 
 	private:
 		const FSM<UIState> *FSM;

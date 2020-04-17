@@ -177,6 +177,7 @@
     <ClInclude Include="Core\Header Files\PPUMemory.h" />
     <ClInclude Include="Core\Header Files\ROMLoader.h" />
     <ClInclude Include="UI\Header Files\MainMenuState.h" />
+    <ClInclude Include="UI\Header Files\Rect.h" />
     <ClInclude Include="UI\Header Files\TextBox.h" />
     <ClInclude Include="UI\Header Files\UIElement.h" />
     <ClInclude Include="UI\Header Files\UIInput.h" />
