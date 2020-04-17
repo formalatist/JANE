@@ -3,6 +3,7 @@
 #include <SDL.h>
 
 #include "UIInput.h"
+#include "UIUtil.h"
 
 namespace UI {
 	class UIElement {

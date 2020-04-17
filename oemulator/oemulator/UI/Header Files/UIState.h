@@ -1,7 +1,7 @@
 #pragma once
 #include <SDL.h>
 
-#include "../../Util/FSM/FSM.h"
+#include "../../Util/FSM/FSM.hpp"
 
 
 namespace UI {

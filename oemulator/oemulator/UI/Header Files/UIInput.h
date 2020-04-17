@@ -6,5 +6,11 @@ namespace UI {
 		int mouseY;
 	} UIInput;
 
-	static UIInput mUIInput;
+	/*const UIInput getInput() {
+		static UIInput input{ 0,0 };
+		return input;
+	}*/
+
+	extern UIInput input;
 }
+

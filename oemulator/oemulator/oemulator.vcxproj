@@ -157,7 +157,7 @@
     <ClCompile Include="Core\Source Files\PPU.cpp" />
     <ClCompile Include="Core\Source Files\PPUMemory.cpp" />
     <ClCompile Include="Core\Source Files\ROMLoader.cpp" />
-    <ClCompile Include="Util\FSM\FSM.cpp" />
+    <ClCompile Include="UI\Source Files\UIInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Header Files\Display.h" />
@@ -181,8 +181,9 @@
     <ClInclude Include="UI\Header Files\UIElement.h" />
     <ClInclude Include="UI\Header Files\UIInput.h" />
     <ClInclude Include="UI\Header Files\UIState.h" />
+    <ClInclude Include="UI\Header Files\UIUtil.h" />
     <ClInclude Include="UI\Source Files\ImGui\imgui_impl_sdl.h" />
-    <ClInclude Include="Util\FSM\FSM.h" />
+    <ClInclude Include="Util\FSM\FSM.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

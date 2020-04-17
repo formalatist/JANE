@@ -1,10 +1,11 @@
 #define SDL_MAIN_HANDLED
 #include "GUI.h"
 #include <SDL_image.h>
-#include "../../Util//FSM/FSM.h"
+//#include "../../Util//FSM/FSM.hpp"
 
 #undef main
 //#include "ImGui/imgui_impl_sdl.h"
+
 
 GUI::GUI(SDL_Renderer * renderer_, int width_, int height_)
 {
@@ -83,10 +84,12 @@ int main(int argc, char** argv) {
 	SDL_Texture *tex = SDL_CreateTextureFromSurface(display.getRenderer(), s);
 
 	//TEST of new UI
-	FSM<UI::UIState> *fsm = new FSM<UI::UIState>(std::map<std::string, UI::UIState>{
-		{"MainMenu", UI::MainMenuState(fsm)}
-	});
+	UI::MainMenuState *mms = new UI::MainMenuState(nullptr);
 
+	FSM<UI::UIState> *fsm = new FSM<UI::UIState>({
+		{ "MainMenu", mms },
+	});
+	fsm->changeState("MainMenu");
 
 
 	char* dir;
@@ -115,12 +118,20 @@ int main(int argc, char** argv) {
 			}
 		}
 
+		//UI::UIInput IO = (UI::getInput());
+		auto IO = &UI::input;
+		SDL_GetMouseState(&(IO->mouseX), &(IO->mouseY));
+
 		double duration = clock();
 		if (emulatorRunning | true) {
 			nes.stepSeconds(0.016667f);
 		}
 
 		//gui.draw();
+		//TEST for new ui system
+		fsm->getState()->update(0.016f);
+		fsm->getState()->draw(display.getRenderer());
+
 		SDL_RenderCopy(display.getRenderer(), tex, NULL, NULL);
 		SDL_RenderPresent(display.getRenderer());
 
