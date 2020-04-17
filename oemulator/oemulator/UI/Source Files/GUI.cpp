@@ -1,6 +1,7 @@
 #define SDL_MAIN_HANDLED
 #include "GUI.h"
 #include <SDL_image.h>
+#include "../../Util//FSM/FSM.h"
 
 #undef main
 //#include "ImGui/imgui_impl_sdl.h"
@@ -14,7 +15,6 @@ GUI::GUI(SDL_Renderer * renderer_, int width_, int height_)
 
 void GUI::draw()
 {
-
 	SDL_RenderPresent(renderer);
 }
 
