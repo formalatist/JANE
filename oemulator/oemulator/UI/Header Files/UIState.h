@@ -1,16 +1,20 @@
 #pragma once
+#include <SDL.h>
+
 #include "../../Util/FSM/FSM.h"
 
-typedef FSM<UIState> UIFSM;
 
-class UIState {
+namespace UI {
+	class UIState {
+	public:
+		typedef FSM<UI::UIState> UIFSM;
 
-public:
-	UIState(FSM<UIState> *FSM_) : FSM(FSM_) {}
+		UIState(FSM<UIState> *FSM_) : FSM(FSM_) {}
 
-	virtual void update(float d) = 0;
-	virtual void draw() = 0;
-	
-private:
-	const FSM<UIState> *FSM;
-};
+		virtual void update(float d) = 0;
+		virtual void draw(SDL_Renderer *renderer) = 0;
+
+	private:
+		const FSM<UIState> *FSM;
+	};
+}

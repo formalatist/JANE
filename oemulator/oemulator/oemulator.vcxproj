@@ -144,6 +144,8 @@
     <ClCompile Include="Core\Source Files\Display.cpp" />
     <ClCompile Include="Core\Source Files\Controller.cpp" />
     <ClCompile Include="Core\Source Files\CPU6502.cpp" />
+    <ClCompile Include="UI\Header Files\Button.cpp" />
+    <ClCompile Include="UI\Header Files\MainMenuState.cpp" />
     <ClCompile Include="UI\Source Files\GUI.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Core\Source Files\Mappers\Mapper0.cpp" />
@@ -162,6 +164,7 @@
     <ClInclude Include="Core\Header Files\Controller.h" />
     <ClInclude Include="Core\Header Files\CPU6502.h" />
     <ClInclude Include="Core\Header Files\ROMInfo.h" />
+    <ClInclude Include="UI\Header Files\Button.h" />
     <ClInclude Include="UI\Header Files\GUI.h" />
     <ClInclude Include="Core\Header Files\Mappers\Mapper.h" />
     <ClInclude Include="Core\Header Files\Mappers\Mapper0.h" />
@@ -173,6 +176,11 @@
     <ClInclude Include="Core\Header Files\PPU.h" />
     <ClInclude Include="Core\Header Files\PPUMemory.h" />
     <ClInclude Include="Core\Header Files\ROMLoader.h" />
+    <ClInclude Include="UI\Header Files\MainMenuState.h" />
+    <ClInclude Include="UI\Header Files\TextBox.h" />
+    <ClInclude Include="UI\Header Files\UIElement.h" />
+    <ClInclude Include="UI\Header Files\UIInput.h" />
+    <ClInclude Include="UI\Header Files\UIState.h" />
     <ClInclude Include="UI\Source Files\ImGui\imgui_impl_sdl.h" />
     <ClInclude Include="Util\FSM\FSM.h" />
   </ItemGroup>

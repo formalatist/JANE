@@ -1,7 +1,5 @@
 #pragma once
 #include <SDL.h>
-#include <ImGui/imgui_sdl.h>
-#include <ImGui/imgui.h>
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -10,6 +8,8 @@
 
 #include "ROMLoader.h"
 #include "ROMInfo.h"
+#include "MainMenuState.h"
+
 
 class GUI {
 

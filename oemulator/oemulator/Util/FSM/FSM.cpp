@@ -1,13 +1,13 @@
 #include "FSM.h"
 
 template <class stateT>
-FSM::FSM(std::map<std::string, stateT> transitions_)
+FSM<stateT>::FSM(std::map<std::string, stateT> transitions_)
 {
 	transitions = transitions_;
 }
 
 template <class stateT>
-void FSM::changeState(std::string action)
+void FSM<stateT>::changeState(std::string action)
 {
 	if (transitions.find(action) != transitions.end()) {
 		currentState = &(transitions[action]);
@@ -15,8 +15,8 @@ void FSM::changeState(std::string action)
 }
 
 template<class stateT>
-stateT FSM<stateT>::getState()
+stateT *FSM<stateT>::getState()
 {
-	return currentState;
+	return &currentState;
 }
 

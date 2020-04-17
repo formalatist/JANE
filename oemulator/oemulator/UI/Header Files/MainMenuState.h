@@ -1,15 +1,20 @@
 #pragma once
+#include <vector>
+
 #include "UIState.h"
+#include "UIElement.h"
+#include "Button.h"
 
-class MainMenuState : UIState {
+namespace UI {
+	class MainMenuState : public UIState {
 
-public:
-	MainMenuState(UIFSM *UIFSM_);
+	public:
+		MainMenuState(UIFSM *UIFSM_);
 
-	void update(float d) override;
-	void draw() override;
+		void update(float d) override;
+		void draw(SDL_Renderer *renderer) override;
 
-private:
-
-	
-};
+	private:
+		std::vector<UIElement*> UIElements;
+	};
+}

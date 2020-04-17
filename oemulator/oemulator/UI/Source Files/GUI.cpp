@@ -82,6 +82,13 @@ int main(int argc, char** argv) {
 	SDL_Surface *s = IMG_Load("C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\resources\\GUI\\MainMenuBackground.png");
 	SDL_Texture *tex = SDL_CreateTextureFromSurface(display.getRenderer(), s);
 
+	//TEST of new UI
+	FSM<UI::UIState> *fsm = new FSM<UI::UIState>(std::map<std::string, UI::UIState>{
+		{"MainMenu", UI::MainMenuState(fsm)}
+	});
+
+
+
 	char* dir;
 	while (run) {
 
@@ -112,7 +119,7 @@ int main(int argc, char** argv) {
 		if (emulatorRunning | true) {
 			nes.stepSeconds(0.016667f);
 		}
-		
+
 		//gui.draw();
 		SDL_RenderCopy(display.getRenderer(), tex, NULL, NULL);
 		SDL_RenderPresent(display.getRenderer());

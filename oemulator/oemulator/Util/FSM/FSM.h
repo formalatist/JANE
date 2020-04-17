@@ -13,7 +13,7 @@ public:
 
 	void changeState(std::string action);
 
-	stateT getState();
+	stateT *getState();
 
 private:
 	stateT *currentState;
