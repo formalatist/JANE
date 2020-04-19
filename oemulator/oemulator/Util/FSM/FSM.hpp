@@ -9,8 +9,7 @@ template <class stateT>
 class FSM {
 
 public:
-	FSM(std::map<std::string, stateT*> transitions_);
-
+	void setTransitions(std::map<std::string, stateT*> transitions_);
 	void changeState(std::string action);
 
 	stateT *getState();
@@ -23,7 +22,7 @@ private:
 
 //implementation 
 template <class stateT>
-FSM<stateT>::FSM(std::map<std::string, stateT*> transitions_)
+void FSM<stateT>::setTransitions(std::map<std::string, stateT*> transitions_)
 {
 	transitions = transitions_;
 }

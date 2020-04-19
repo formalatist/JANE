@@ -80,15 +80,20 @@ int main(int argc, char** argv) {
 	SDL_Event event;
 	byte input = 0;
 
-	SDL_Surface *s = IMG_Load("C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\resources\\GUI\\MainMenuBackground.png");
-	SDL_Texture *tex = SDL_CreateTextureFromSurface(display.getRenderer(), s);
+	//SDL_Surface *s = IMG_Load("C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\resources\\GUI\\MainMenuBackground.png");
+	//SDL_Texture *tex = SDL_CreateTextureFromSurface(display.getRenderer(), s);
 
 	//TEST of new UI
-	UI::MainMenuState *mms = new UI::MainMenuState(nullptr);
+	FSM<UI::UIState> *fsm = new FSM<UI::UIState>();
 
-	FSM<UI::UIState> *fsm = new FSM<UI::UIState>({
+	UI::MainMenuState *mms = new UI::MainMenuState(fsm);
+	UI::ROMLibraryState *rls = new UI::ROMLibraryState(fsm);
+
+	fsm->setTransitions({
 		{ "MainMenu", mms },
+		{ "ROMLibrary", rls},
 	});
+
 	fsm->changeState("MainMenu");
 
 
@@ -142,7 +147,6 @@ int main(int argc, char** argv) {
 		fsm->getState()->update(0.016f);
 		fsm->getState()->draw(display.getRenderer(), SCALE);
 
-		SDL_RenderCopy(display.getRenderer(), tex, NULL, NULL);
 		SDL_RenderPresent(display.getRenderer());
 
 		duration = (clock() - duration) / ((double)CLOCKS_PER_SEC) * 1000;

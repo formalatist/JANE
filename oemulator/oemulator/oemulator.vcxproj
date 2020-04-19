@@ -146,6 +146,7 @@
     <ClCompile Include="Core\Source Files\CPU6502.cpp" />
     <ClCompile Include="UI\Header Files\Button.cpp" />
     <ClCompile Include="UI\Header Files\MainMenuState.cpp" />
+    <ClCompile Include="UI\Header Files\ROMLibraryState.cpp" />
     <ClCompile Include="UI\Source Files\GUI.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Core\Source Files\Mappers\Mapper0.cpp" />
@@ -178,6 +179,7 @@
     <ClInclude Include="Core\Header Files\ROMLoader.h" />
     <ClInclude Include="UI\Header Files\MainMenuState.h" />
     <ClInclude Include="UI\Header Files\Rect.h" />
+    <ClInclude Include="UI\Header Files\ROMLibraryState.h" />
     <ClInclude Include="UI\Header Files\TextBox.h" />
     <ClInclude Include="UI\Header Files\UIElement.h" />
     <ClInclude Include="UI\Header Files\UIInput.h" />

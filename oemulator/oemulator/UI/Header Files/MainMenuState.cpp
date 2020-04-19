@@ -2,11 +2,11 @@
 
 UI::MainMenuState::MainMenuState(UIFSM * UIFSM_) : UIState(UIFSM_)
 {
-	UIElements = std::vector < UIElement*>();
-
 	auto btn = new Button(SDL_Rect{ 64, 64, 128, 16 }, SDL_Color{ 40, 120, 240, 255 },
-		[]() {printf("button onclick\n"); });
-
+			[this](){
+				printf("button onclick\n"); 
+				this->FSM->changeState("ROMLibrary");
+			});
 	UIElements.push_back(btn);
 }
 

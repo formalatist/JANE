@@ -9,6 +9,7 @@
 #include "ROMLoader.h"
 #include "ROMInfo.h"
 #include "MainMenuState.h"
+#include "ROMLibraryState.h"
 
 
 class GUI {
