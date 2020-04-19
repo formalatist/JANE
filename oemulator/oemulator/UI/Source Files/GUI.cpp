@@ -103,6 +103,7 @@ int main(int argc, char** argv) {
 		auto IO = &UI::input;
 		IO->LMBPressed = false;
 		IO->RMBPressed = false;
+		IO->scrollwheelY = 0;
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
 				run = false;
@@ -123,6 +124,7 @@ int main(int argc, char** argv) {
 			else if (event.type == SDL_MOUSEWHEEL)
 			{
 				//TODO: handle mousewheel
+				IO->scrollwheelY = event.wheel.y;
 			}
 			else if (event.type == SDL_DROPFILE) { // a file was droppen on the window
 				dir = event.drop.file;

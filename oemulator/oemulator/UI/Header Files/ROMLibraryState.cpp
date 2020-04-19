@@ -21,8 +21,16 @@ UI::ROMLibraryState::ROMLibraryState(UIFSM * UIFSM_) : UIState(UIFSM_)
 	}
 }
 
+//TODO: input should probably be passed to the states to make it more obvious that
+//handling inputs for a specific state happens here, having it be global makes it unclear
 void UI::ROMLibraryState::update(float d)
 {
+	if (input.scrollwheelY != 0) {
+		//we scrolled, update all the button positions
+		for (auto e : UIElements) {
+			e->rect.y += input.scrollwheelY*5;
+		}
+	}
 	for (auto e : UIElements) {
 		e->update(d);
 	}
