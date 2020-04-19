@@ -28,7 +28,8 @@ void UI::ROMLibraryState::update(float d)
 	if (input.scrollwheelY != 0) {
 		//we scrolled, update all the button positions
 		for (auto e : UIElements) {
-			e->rect.y += input.scrollwheelY*5;
+			e->rect.y += input.scrollwheelY*5;	//MAGIC NUMBER: just to make scrolling a bit 
+												//faster, this functionality should be hidden inside scrollview / gridview in future
 		}
 	}
 	for (auto e : UIElements) {
