@@ -87,7 +87,7 @@ int main(int argc, char** argv) {
 	FSM<UI::UIState> *fsm = new FSM<UI::UIState>();
 
 	UI::MainMenuState *mms = new UI::MainMenuState(fsm);
-	UI::ROMLibraryState *rls = new UI::ROMLibraryState(fsm);
+	UI::ROMLibraryState *rls = new UI::ROMLibraryState(fsm, gui.ROMInfos, nes, loader);
 
 	fsm->setTransitions({
 		{ "MainMenu", mms },
