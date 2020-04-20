@@ -28,13 +28,14 @@ const int SCALE = 4;
 
 
 std::vector<ROMInfo> getROMInfos() {
-	std::string path("C:/Users/Oivind/Documents/GitHub/oemulator/roms");
+	std::string pathToROMS("C:/Users/Oivind/Documents/GitHub/oemulator/roms");
+	std::string pathToThumbnails("C:/Users/Oivind/Documents/GitHub/oemulator/resources/");
 	std::vector<ROMInfo> ROMInfos = std::vector<ROMInfo>();
 	
-	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(path))
+	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(pathToROMS))
 	{
 		if (p.path().extension() == ".nes") {
-			ROMInfo info = {p.path().string(), std::string(""), p.path().filename().string()};
+			ROMInfo info = {p.path().string(), pathToThumbnails + p.path().filename().replace_extension(".png").string() , p.path().filename().string()};
 			ROMInfos.push_back(info);
 		}
 	}
@@ -87,7 +88,7 @@ int main(int argc, char** argv) {
 	FSM<UI::UIState> *fsm = new FSM<UI::UIState>();
 
 	UI::MainMenuState *mms = new UI::MainMenuState(fsm);
-	UI::ROMLibraryState *rls = new UI::ROMLibraryState(fsm, gui.ROMInfos, nes, loader);
+	UI::ROMLibraryState *rls = new UI::ROMLibraryState(fsm, gui.ROMInfos, nes, loader, display.getRenderer());
 
 	fsm->setTransitions({
 		{ "MainMenu", mms },

@@ -2,7 +2,7 @@
 
 #include "ROMLibraryState.h"
 
-UI::ROMLibraryState::ROMLibraryState(UIFSM * UIFSM_, std::vector<ROMInfo> & ROMInfos_, const NES &nes_, ROMLoader &ROMLoader_) : UIState(UIFSM_)
+UI::ROMLibraryState::ROMLibraryState(UIFSM * UIFSM_, std::vector<ROMInfo> & ROMInfos_, const NES &nes_, ROMLoader &ROMLoader_, SDL_Renderer *renderer) : UIState(UIFSM_)
 {
 	nes = nes_;
 
@@ -11,11 +11,18 @@ UI::ROMLibraryState::ROMLibraryState(UIFSM * UIFSM_, std::vector<ROMInfo> & ROMI
 	int paddingBetweenCols = (256 - numCols*libBtnSize)/(numCols+1);
 	ROMInfos = ROMInfos_;
 
+	textures = std::vector<SDL_Texture*>();
+
 	int numROMs = ROMInfos.size();
 	for (int i = 0; i < numROMs; i++) {
 		int x = (i%numCols)*(libBtnSize + paddingBetweenCols) + paddingBetweenCols;
 		int y = (i / numCols)*(libBtnSize + paddingBetweenCols) + paddingBetweenCols;
-		auto btn = new Button(SDL_Rect{ x, y, libBtnSize, libBtnSize }, SDL_Color{ 200,50,50,255 },
+		SDL_Surface *s = IMG_Load(ROMInfos_[i].thumbnailPath.c_str());
+		SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, s);
+		SDL_FreeSurface(s);
+		textures.push_back(tex);
+		std::cout << "Loaded tex from: " << ROMInfos_[i].thumbnailPath.c_str() << std::endl;
+		auto btn = new ImageButton(SDL_Rect{ x, y, libBtnSize, libBtnSize }, textures[i],
 			[i, this, &nes_, &ROMLoader_, &ROMInfos_]() mutable{ 
 				std::cout << "You clicked a button " << i << std::endl; 
 				this->FSM->changeState("MainMenu");

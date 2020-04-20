@@ -145,6 +145,7 @@
     <ClCompile Include="Core\Source Files\Controller.cpp" />
     <ClCompile Include="Core\Source Files\CPU6502.cpp" />
     <ClCompile Include="UI\Header Files\Button.cpp" />
+    <ClCompile Include="UI\Header Files\ImageButton.cpp" />
     <ClCompile Include="UI\Header Files\MainMenuState.cpp" />
     <ClCompile Include="UI\Header Files\ROMLibraryState.cpp" />
     <ClCompile Include="UI\Source Files\GUI.cpp" />
@@ -177,6 +178,7 @@
     <ClInclude Include="Core\Header Files\PPU.h" />
     <ClInclude Include="Core\Header Files\PPUMemory.h" />
     <ClInclude Include="Core\Header Files\ROMLoader.h" />
+    <ClInclude Include="UI\Header Files\ImageButton.h" />
     <ClInclude Include="UI\Header Files\MainMenuState.h" />
     <ClInclude Include="UI\Header Files\Rect.h" />
     <ClInclude Include="UI\Header Files\ROMLibraryState.h" />

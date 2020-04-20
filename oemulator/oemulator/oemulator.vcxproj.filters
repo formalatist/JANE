@@ -81,6 +81,9 @@
     <ClCompile Include="UI\Header Files\ROMLibraryState.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UI\Header Files\ImageButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Header Files\Controller.h">
@@ -159,6 +162,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="UI\Header Files\ROMLibraryState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI\Header Files\ImageButton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
