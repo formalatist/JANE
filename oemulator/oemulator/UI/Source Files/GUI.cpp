@@ -53,7 +53,7 @@ int main(int argc, char** argv) {
 	//create a controller
 	Controller controller = Controller();
 	nes.connectController(&controller); //connect it
-	std::string keysFilePath = std::experimental::filesystem::current_path().string() + "\\keyBindingsTest.txt";
+	std::string keysFilePath = std::experimental::filesystem::current_path().string() + "\\keyBindings.txt";
 	controller.setKeyMap(keysFilePath);
 	//load a rom
 	ROMLoader loader = ROMLoader(nes.memory, nes.ppuMemory);
