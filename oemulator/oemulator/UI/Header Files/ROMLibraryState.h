@@ -10,7 +10,7 @@
 namespace UI {
 	class ROMLibraryState : public UIState {
 	public:
-		ROMLibraryState(UIFSM *UIFSM_, std::vector<ROMInfo> &ROMInfos_, const NES &nes_, ROMLoader &ROMLoader_, SDL_Renderer *renderer);
+		ROMLibraryState(UIFSM *UIFSM_, std::vector<ROMInfo> &ROMInfos_, const NES &nes_, ROMLoader &ROMLoader_, SDL_Renderer *renderer, bool &emulatorRunning_);
 
 		void update(float d) override;
 		void draw(SDL_Renderer *renderer, int scale) override;

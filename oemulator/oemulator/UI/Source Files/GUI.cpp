@@ -28,10 +28,11 @@ const int SCALE = 4;
 
 
 std::vector<ROMInfo> getROMInfos() {
-	std::string pathToROMS("C:/Users/Oivind/Documents/GitHub/oemulator/roms");
-	std::string pathToThumbnails("C:/Users/Oivind/Documents/GitHub/oemulator/resources/");
+	std::string pathToExe = std::experimental::filesystem::current_path().string();
+	std::string pathToROMS(pathToExe + "\\roms");
+	std::string pathToThumbnails(pathToExe + "\\resources\\");
 	std::vector<ROMInfo> ROMInfos = std::vector<ROMInfo>();
-	
+	std::cout << pathToROMS << std::endl;
 	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(pathToROMS))
 	{
 		if (p.path().extension() == ".nes") {
@@ -44,10 +45,6 @@ std::vector<ROMInfo> getROMInfos() {
 
 
 int main(int argc, char** argv) {
-	std::string game = "Super mario bros";
-	std::string filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\" + game + ".nes";
-
-
 	SDL_Init(SDL_INIT_EVERYTHING);
 	IMG_Init(IMG_INIT_PNG);
 	
@@ -56,11 +53,11 @@ int main(int argc, char** argv) {
 	//create a controller
 	Controller controller = Controller();
 	nes.connectController(&controller); //connect it
-	std::string keysFilePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\keyBindingsTest.txt";
+	std::string keysFilePath = std::experimental::filesystem::current_path().string() + "\\keyBindings.txt";
 	controller.setKeyMap(keysFilePath);
 	//load a rom
 	ROMLoader loader = ROMLoader(nes.memory, nes.ppuMemory);
-	loader.loadROMFromFile("C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\super mario bros.nes", (*nes.cpu));
+	//loader.loadROMFromFile("C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\super mario bros.nes", (*nes.cpu));
 	//loader.loadROM(fileBuffer, fileSize, (*nes.cpu));
 	//create the screen
 	Display display = Display("NES Emulator", 256, 240);
@@ -87,7 +84,7 @@ int main(int argc, char** argv) {
 	FSM<UI::UIState> *fsm = new FSM<UI::UIState>();
 
 	UI::MainMenuState *mms = new UI::MainMenuState(fsm);
-	UI::ROMLibraryState *rls = new UI::ROMLibraryState(fsm, gui.ROMInfos, nes, loader, display.getRenderer());
+	UI::ROMLibraryState *rls = new UI::ROMLibraryState(fsm, gui.ROMInfos, nes, loader, display.getRenderer(), emulatorRunning);
 	UI::GameActiveState *gas = new UI::GameActiveState(fsm);
 
 	fsm->setTransitions({
@@ -143,7 +140,7 @@ int main(int argc, char** argv) {
 		IO->RMBDown = (buttons & (SDL_BUTTON(SDL_BUTTON_RIGHT))) == SDL_BUTTON(SDL_BUTTON_RIGHT);
 
 		double duration = clock();
-		if (emulatorRunning | true) {
+		if (emulatorRunning) {
 			nes.stepSeconds(0.016667f);
 		}
 		
