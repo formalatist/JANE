@@ -2,7 +2,7 @@
 
 #include "ROMLibraryState.h"
 
-UI::ROMLibraryState::ROMLibraryState(UIFSM * UIFSM_, std::vector<ROMInfo> & ROMInfos_, const NES &nes_, ROMLoader &ROMLoader_, SDL_Renderer *renderer) : UIState(UIFSM_)
+UI::ROMLibraryState::ROMLibraryState(UIFSM * UIFSM_, std::vector<ROMInfo> & ROMInfos_, const NES &nes_, ROMLoader &ROMLoader_, SDL_Renderer *renderer, bool &emulatorRunning_) : UIState(UIFSM_)
 {
 	nes = nes_;
 
@@ -23,11 +23,12 @@ UI::ROMLibraryState::ROMLibraryState(UIFSM * UIFSM_, std::vector<ROMInfo> & ROMI
 		textures.push_back(tex);
 		std::cout << "Loaded tex from: " << ROMInfos_[i].thumbnailPath.c_str() << std::endl;
 		auto btn = new ImageButton(SDL_Rect{ x, y, libBtnSize, libBtnSize }, textures[i],
-			[i, this, &nes_, &ROMLoader_, &ROMInfos_]() mutable{ 
+			[i, this, &nes_, &ROMLoader_, &ROMInfos_, &emulatorRunning_]() mutable{ 
 				std::cout << "You clicked a button " << i << std::endl; 
 				this->FSM->changeState("Game");
 				std::cout << "Loading ROM " << ROMInfos_[i].ROMName << " from " << ROMInfos_[i].ROMPath << std::endl;
 				ROMLoader_.loadROMFromFile(ROMInfos_[i].ROMPath, *(nes_.cpu));
+				emulatorRunning_ = true;
 			});
 		UIElements.push_back(btn);
 	}

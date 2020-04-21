@@ -45,10 +45,6 @@ std::vector<ROMInfo> getROMInfos() {
 
 
 int main(int argc, char** argv) {
-	std::string game = "Super mario bros";
-	std::string filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\" + game + ".nes";
-
-
 	SDL_Init(SDL_INIT_EVERYTHING);
 	IMG_Init(IMG_INIT_PNG);
 	
@@ -61,7 +57,7 @@ int main(int argc, char** argv) {
 	controller.setKeyMap(keysFilePath);
 	//load a rom
 	ROMLoader loader = ROMLoader(nes.memory, nes.ppuMemory);
-	loader.loadROMFromFile("C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\super mario bros.nes", (*nes.cpu));
+	//loader.loadROMFromFile("C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\super mario bros.nes", (*nes.cpu));
 	//loader.loadROM(fileBuffer, fileSize, (*nes.cpu));
 	//create the screen
 	Display display = Display("NES Emulator", 256, 240);
@@ -88,7 +84,7 @@ int main(int argc, char** argv) {
 	FSM<UI::UIState> *fsm = new FSM<UI::UIState>();
 
 	UI::MainMenuState *mms = new UI::MainMenuState(fsm);
-	UI::ROMLibraryState *rls = new UI::ROMLibraryState(fsm, gui.ROMInfos, nes, loader, display.getRenderer());
+	UI::ROMLibraryState *rls = new UI::ROMLibraryState(fsm, gui.ROMInfos, nes, loader, display.getRenderer(), emulatorRunning);
 	UI::GameActiveState *gas = new UI::GameActiveState(fsm);
 
 	fsm->setTransitions({
@@ -144,7 +140,7 @@ int main(int argc, char** argv) {
 		IO->RMBDown = (buttons & (SDL_BUTTON(SDL_BUTTON_RIGHT))) == SDL_BUTTON(SDL_BUTTON_RIGHT);
 
 		double duration = clock();
-		if (emulatorRunning | true) {
+		if (emulatorRunning) {
 			nes.stepSeconds(0.016667f);
 		}
 		
