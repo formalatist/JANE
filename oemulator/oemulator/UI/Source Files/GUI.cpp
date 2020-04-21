@@ -5,6 +5,7 @@
 
 #undef main
 //#include "ImGui/imgui_impl_sdl.h"
+#include <stdio.h>
 
 
 GUI::GUI(SDL_Renderer * renderer_, int width_, int height_)
@@ -98,7 +99,7 @@ int main(int argc, char** argv) {
 
 	fsm->changeState("MainMenu");
 
-	
+	FILE *out = _popen("ffmpeg -y -f  rawvideo -vcodec rawvideo -pix_fmt bgra -s 256x240 -r 60 -i - -vf scale=1024:-1 -sws_flags neighbor -f mp4 -q:v 10 -an -vcodec mpeg4 qual10test2.mp4", "w");
 
 	char* dir;
 	while (run) {
@@ -114,7 +115,8 @@ int main(int argc, char** argv) {
 			else if (event.type == SDL_KEYDOWN) {
 				controller.onKeyDown(event.key.keysym.sym);
 				if (event.key.keysym.sym == SDLK_q) {
-					emulatorRunning = false;
+					//emulatorRunning = false;
+					run = false;
 				}
 			}
 			else if (event.type == SDL_KEYUP) {
@@ -154,12 +156,17 @@ int main(int argc, char** argv) {
 
 		SDL_RenderPresent(display.getRenderer());
 
+		fwrite(nes.ppu->pixels, 1, 256 * 240*4, out);
+
 		duration = (clock() - duration) / ((double)CLOCKS_PER_SEC) * 1000;
 		if (duration < 16.6667) {
 			SDL_Delay(16.6667 - duration);
 		}
 		frame++;
 	}
+	fflush(out);
+	_pclose(out);
+
 	SDL_Quit();
 	std::cin.get();
 

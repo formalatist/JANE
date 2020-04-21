@@ -21,7 +21,7 @@ UI::ROMLibraryState::ROMLibraryState(UIFSM * UIFSM_, std::vector<ROMInfo> & ROMI
 		SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, s);
 		SDL_FreeSurface(s);
 		textures.push_back(tex);
-		std::cout << "Loaded tex from: " << ROMInfos_[i].thumbnailPath.c_str() << std::endl;
+		//std::cout << "Loaded tex from: " << ROMInfos_[i].thumbnailPath.c_str() << std::endl;
 		auto btn = new ImageButton(SDL_Rect{ x, y, libBtnSize, libBtnSize }, textures[i],
 			[i, this, &nes_, &ROMLoader_, &ROMInfos_]() mutable{ 
 				std::cout << "You clicked a button " << i << std::endl; 
