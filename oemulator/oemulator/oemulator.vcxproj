@@ -145,6 +145,7 @@
     <ClCompile Include="Core\Source Files\Controller.cpp" />
     <ClCompile Include="Core\Source Files\CPU6502.cpp" />
     <ClCompile Include="UI\Header Files\Button.cpp" />
+    <ClCompile Include="UI\Header Files\GameActiveState.cpp" />
     <ClCompile Include="UI\Header Files\ImageButton.cpp" />
     <ClCompile Include="UI\Header Files\MainMenuState.cpp" />
     <ClCompile Include="UI\Header Files\ROMLibraryState.cpp" />
@@ -167,6 +168,7 @@
     <ClInclude Include="Core\Header Files\CPU6502.h" />
     <ClInclude Include="Core\Header Files\ROMInfo.h" />
     <ClInclude Include="UI\Header Files\Button.h" />
+    <ClInclude Include="UI\Header Files\GameActiveState.h" />
     <ClInclude Include="UI\Header Files\GUI.h" />
     <ClInclude Include="Core\Header Files\Mappers\Mapper.h" />
     <ClInclude Include="Core\Header Files\Mappers\Mapper0.h" />

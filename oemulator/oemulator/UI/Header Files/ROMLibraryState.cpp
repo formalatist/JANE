@@ -25,7 +25,7 @@ UI::ROMLibraryState::ROMLibraryState(UIFSM * UIFSM_, std::vector<ROMInfo> & ROMI
 		auto btn = new ImageButton(SDL_Rect{ x, y, libBtnSize, libBtnSize }, textures[i],
 			[i, this, &nes_, &ROMLoader_, &ROMInfos_]() mutable{ 
 				std::cout << "You clicked a button " << i << std::endl; 
-				this->FSM->changeState("MainMenu");
+				this->FSM->changeState("Game");
 				std::cout << "Loading ROM " << ROMInfos_[i].ROMName << " from " << ROMInfos_[i].ROMPath << std::endl;
 				ROMLoader_.loadROMFromFile(ROMInfos_[i].ROMPath, *(nes_.cpu));
 			});
@@ -51,6 +51,9 @@ void UI::ROMLibraryState::update(float d)
 
 void UI::ROMLibraryState::draw(SDL_Renderer * renderer, int scale)
 {
+	SDL_SetRenderDrawColor(renderer, 70,70,70,128);
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BlendMode::SDL_BLENDMODE_BLEND);
+	SDL_RenderFillRect(renderer, NULL);
 	for (auto e : UIElements) {
 		e->draw(renderer, scale);
 	}

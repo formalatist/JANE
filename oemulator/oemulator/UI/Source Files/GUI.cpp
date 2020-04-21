@@ -44,7 +44,6 @@ std::vector<ROMInfo> getROMInfos() {
 
 
 int main(int argc, char** argv) {
-
 	std::string game = "Super mario bros";
 	std::string filePath = "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\" + game + ".nes";
 
@@ -80,7 +79,7 @@ int main(int argc, char** argv) {
 	bool run = true;
 	SDL_Event event;
 	byte input = 0;
-
+	
 	//SDL_Surface *s = IMG_Load("C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\resources\\GUI\\MainMenuBackground.png");
 	//SDL_Texture *tex = SDL_CreateTextureFromSurface(display.getRenderer(), s);
 
@@ -89,14 +88,17 @@ int main(int argc, char** argv) {
 
 	UI::MainMenuState *mms = new UI::MainMenuState(fsm);
 	UI::ROMLibraryState *rls = new UI::ROMLibraryState(fsm, gui.ROMInfos, nes, loader, display.getRenderer());
+	UI::GameActiveState *gas = new UI::GameActiveState(fsm);
 
 	fsm->setTransitions({
 		{ "MainMenu", mms },
 		{ "ROMLibrary", rls},
+		{ "Game", gas},
 	});
 
 	fsm->changeState("MainMenu");
 
+	
 
 	char* dir;
 	while (run) {
@@ -158,7 +160,6 @@ int main(int argc, char** argv) {
 		}
 		frame++;
 	}
-
 	SDL_Quit();
 	std::cin.get();
 

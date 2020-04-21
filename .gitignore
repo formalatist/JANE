@@ -302,3 +302,4 @@ __pycache__/
 *.xsd.cs
 *.nes
 roms/drive-download-20190616T184258Z-001.zip
+*.mp4
