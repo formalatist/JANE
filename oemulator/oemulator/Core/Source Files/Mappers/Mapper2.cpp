@@ -1,4 +1,4 @@
-#include "Mapper2.h"
+#include "Mappers/Mapper2.h"
 
 Mapper2::Mapper2(iNESHeader header, byte rom[])
 {

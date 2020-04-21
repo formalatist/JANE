@@ -1,4 +1,5 @@
 #pragma once
+#define _CRT_SECURE_NO_DEPRECATE
 //#include "Memory.h"
 //#include "CPU6502.h"
 #include "NES.h"
@@ -14,6 +15,8 @@ public:
 
 	void loadROM(byte rom[], int size, CPU6502& cpu);
 
+	void loadROMFromFile(std::string filepath, CPU6502& cpu);
+
 	iNESHeader getHeader(byte rom[]);
 
 	//in future the PPU might be setting these itself
@@ -23,6 +26,8 @@ public:
 	Mapper* mapper;
 
 private:
+	long getFileSize(FILE *file);
+
 	Memory* memory;
 	PPUMemory* ppuMemory;
 };

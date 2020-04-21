@@ -44,12 +44,33 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 	else if (mapperNumber == 3) {
 		mapper = new Mapper3(header, rom2);
 	}
+	else {
+		throw std::runtime_error("No mapper available for this ROM file ;(");
+	}
 	memory->setMapper(mapper);
 	ppuMemory->setMapper(mapper);
 
 	//set the PC to the init vector
 	std::cout << std::hex << (int)memory->memory[0xfffc] << "  " << (memory->memory[0xfffd] << 8) << std::endl;
 	cpu.PC = memory->read(0xfffc) | ((memory->read(0xfffd) << 8));
+	delete[] rom;
+}
+
+void ROMLoader::loadROMFromFile(std::string filepath, CPU6502 & cpu)
+{
+	unsigned char* fileBuffer;
+	FILE* file = NULL;
+
+	if ((file = fopen(filepath.c_str(), "rb")) == NULL) {
+		std::cout << "Could not open file at path: " << filepath << std::endl;
+		std::cin.get();
+	}
+	long fileSize = getFileSize(file);
+	fileBuffer = new unsigned char[fileSize];
+	fread(fileBuffer, fileSize, 1, file);
+	fclose(file);
+
+	loadROM(fileBuffer, fileSize, cpu);
 }
 
 iNESHeader ROMLoader::getHeader(byte rom[])
@@ -64,4 +85,14 @@ void ROMLoader::clearPPUReg()
 	{
 		memory->write(i, 0);
 	}
+}
+
+long ROMLoader::getFileSize(FILE *file)
+{
+	long lCurPos, lEndPos;
+	lCurPos = ftell(file);
+	fseek(file, 0, 2);
+	lEndPos = ftell(file);
+	fseek(file, lCurPos, 0);
+	return lEndPos;
 }

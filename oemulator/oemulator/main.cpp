@@ -4,14 +4,15 @@
 #include <iostream>
 #include <iomanip>
 #include "ROMLoader.h"
+#include "GUI.h"
 #include <chrono>
 #include <ctime>
 #include <string>
 
-bool running = true;
+/*bool running = true;
 const int FPS = 30;
 int tickCounter = 0;
-const int SCALE = 2;
+const int SCALE = 4;
 
 
 long getFileSize(FILE *file)
@@ -56,6 +57,8 @@ int main(int argc, char** argv) {
 	std::cout <<( static_cast<int>(fileBuffer[7]) & 0x4) << 
 		(static_cast<int>(fileBuffer[7]) & 0x8) << std::endl;
 
+	SDL_Init(SDL_INIT_EVERYTHING);
+
 	//create the NES
 	NES nes = NES();
 	//create a controller
@@ -69,7 +72,10 @@ int main(int argc, char** argv) {
 	//create the screen
 	Display display = Display("NES Emulator", 256, 240);
 	nes.setDisplay(&display);
-	display.setScale(4);
+	display.setScale(SCALE);
+
+	//create the GUI
+	GUI gui = GUI(display.getRenderer(), 256*SCALE, 240*SCALE);
 	
 	tickCounter = SDL_GetTicks();
 	int frame = 0;
@@ -93,12 +99,22 @@ int main(int argc, char** argv) {
 			}
 		}
 
+		int mouseX;
+		int mouseY;
+		const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
+		ImGuiIO& io = ImGui::GetIO();
+		io.DeltaTime = 0.016f;
+		io.MousePos = ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
+		io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
+		io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
+
 		double duration = clock();
 		double duration2 = clock();
-		nes.stepSeconds(0.016f);
+		nes.stepSeconds(0.016667f);
+		gui.draw();
 		duration = (clock() - duration) / ((double)CLOCKS_PER_SEC) * 1000;
-		if (duration < 14.2/*16.6667*/) {
-			SDL_Delay(14.2/*16.6667*/ - duration);
+		if (duration < 16.6667) {
+			SDL_Delay(16.6667 - duration);
 		}
 		std::cout << "\rFPS: " << std::setprecision(3) << 1.0 / ((clock() - duration2) / ((double)CLOCKS_PER_SEC)) 
 			<< "/" << std::setprecision(4) << 1.0 / (duration / 1000.0);// << std::endl;
@@ -111,3 +127,4 @@ int main(int argc, char** argv) {
 	delete[] fileBuffer;
 	return 0;
 }
+*/

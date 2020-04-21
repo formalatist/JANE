@@ -9,25 +9,16 @@ Display::Display(const char *windowName, int width_, int height_)
 	window = SDL_CreateWindow(windowName, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		width, height,
 		SDL_WINDOW_SHOWN);
-	//create surface for rendering to it
-	windowSurface = SDL_GetWindowSurface(window);
+	
+	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	//create texture for rendering to it
+	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_BGRA32, SDL_TEXTUREACCESS_TARGET, width, height);
 }
 
 void Display::updateScreen(int *pixels)
 {
-	for (int x = 0; x < 256; x++) {
-		for (int y = 0; y < 240; y++) {
-			for (int subX = 0; subX < scale; subX++) {
-				for (int subY = 0; subY < scale; subY++) {
-					Uint8 *targetPixel = (Uint8*)windowSurface->pixels 
-						+ (y*scale + subY)*windowSurface->pitch
-						+ (x*scale + subX) * 4;
-					*(Uint32 *)targetPixel = pixels[x + y * 512];
-				}
-			}
-		}
-	}
-	SDL_UpdateWindowSurface(window);
+	SDL_UpdateTexture(texture, NULL, pixels, 256*4);
+	SDL_RenderCopy(renderer, texture, NULL, NULL);
 }
 
 void Display::setScale(int newScale)
@@ -35,8 +26,7 @@ void Display::setScale(int newScale)
 	scale = newScale;
 	SDL_SetWindowSize(window,
 		width*scale, height*scale);
-	SDL_FreeSurface(windowSurface);
-	windowSurface = SDL_GetWindowSurface(window);
+	SDL_SetWindowPosition(window, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED);
 }
 
 //TODO: properly implement
@@ -92,8 +82,14 @@ void Display::showPatternTable(unsigned char *ppuMemory)
 	SDL_UpdateWindowSurface(patternTableWindow);
 }
 
+SDL_Renderer * Display::getRenderer()
+{
+	return renderer;
+}
+
 Display::~Display()
 {
 	SDL_DestroyWindow(window);
 	SDL_DestroyWindow(patternTableWindow);
+	SDL_DestroyTexture(texture);
 }

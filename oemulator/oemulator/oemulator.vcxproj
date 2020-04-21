@@ -69,7 +69,20 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Header Files;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\lib;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LibraryPath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\lib;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LibraryPath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\lib;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LibraryPath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\lib;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\lib\x64;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\Core\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Header Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\oemulator\UI\Source Files;C:\Users\Oivind\Documents\GitHub\oemulator\oemulator\lib\SDL_image\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -77,6 +90,9 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -88,7 +104,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Program Files %28x86%29\SDL-2.0.7\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -104,6 +120,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <SubSystem>Console</SubSystem>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -120,38 +137,60 @@
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>C:\Program Files %28x86%29\SDL-2.0.7\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Source Files\Display.cpp" />
-    <ClCompile Include="Source Files\Controller.cpp" />
-    <ClCompile Include="Source Files\CPU6502.cpp" />
-    <ClCompile Include="Source Files\main.cpp" />
-    <ClCompile Include="Source Files\Mapper0.cpp" />
-    <ClCompile Include="Source Files\Mapper1.cpp" />
-    <ClCompile Include="Source Files\Mapper2.cpp" />
-    <ClCompile Include="Source Files\Mapper3.cpp" />
-    <ClCompile Include="Source Files\Memory.cpp" />
-    <ClCompile Include="Source Files\NES.cpp" />
-    <ClCompile Include="Source Files\PPU.cpp" />
-    <ClCompile Include="Source Files\PPUMemory.cpp" />
-    <ClCompile Include="Source Files\ROMLoader.cpp" />
+    <ClCompile Include="Core\Source Files\Display.cpp" />
+    <ClCompile Include="Core\Source Files\Controller.cpp" />
+    <ClCompile Include="Core\Source Files\CPU6502.cpp" />
+    <ClCompile Include="UI\Header Files\Button.cpp" />
+    <ClCompile Include="UI\Header Files\GameActiveState.cpp" />
+    <ClCompile Include="UI\Header Files\ImageButton.cpp" />
+    <ClCompile Include="UI\Header Files\MainMenuState.cpp" />
+    <ClCompile Include="UI\Header Files\ROMLibraryState.cpp" />
+    <ClCompile Include="UI\Source Files\GUI.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Core\Source Files\Mappers\Mapper0.cpp" />
+    <ClCompile Include="Core\Source Files\Mappers\Mapper1.cpp" />
+    <ClCompile Include="Core\Source Files\Mappers\Mapper2.cpp" />
+    <ClCompile Include="Core\Source Files\Mappers\Mapper3.cpp" />
+    <ClCompile Include="Core\Source Files\Memory.cpp" />
+    <ClCompile Include="Core\Source Files\NES.cpp" />
+    <ClCompile Include="Core\Source Files\PPU.cpp" />
+    <ClCompile Include="Core\Source Files\PPUMemory.cpp" />
+    <ClCompile Include="Core\Source Files\ROMLoader.cpp" />
+    <ClCompile Include="UI\Source Files\UIInput.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Header Files\Display.h" />
-    <ClInclude Include="Header Files\Controller.h" />
-    <ClInclude Include="Header Files\CPU6502.h" />
-    <ClInclude Include="Header Files\Mapper.h" />
-    <ClInclude Include="Header Files\Mapper0.h" />
-    <ClInclude Include="Header Files\Mapper1.h" />
-    <ClInclude Include="Header Files\Mapper2.h" />
-    <ClInclude Include="Header Files\Mapper3.h" />
-    <ClInclude Include="Header Files\Memory.h" />
-    <ClInclude Include="Header Files\NES.h" />
-    <ClInclude Include="Header Files\PPU.h" />
-    <ClInclude Include="Header Files\PPUMemory.h" />
-    <ClInclude Include="Header Files\ROMLoader.h" />
+    <ClInclude Include="Core\Header Files\Display.h" />
+    <ClInclude Include="Core\Header Files\Controller.h" />
+    <ClInclude Include="Core\Header Files\CPU6502.h" />
+    <ClInclude Include="Core\Header Files\ROMInfo.h" />
+    <ClInclude Include="UI\Header Files\Button.h" />
+    <ClInclude Include="UI\Header Files\GameActiveState.h" />
+    <ClInclude Include="UI\Header Files\GUI.h" />
+    <ClInclude Include="Core\Header Files\Mappers\Mapper.h" />
+    <ClInclude Include="Core\Header Files\Mappers\Mapper0.h" />
+    <ClInclude Include="Core\Header Files\Mappers\Mapper1.h" />
+    <ClInclude Include="Core\Header Files\Mappers\Mapper2.h" />
+    <ClInclude Include="Core\Header Files\Mappers\Mapper3.h" />
+    <ClInclude Include="Core\Header Files\Memory.h" />
+    <ClInclude Include="Core\Header Files\NES.h" />
+    <ClInclude Include="Core\Header Files\PPU.h" />
+    <ClInclude Include="Core\Header Files\PPUMemory.h" />
+    <ClInclude Include="Core\Header Files\ROMLoader.h" />
+    <ClInclude Include="UI\Header Files\ImageButton.h" />
+    <ClInclude Include="UI\Header Files\MainMenuState.h" />
+    <ClInclude Include="UI\Header Files\Rect.h" />
+    <ClInclude Include="UI\Header Files\ROMLibraryState.h" />
+    <ClInclude Include="UI\Header Files\TextBox.h" />
+    <ClInclude Include="UI\Header Files\UIElement.h" />
+    <ClInclude Include="UI\Header Files\UIInput.h" />
+    <ClInclude Include="UI\Header Files\UIState.h" />
+    <ClInclude Include="UI\Header Files\UIUtil.h" />
+    <ClInclude Include="UI\Source Files\ImGui\imgui_impl_sdl.h" />
+    <ClInclude Include="Util\FSM\FSM.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

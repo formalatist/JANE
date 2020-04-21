@@ -1,4 +1,4 @@
-#include "Mapper1.h"
+#include "Mappers/Mapper1.h"
 
 Mapper1::Mapper1(iNESHeader header, byte rom[], PPUMemory* mem_)
 {
