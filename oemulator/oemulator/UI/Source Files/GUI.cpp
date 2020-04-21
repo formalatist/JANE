@@ -28,10 +28,11 @@ const int SCALE = 4;
 
 
 std::vector<ROMInfo> getROMInfos() {
-	std::string pathToROMS("C:/Users/Oivind/Documents/GitHub/oemulator/roms");
-	std::string pathToThumbnails("C:/Users/Oivind/Documents/GitHub/oemulator/resources/");
+	std::string pathToExe = std::experimental::filesystem::current_path().string();
+	std::string pathToROMS(pathToExe + "\\roms");
+	std::string pathToThumbnails(pathToExe + "\\resources\\");
 	std::vector<ROMInfo> ROMInfos = std::vector<ROMInfo>();
-	
+	std::cout << pathToROMS << std::endl;
 	for (auto& p : std::experimental::filesystem::recursive_directory_iterator(pathToROMS))
 	{
 		if (p.path().extension() == ".nes") {
