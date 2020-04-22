@@ -46,8 +46,11 @@ void UI::GameActiveState::draw(SDL_Renderer * renderer, int scale)
 
 void UI::GameActiveState::startVideoRecording()
 {
-	std::string command("ffmpeg -hide_banner -loglevel panic -y -f  rawvideo -vcodec rawvideo -pix_fmt bgra -s 256x240 -r 60 -i - -vf scale=1024:-1 -sws_flags neighbor -f mp4 -q:v 10 -an -vcodec mpeg4 ");
-	command += "testFilename.mp4";
+	//							-hide_banner -loglevel panic are there to prevent ffmpeg from spamming the console
+	std::string command("ffmpeg -hide_banner -loglevel panic -y -f  rawvideo -vcodec rawvideo -pix_fmt bgra -s 256x240 -r 60 -i - -vf scale=1024:-1 -sws_flags neighbor -f mp4 -q:v 10 -an -vcodec mpeg4 videos\\");
+	//TODO: change this, this might technically cause conflicts since ticks starts at 0 when sdl inits
+	//multiple runs of the emulator can overwrite videos
+	command += std::to_string(SDL_GetTicks()) + ".mp4";
 	videoOut = _popen(command.c_str(), "w");
 	isRecording = true;
 	std::cout << "STARTED RECORDING" << std::endl;
