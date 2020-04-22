@@ -1,10 +1,8 @@
 #define SDL_MAIN_HANDLED
 #include "GUI.h"
 #include <SDL_image.h>
-//#include "../../Util//FSM/FSM.hpp"
 
 #undef main
-//#include "ImGui/imgui_impl_sdl.h"
 
 
 GUI::GUI(SDL_Renderer * renderer_, int width_, int height_)
@@ -53,8 +51,6 @@ int main(int argc, char** argv) {
 	controller.setKeyMap(keysFilePath);
 	//load a rom
 	ROMLoader loader = ROMLoader(nes.memory, nes.ppuMemory);
-	//loader.loadROMFromFile("C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\super mario bros.nes", (*nes.cpu));
-	//loader.loadROM(fileBuffer, fileSize, (*nes.cpu));
 	//create the screen
 	Display display = Display("NES Emulator", 256, 240);
 	nes.setDisplay(&display);
@@ -76,7 +72,7 @@ int main(int argc, char** argv) {
 
 	UI::MainMenuState *mms = new UI::MainMenuState(fsm);
 	UI::ROMLibraryState *rls = new UI::ROMLibraryState(fsm, gui.ROMInfos, nes, loader, display.getRenderer(), emulatorRunning);
-	UI::GameActiveState *gas = new UI::GameActiveState(fsm, nes.ppu->pixels);
+	UI::GameActiveState *gas = new UI::GameActiveState(fsm, display.getRenderer(), nes.ppu->pixels);
 
 	fsm->setTransitions({
 		{ "MainMenu", mms },
@@ -88,7 +84,7 @@ int main(int argc, char** argv) {
 
 	char* dir;
 	while (run) {
-
+		
 		auto IO = &UI::input;
 		IO->LMBPressed = false;
 		IO->RMBPressed = false;
@@ -100,15 +96,13 @@ int main(int argc, char** argv) {
 			else if (event.type == SDL_KEYDOWN) {
 				controller.onKeyDown(event.key.keysym.sym);
 				IO->keyboardState[event.key.keysym.sym] = true;
-				std::cout << "TRUE" << std::endl;
 				if (event.key.keysym.sym == SDLK_q) {
 					emulatorRunning = false;
 				}
 			}
 			else if (event.type == SDL_KEYUP) {
-				std::cout << "FALSE" << std::endl;
-				IO->keyboardState[event.key.keysym.sym] = false;
 				controller.onKeyUp(event.key.keysym.sym);
+				IO->keyboardState[event.key.keysym.sym] = false;
 			}
 			else if (event.type == SDL_MOUSEBUTTONDOWN) {
 				IO->LMBPressed = event.button.button == SDL_BUTTON_LEFT;

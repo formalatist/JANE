@@ -1,9 +1,14 @@
 #include "GameActiveState.h"
 
-#include <iostream>
 
-UI::GameActiveState::GameActiveState(UIFSM * UIFSM_, int *pixels_) : UIState(UIFSM_) 
+UI::GameActiveState::GameActiveState(UIFSM * UIFSM_, SDL_Renderer *renderer_, int *pixels_) : UIState(UIFSM_) 
 {
+	std::string pathToExe = std::experimental::filesystem::current_path().string();
+	std::string pathToRecordingSymbol(pathToExe + "\\resources\\GUI\\RecordingSymbol.png"); //TODO this should be a global variable or atleast stored somewhere else
+	SDL_Surface *s = IMG_Load(pathToRecordingSymbol.c_str());
+	SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer_, s);
+	recordingSymbol = new Image(SDL_Rect{256-12,4,8,8}, tex);
+
 	UIElements.push_back(new Button(SDL_Rect{96,0,64,8}, SDL_Color{ 0,0,0,0 }, 
 		[this]() {
 		this->FSM->changeState("ROMLibrary");
@@ -42,6 +47,9 @@ void UI::GameActiveState::draw(SDL_Renderer * renderer, int scale)
 	for (auto e : UIElements) {
 		e->draw(renderer, scale);
 	}
+	if (isRecording) {
+		recordingSymbol->draw(renderer, scale);
+	}
 }
 
 void UI::GameActiveState::startVideoRecording()
@@ -53,7 +61,6 @@ void UI::GameActiveState::startVideoRecording()
 	command += std::to_string(SDL_GetTicks()) + ".mp4";
 	videoOut = _popen(command.c_str(), "w");
 	isRecording = true;
-	std::cout << "STARTED RECORDING" << std::endl;
 }
 
 void UI::GameActiveState::stopVideoRecording()
@@ -61,5 +68,4 @@ void UI::GameActiveState::stopVideoRecording()
 	fflush(videoOut);
 	_pclose(videoOut);
 	isRecording = false;
-	std::cout << "STOPPED RECORDING" << std::endl;
 }
