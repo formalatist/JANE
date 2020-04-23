@@ -141,6 +141,7 @@ int main(int argc, char** argv) {
 		}
 		frame++;
 	}
+	IMG_Quit();
 	SDL_Quit();
 	std::cin.get();
 
