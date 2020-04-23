@@ -2,7 +2,7 @@
 
 void UI::ImageButton::update(float d)
 {
-	auto IO = input;
+	auto &IO = input;
 	if (mouseInRect(IO.mouseX, IO.mouseY, rect)) {
 		if (IO.LMBPressed) {
 			onClick();

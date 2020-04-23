@@ -1,10 +1,8 @@
 #define SDL_MAIN_HANDLED
 #include "GUI.h"
 #include <SDL_image.h>
-//#include "../../Util//FSM/FSM.hpp"
 
 #undef main
-//#include "ImGui/imgui_impl_sdl.h"
 
 
 GUI::GUI(SDL_Renderer * renderer_, int width_, int height_)
@@ -19,11 +17,7 @@ void GUI::draw()
 	SDL_RenderPresent(renderer);
 }
 
-
-
 bool emulatorRunning = false;
-const int FPS = 30;
-int tickCounter = 0;
 const int SCALE = 4;
 
 
@@ -57,8 +51,6 @@ int main(int argc, char** argv) {
 	controller.setKeyMap(keysFilePath);
 	//load a rom
 	ROMLoader loader = ROMLoader(nes.memory, nes.ppuMemory);
-	//loader.loadROMFromFile("C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\roms\\super mario bros.nes", (*nes.cpu));
-	//loader.loadROM(fileBuffer, fileSize, (*nes.cpu));
 	//create the screen
 	Display display = Display("NES Emulator", 256, 240);
 	nes.setDisplay(&display);
@@ -70,22 +62,17 @@ int main(int argc, char** argv) {
 	
 	gui.ROMInfos = getROMInfos();
 
-	tickCounter = SDL_GetTicks();
 	int frame = 0;
 	int frameTime = 0;
 	bool run = true;
 	SDL_Event event;
 	byte input = 0;
-	
-	//SDL_Surface *s = IMG_Load("C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\resources\\GUI\\MainMenuBackground.png");
-	//SDL_Texture *tex = SDL_CreateTextureFromSurface(display.getRenderer(), s);
 
-	//TEST of new UI
 	FSM<UI::UIState> *fsm = new FSM<UI::UIState>();
 
 	UI::MainMenuState *mms = new UI::MainMenuState(fsm);
 	UI::ROMLibraryState *rls = new UI::ROMLibraryState(fsm, gui.ROMInfos, nes, loader, display.getRenderer(), emulatorRunning);
-	UI::GameActiveState *gas = new UI::GameActiveState(fsm);
+	UI::GameActiveState *gas = new UI::GameActiveState(fsm, display.getRenderer(), nes.ppu->pixels);
 
 	fsm->setTransitions({
 		{ "MainMenu", mms },
@@ -95,11 +82,9 @@ int main(int argc, char** argv) {
 
 	fsm->changeState("MainMenu");
 
-	
-
 	char* dir;
 	while (run) {
-
+		
 		auto IO = &UI::input;
 		IO->LMBPressed = false;
 		IO->RMBPressed = false;
@@ -110,20 +95,20 @@ int main(int argc, char** argv) {
 			}
 			else if (event.type == SDL_KEYDOWN) {
 				controller.onKeyDown(event.key.keysym.sym);
+				IO->keyboardState[event.key.keysym.sym] = true;
 				if (event.key.keysym.sym == SDLK_q) {
 					emulatorRunning = false;
 				}
 			}
 			else if (event.type == SDL_KEYUP) {
 				controller.onKeyUp(event.key.keysym.sym);
+				IO->keyboardState[event.key.keysym.sym] = false;
 			}
 			else if (event.type == SDL_MOUSEBUTTONDOWN) {
 				IO->LMBPressed = event.button.button == SDL_BUTTON_LEFT;
 				IO->RMBPressed = event.button.button == SDL_BUTTON_RIGHT;
 			}
-			else if (event.type == SDL_MOUSEWHEEL)
-			{
-				//TODO: handle mousewheel
+			else if (event.type == SDL_MOUSEWHEEL) {
 				IO->scrollwheelY = event.wheel.y;
 			}
 			else if (event.type == SDL_DROPFILE) { // a file was droppen on the window
@@ -144,8 +129,7 @@ int main(int argc, char** argv) {
 			nes.stepSeconds(0.016667f);
 		}
 		
-		//gui.draw();
-		//TEST for new ui system
+		//update and draw ui
 		fsm->getState()->update(0.016f);
 		fsm->getState()->draw(display.getRenderer(), SCALE);
 
@@ -157,6 +141,7 @@ int main(int argc, char** argv) {
 		}
 		frame++;
 	}
+	IMG_Quit();
 	SDL_Quit();
 	std::cin.get();
 

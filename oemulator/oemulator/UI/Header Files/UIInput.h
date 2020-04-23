@@ -1,4 +1,6 @@
 #pragma once
+#include <map>
+#include <SDL.h>
 
 namespace UI {
 	typedef struct UIInput {
@@ -9,6 +11,8 @@ namespace UI {
 		bool RMBDown;		//always true when RMB is held
 		bool RMBPressed;	//true the frame RMB is pressed
 		int scrollwheelY;
+		//keep track of keyboard buttons
+		std::map<SDL_Keycode, bool> keyboardState;
 	} UIInput;
 
 	//global input state, this is update from wherever the sdl event loop is
