@@ -23,6 +23,9 @@ void NametableView::draw()
 				for (int y = 0; y < numRows; y++) {
 					int nametableEntry = ppuMem->read(0x2000 + x + y*numColumns + PTX*(numColumns*numRows+64) + PTY*(numColumns*numRows+64)*2);
 					int patternEntryAddr = 0x1000 * tableSide + ((nametableEntry&0xff) << 4);
+					int attributeAddrBase = 0x2000 + 31 + 29 * numColumns + PTX*(numColumns*numRows + 64) + PTY*(numColumns*numRows + 64) * 2;
+					byte attributeValue = ppuMem->read(attributeAddrBase + x/4 + y/4 * 8);
+					attributeValue >>= x / 4;
 					//iterate over the pattern
 					for (int subY = 0; subY < 8; subY++) {
 						byte patternRowTop = ppuMem->read(patternEntryAddr + subY);
@@ -30,6 +33,8 @@ void NametableView::draw()
 						for (int subX = 0; subX < 8; subX++) {
 							byte pixelValue = ((patternRowBot >> (7-subX)) & 0b1)*2
 								| ((patternRowTop >> (7-subX)) & 0b1);
+
+							pixelValue |= attributeValue<<2;
 
 							Uint8 *targetPixel = (Uint8*)nametableS->pixels
 								+ (y * 8 + subY)*nametableS->pitch
