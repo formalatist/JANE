@@ -16,7 +16,6 @@ void NametableView::draw()
 	PPUMemory *ppuMem = nes.ppuMemory;
 	bool tableSide = (nes.ppu->CTRL & nes.ppu->CTRLBackgroundPattern) == nes.ppu->CTRLBackgroundPattern;
 	
-	int colors[4] = { 0x666666, 0xFFCCC5, 0x1412A7, 0xB53120 };
 	for (int PTX = 0; PTX < 2; PTX++) {
 		for (int PTY = 0; PTY < 2; PTY++) {
 			for (int x = 0; x < numColumns; x++) {
