@@ -1,8 +1,7 @@
 #include "Mappers/Mapper1.h"
 
-Mapper1::Mapper1(iNESHeader header, byte rom[], PPUMemory* mem_)
+Mapper1::Mapper1(iNESHeader header, byte rom[])
 {
-	mem = mem_;
 	//setup PRG banks
 	PRGBank1 = 0;
 	PRGBank2 = header.numPRGROMUnits-1;
@@ -27,6 +26,7 @@ Mapper1::Mapper1(iNESHeader header, byte rom[], PPUMemory* mem_)
 		mirrorMode = Horizontal;
 	}
 
+	PRGSwapMode = 1;
 	shiftRegister = 0;
 }
 
@@ -62,7 +62,7 @@ void Mapper1::write(int addr, byte val)
 	}
 	else if (addr <= 0xffff) { //write to ROM, this affects an internal shift register
 		if((val&0x80) == 0x80) { //bit 7 set, this clears the shift register
-			shiftRegister = 0;
+			shiftRegister = 0; //its unclear if this should be 0 or 0x10, it should not matter, but it might
 			shiftRegisterWriteCounter = 0;
 		} else { //bit 7 clear, update register
 			shiftRegisterWriteCounter++;
@@ -83,11 +83,8 @@ void Mapper1::writeRegister(int addr)
 {
 	//std::cout << "WRITING TO REG" << std::endl;
 	if(addr <= 0x9fff) { // reg 0, Control register
-		//hook mappers up in such a way that
-		//they can control mirroring from here, then
-		//add support for mirror types 3 and 4
-		//std::cout << "WRITING TO CONTROL REG" << std::endl;
-		//std::cout << "Mirror mode set to : " << (int)(shiftRegister & 0b11) << std::endl;
+		std::cout << "WRITING TO CONTROL REG" << std::endl;
+		std::cout << "Mirror mode set to : " << (int)(shiftRegister & 0b11) << std::endl;
 		byte mirror = shiftRegister & 0b11;
 		if(mirror == 0) { //1-screen mirroring (nametable 0)
 			mirrorMode = Single0;

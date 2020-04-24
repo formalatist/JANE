@@ -3,7 +3,8 @@
 #include <SDL_image.h>
 
 #undef main
-
+//FOR DEBUGGING:
+#include "NametableView.h"
 
 GUI::GUI(SDL_Renderer * renderer_, int width_, int height_)
 {
@@ -82,6 +83,10 @@ int main(int argc, char** argv) {
 
 	fsm->changeState("MainMenu");
 
+
+	//FOR DEBUGGING
+	NametableView *t = new NametableView(nes);
+
 	char* dir;
 	while (run) {
 		
@@ -127,6 +132,7 @@ int main(int argc, char** argv) {
 		double duration = clock();
 		if (emulatorRunning) {
 			nes.stepSeconds(0.016667f);
+			t->draw();
 		}
 		
 		//update and draw ui
