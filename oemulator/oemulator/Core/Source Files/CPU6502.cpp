@@ -37,6 +37,18 @@ int CPU6502::step()
 	return cycles - cyclesBeforeOP;
 }
 
+void CPU6502::startLogging(std::string fileName)
+{
+	logFile.open(fileName);
+	logCalls = true;
+
+}
+
+void CPU6502::stopLogging()
+{
+	logFile.close();
+}
+
 void CPU6502::executeOP()
 {
 	/*
@@ -47,7 +59,7 @@ void CPU6502::executeOP()
 		numImplementedOps++;
 	}
 	*/
-	if (printCallLog) {
+	if (logCalls) {
 		/*
 		std::cout << "Executing op: 0x" << std::hex << (int)memory[PC] << std::endl;
 		std::cout << "PC: 0x" << std::hex << PC << std::endl;
@@ -65,9 +77,9 @@ void CPU6502::executeOP()
 			| (V << 6)
 			| (N << 7);
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 10 + (numSteps % 2) * 5);
-		std::cout << std::dec << numSteps << "  cycles: " << (int)cycles << std::hex << "   " << "A: " << (int)A << " X: " << (int)X << " Y: " << (int)Y << " SP: "
-			<< std::hex << (int)SP << " P: " << std::hex << P << "	$" << std::hex << PC << ":" << (int)memory->memory[PC]
-			<< "   " << (int)memory->memory[PC + 1] << std::endl;
+		logFile << std::dec << numSteps << "  cycles: " << (int)cycles << std::hex << "   " << "A: " << (int)A << " X: " << (int)X << " Y: " << (int)Y << " SP: "
+			<< std::hex << (int)SP << " P: " << std::hex << P << "	$" << std::hex << PC << ":" << (int)memory->read(PC)
+			<< "   " << (int)memory->read(PC + 1) << std::endl;
 	}
 	
 	/*byte code = memory->memory[PC];

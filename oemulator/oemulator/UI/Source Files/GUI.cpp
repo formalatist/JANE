@@ -86,7 +86,10 @@ int main(int argc, char** argv) {
 
 	//FOR DEBUGGING
 	NametableView *t = new NametableView(nes);
-
+	/*loader.loadROMFromFile("C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\oemulator\\x64\\Release\\roms\\metroid.nes", *(nes.cpu));
+	nes.cpu->startLogging("MetroidLog.txt");
+	nes.step(101000);
+	nes.cpu->stopLogging();*/
 	char* dir;
 	while (run) {
 		

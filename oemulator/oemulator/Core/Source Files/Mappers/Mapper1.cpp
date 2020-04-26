@@ -26,8 +26,12 @@ Mapper1::Mapper1(iNESHeader header, byte rom[])
 		mirrorMode = Horizontal;
 	}
 
+	std::cout << "numPRGBanks: " << header.numPRGROMUnits << std::endl;
+	std::cout << "numCHRBanks: " << header.numCHRROMUnits << std::endl;
 	PRGSwapMode = 1;
+	PRGBankSize = 1;
 	shiftRegister = 0;
+	shiftRegisterWriteCounter = 0;
 }
 
 byte Mapper1::read(int addr)
@@ -64,6 +68,14 @@ void Mapper1::write(int addr, byte val)
 		if((val&0x80) == 0x80) { //bit 7 set, this clears the shift register
 			shiftRegister = 0; //its unclear if this should be 0 or 0x10, it should not matter, but it might
 			shiftRegisterWriteCounter = 0;
+			
+			//TESTING
+			shiftRegister |= 0xc | mirror | CHRBankSize;
+			writeRegister(0);
+			writeRegister(0xa000);
+			writeRegister(0xc000);
+			writeRegister(0xe000);
+			shiftRegister = 0;
 		} else { //bit 7 clear, update register
 			shiftRegisterWriteCounter++;
 			shiftRegister = (shiftRegister >> 1) | ((val & 1) << 4);
@@ -85,7 +97,7 @@ void Mapper1::writeRegister(int addr)
 	if(addr <= 0x9fff) { // reg 0, Control register
 		std::cout << "WRITING TO CONTROL REG" << std::endl;
 		std::cout << "Mirror mode set to : " << (int)(shiftRegister & 0b11) << std::endl;
-		byte mirror = shiftRegister & 0b11;
+		mirror = shiftRegister & 0b11;
 		if(mirror == 0) { //1-screen mirroring (nametable 0)
 			mirrorMode = Single0;
 		} else if(mirror == 1) { //1-screen mirroring (nametable 1)
@@ -105,6 +117,7 @@ void Mapper1::writeRegister(int addr)
 		if (CHRBankSize == 0) {
 			CHRBank1 = ((shiftRegister & 0b11110)>>1)*2;
 			CHRBank2 = CHRBank1 + 1;
+			//std::cout << "Bank1: " << CHRBank1 << "  Bank2: " << CHRBank2 << std::endl;
 		}
 		else {
 			CHRBank1 = shiftRegister;
@@ -121,7 +134,7 @@ void Mapper1::writeRegister(int addr)
 		}
 	}
 	else { // reg 3, PRG ROM bank register
-		//std::cout << "WRITING TO REG 3" << std::endl;
+		std::cout << "WRITING TO REG 3" << std::endl;
 		if (PRGBankSize == 0) {
 			PRGBank1 = ((shiftRegister & 0b1110) >> 1)*2;
 			PRGBank2 = PRGBank1 + 1;
@@ -136,6 +149,6 @@ void Mapper1::writeRegister(int addr)
 				PRGBank2 = numPRGBanks-1;
 			}
 		}
-		//std::cout << "PRGBank1 and 2 is now : " << PRGBank1 << "  " << PRGBank2 << std::endl;
+		std::cout << "PRGBank1 and 2 is now : " << PRGBank1 << "  " << PRGBank2 << std::endl;
 	}
 }

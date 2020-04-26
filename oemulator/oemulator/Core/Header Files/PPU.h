@@ -117,7 +117,7 @@ public:
 	bool oddFrame; //is frame odd/even
 	//we need to keep track of what was last written to a register, this is returned when reading
 	//0x2007 for instance
-	byte registerBuffer;
+	byte registerBuffer = 0;
 
 	//these are the values required to draw the next 8 pixels of background. these are fetched
 	//every 8 ppu cycles

@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 #include <iostream>
+#include <fstream>
+
 #include "NES.h"
 
 //typedef for byte
@@ -50,9 +52,11 @@ public:
 	int cyclesToStall = 0;
 	//set to true if the cpu should halt next step
 	bool HALT = false;
+
 	//for debugging
+	void startLogging(std::string fileName);
+	void stopLogging();
 	bool usedOPs[256];
-	bool printCallLog = false;
 	int numSteps = 0;
 	int numImplementedOps = 0;
 
@@ -122,4 +126,8 @@ private:
 
 	//function to check if a page boundary was crossed, returns 1 if a page was crossed, 0 if not
 	byte wasPageCrossed(int addrSubReg, int addr);
+
+	//for debugging
+	std::ofstream logFile;
+	bool logCalls = false;
 };

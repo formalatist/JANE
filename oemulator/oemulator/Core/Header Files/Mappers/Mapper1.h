@@ -12,7 +12,7 @@ public:
 private:
 	//TODO more than 8kb is only used in SOROM, SUROM and SXROM (i think)
 	//32kb PRGRAM at 8kb window 0x6000-0x7fff;
-	byte PRGRAM[s8KB];
+	byte PRGRAM[s8KB] = { 0 };
 	//Mapped to CPU 0x8000-0xbfff and 0xc000-0xffff (16kb units)
 	byte PRGROM[0x40000];
 	int PRGBank1; //0x8000-0xbfff
@@ -28,7 +28,7 @@ private:
 	int PRGBankSize;
 
 	//Mapped to PPU 0x000-0x0fff and 0x1000-0x1fff (4kb units)
-	byte CHRROM[0x20000];
+	byte CHRROM[0x20000] = { 0 };
 	int CHRBank1; //0x0000-0x0fff
 	int CHRBank2; //0x1000-0x1fff
 	int numCHRBanks;
@@ -36,6 +36,7 @@ private:
 		0 - Single 8K bank in CHR space.
 		1 - Two 4K banks in CHR space.*/
 	int CHRBankSize;
+	int mirror;
 
 	int shiftRegister; //internal register that holds 5 bits
 	int shiftRegisterWriteCounter; 
