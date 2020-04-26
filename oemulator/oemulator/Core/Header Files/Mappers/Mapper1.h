@@ -26,6 +26,10 @@ private:
 		0 - Swappable bank is 32K in size.
 		1 - Swappable bank is 16K in size.*/
 	int PRGBankSize;
+	int controlReg;
+	int CHRROMReg1;
+	int CHRROMReg2;
+	int PRGROMReg;
 
 	//Mapped to PPU 0x000-0x0fff and 0x1000-0x1fff (4kb units)
 	byte CHRROM[0x20000] = { 0 };
@@ -42,4 +46,6 @@ private:
 	int shiftRegisterWriteCounter; 
 
 	void writeRegister(int addr);
+
+	void updateBanksAndMirror();
 };
