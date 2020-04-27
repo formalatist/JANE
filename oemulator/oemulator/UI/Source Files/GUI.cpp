@@ -85,8 +85,8 @@ int main(int argc, char** argv) {
 
 
 	//FOR DEBUGGING
-	NametableView *t = new NametableView(nes);
-	/*loader.loadROMFromFile("C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\oemulator\\x64\\Release\\roms\\metroid.nes", *(nes.cpu));
+	/*NametableView *t = new NametableView(nes);
+	loader.loadROMFromFile("C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\oemulator\\x64\\Release\\roms\\metroid.nes", *(nes.cpu));
 	nes.cpu->startLogging("MetroidLog.txt");
 	nes.step(101000);
 	nes.cpu->stopLogging();*/
@@ -135,7 +135,7 @@ int main(int argc, char** argv) {
 		double duration = clock();
 		if (emulatorRunning) {
 			nes.stepSeconds(0.016667f);
-			t->draw();
+			//t->draw();
 		}
 		
 		//update and draw ui

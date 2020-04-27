@@ -110,13 +110,12 @@ void Mapper1::writeRegister(int addr)
 		CHRROMReg2 = shiftRegister;
 	}
 	else if(addr <= 0xffff) { // reg 3, PRG ROM bank register
-		PRGROMReg = shiftRegister;
+		PRGROMReg = shiftRegister&0xf;
 	}
 }
 
 void Mapper1::updateBanksAndMirror()
 {
-	std::cout << "UPDATING" << std::endl;
 	if ((controlReg & 0b1000) == 0b1000) { //16kb PRG banks
 		std::cout << "16BK PRG BANKS" << std::endl;
 		if ((controlReg & 0b100) == 0b100) { //Bank C000-FFFFh is fixed, while 8000-FFFFh is swappable.
@@ -149,5 +148,6 @@ void Mapper1::updateBanksAndMirror()
 		mirrorMode = MirrorMode::Horizontal;
 	}
 
+	std::cout << "CHRBank1: " << CHRBank1 << " CHRBank2: " << CHRBank2 << std::endl;
 	std::cout << "PRGBank1: " << PRGBank1 << " PRGBank2: " << PRGBank2 << std::endl;
 }
