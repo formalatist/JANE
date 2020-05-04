@@ -24,6 +24,8 @@ public:
 
 	iNESHeader getHeader(byte rom[]);
 
+	void exit();
+
 	//in future the PPU might be setting these itself
 	void clearPPUReg();
 

@@ -106,6 +106,14 @@ iNESHeader ROMLoader::getHeader(byte rom[])
 	return header;
 }
 
+void ROMLoader::exit()
+{
+	if (mapper) {
+		std::cout << "ROMLoader exiting" << std::endl;
+		mapper->onExit();
+	}
+}
+
 void ROMLoader::clearPPUReg()
 {
 	for (int i = 0x2000; i < 0x2008; i++)
