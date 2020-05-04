@@ -6,7 +6,7 @@
 
 class Mapper1 : public Mapper {
 public:
-	Mapper1(iNESHeader header, byte rom[]);
+	Mapper1(iNESHeader header, byte rom[], std::string ROMName_, std::string saveDir_);
 
 	byte read(int addr) override;
 	void write(int addr, byte val) override;
@@ -50,4 +50,6 @@ private:
 
 	void writeRegister(int addr);
 
+	std::string ROMName; //used for savedata
+	std::string saveDir;
 };

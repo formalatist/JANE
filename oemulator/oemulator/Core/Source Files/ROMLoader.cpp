@@ -7,8 +7,13 @@ ROMLoader::ROMLoader(Memory* memory_, PPUMemory* ppuMemory_)
 	ppuMemory = ppuMemory_;
 }
 
-void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu, byte prgram[] = nullptr)
+void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu, byte prgram[], std::string ROMName_)
 {
+	//first exit the current mapper
+	if (mapper) {
+		mapper->onExit();
+	}
+
 	const int headerSize = 16;
 	//iNES format
 	/*
@@ -36,7 +41,7 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu, byte prgram[] = null
 		mapper = new Mapper0(header, rom2);
 	}
 	else if (mapperNumber == 1) {
-		mapper = new Mapper1(header, rom2);
+		mapper = new Mapper1(header, rom2, ROMName_, "C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\oemulator\\x64\\Release\\saves");
 		if (prgram != nullptr) ((Mapper1*)mapper)->setPRGRAM(prgram, s32KB); //load save if it exists
 	}
 	else if (mapperNumber == 2) {
@@ -89,7 +94,7 @@ void ROMLoader::loadROMFromROMInfo(ROMInfo ROMInfo_, CPU6502 & cpu)
 	fclose(file);
 
 	byte* prgram = nullptr;
-	if ((file = fopen(ROMInfo_.ROMName.c_str(), "rb")) == NULL) {
+	if ((file = fopen(("C:\\Users\\Oivind\\Documents\\GitHub\\oemulator\\oemulator\\x64\\Release\\saves\\" + ROMInfo_.ROMName).c_str(), "rb")) == NULL) {
 		std::cout << ROMInfo_.ROMName << " has no save data" << std::endl;
 	}
 	else {
@@ -99,7 +104,7 @@ void ROMLoader::loadROMFromROMInfo(ROMInfo ROMInfo_, CPU6502 & cpu)
 		fclose(file);
 	}
 	
-	loadROM(romData, fileSize, cpu, prgram);
+	loadROM(romData, fileSize, cpu, prgram, ROMInfo_.ROMName);
 }
 
 iNESHeader ROMLoader::getHeader(byte rom[])

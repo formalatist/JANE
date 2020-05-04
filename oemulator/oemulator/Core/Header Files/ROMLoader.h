@@ -15,7 +15,7 @@ public:
 	//constructor
 	ROMLoader(Memory* memory_, PPUMemory* ppuMemory_);
 
-	void loadROM(byte rom[], int size, CPU6502& cpu, byte prgram[] = nullptr);
+	void loadROM(byte rom[], int size, CPU6502& cpu, byte prgram[] = nullptr, std::string ROMName_ = "");
 
 	void loadROMFromFile(std::string filepath, CPU6502& cpu);
 

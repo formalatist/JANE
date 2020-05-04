@@ -1,6 +1,7 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "Mappers/Mapper1.h"
 
-Mapper1::Mapper1(iNESHeader header, byte rom[])
+Mapper1::Mapper1(iNESHeader header, byte rom[], std::string ROMName_, std::string saveDir_)
 {
 	//setup PRG banks
 	PRGBank1 = 0;
@@ -27,6 +28,8 @@ Mapper1::Mapper1(iNESHeader header, byte rom[])
 	}
 
 	shiftRegister = 0;
+	ROMName = ROMName_;
+	saveDir = saveDir_;
 }
 
 byte Mapper1::read(int addr)
@@ -80,6 +83,14 @@ void Mapper1::write(int addr, byte val)
 
 void Mapper1::onExit()
 {
+	FILE* file = NULL;
+	if ((file = fopen((saveDir + "\\" + ROMName).c_str(), "wb")) == NULL) {
+		std::cout << "could not open file for saving: " << (saveDir + "\\" + ROMName) << std::endl;
+	}
+	else {
+		fwrite(PRGRAM, 1, s32KB, file);
+		fclose(file);
+	}
 	//saveToFile(PRGRAM, s32KB, )
 }
 

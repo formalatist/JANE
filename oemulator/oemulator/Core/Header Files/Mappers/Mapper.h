@@ -20,6 +20,7 @@ enum MirrorMode {
 	Four
 };
 
+
 class Mapper {
 public:
 	virtual byte read(int addr) = 0;
@@ -28,14 +29,15 @@ public:
 		std::cout << "Mapper hardware shutting down" << std::endl;
 	};
 	MirrorMode mirrorMode;
-	iNESHeader header;
 
 protected:
-	void saveToFile(byte data[], int dataSize, std::string filename) {
-		FILE* file = fopen(filename.c_str(), "wb");
-		fwrite(data, 1, dataSize, file);
-		fclose(file);
-	}
+	/*void saveToFile(byte data[], int dataSize, std::string filename) {
+		FILE* file = NULL;
+		if ((file = fopen(filename.c_str(), "wb")) == NULL) {
+			fwrite(data, 1, dataSize, file);
+			fclose(file);
+		}
+	}*/
 };
 
 //TODO: add support for NES 2.0 and rename this to just header
@@ -51,7 +53,7 @@ struct iNESHeader {
 	//or other persistent memory
 	bool hasBatteryBackedPRGRAM;
 	bool hasTrainer; //dont support this?
-	//should the mirroring bit be ignored, if so use 4-screen VRAM
+					 //should the mirroring bit be ignored, if so use 4-screen VRAM
 	bool ignoreMirroring;
 
 	iNESHeader(int nPRGROM, int nCHRROM,
