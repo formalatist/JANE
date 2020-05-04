@@ -129,16 +129,16 @@ void Mapper1::updateBanksAndMirror()
 	}
 	else { //32kb PRG banks
 		std::cout << "32BK PRG BANKS" << std::endl;
-		PRGBank1 = (PRGROMReg & 0b1110) >> 1;
-		PRGBank2 = PRGBank1 + 1;
+		PRGBank1 = PRGROMReg & 0xfe;// (PRGROMReg & 0b1110) >> 1;
+		PRGBank2 = PRGROMReg | 1; // PRGBank1 + 1;
 	}
 
 	if((controlReg & 0b10000) == 0b10000) { //4kb CHR banks
 		CHRBank1 = CHRROMReg1;
 		CHRBank2 = CHRROMReg2;
 	} else { //8kb CHR banks
-		CHRBank1 = (CHRROMReg1 >> 1);
-		CHRBank2 = CHRBank1 + 1;
+		CHRBank1 = CHRROMReg1 & 0xfe; // (CHRROMReg1 >> 1);
+		CHRBank2 = CHRROMReg1 | 0x1; // CHRBank1 + 1;
 	}
 
 	if ((controlReg & 0b11) == 2) {
