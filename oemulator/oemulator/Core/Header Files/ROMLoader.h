@@ -1,5 +1,6 @@
 #pragma once
 #define _CRT_SECURE_NO_DEPRECATE
+#include <experimental/filesystem>
 //#include "Memory.h"
 //#include "CPU6502.h"
 #include "NES.h"
@@ -31,6 +32,7 @@ public:
 
 private:
 	long getFileSize(FILE *file);
+	std::string saveDir;
 
 	Memory* memory;
 	PPUMemory* ppuMemory;

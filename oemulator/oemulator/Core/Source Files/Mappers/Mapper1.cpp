@@ -84,7 +84,7 @@ void Mapper1::write(int addr, byte val)
 void Mapper1::onExit()
 {
 	FILE* file = NULL;
-	if ((file = fopen((saveDir + "\\" + ROMName).c_str(), "wb")) == NULL) {
+	if ((file = fopen((saveDir + ROMName).c_str(), "wb")) == NULL) {
 		std::cout << "could not open file for saving: " << (saveDir + "\\" + ROMName) << std::endl;
 	}
 	else {
