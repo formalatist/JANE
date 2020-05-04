@@ -102,3 +102,4 @@ void NES::connectController(Controller * controller)
 	controller->setMemory(memory);
 	memory->connectController(controller);
 }
+

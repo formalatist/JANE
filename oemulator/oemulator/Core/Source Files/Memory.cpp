@@ -71,7 +71,7 @@ void Memory::write(int addr, byte val)
 	else if (addr == 0x4017) { //write to APU
 		//TODO implement audio
 	}
-	else {
+	else if(addr >= 0x6000) {
 		//memory[addr] = val;
 		mapper->write(addr, val);
 		//std::cout << "Unhandeled write to address: " << addr << ". Value: " << val << std::endl;

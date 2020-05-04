@@ -1,21 +1,21 @@
 #pragma once
 #include "Mapper.h"
 
-
-
-//TEMP, TODO GIVE ALL MAPPERS ACCESS TO CHANGE MIRROR MODE EASILY
-class PPUMemory;
 #include "NES.h"
-
-
 
 
 class Mapper1 : public Mapper {
 public:
-	Mapper1(iNESHeader header, byte rom[], PPUMemory* mem_);
+	Mapper1(iNESHeader header, byte rom[]);
 
-	byte read(int addr);
-	void write(int addr, byte val);
+	byte read(int addr) override;
+	void write(int addr, byte val) override;
+	void onExit() override;
+
+	//FOR TESTING
+	void setPRGRAM(byte PRGRAM_[], int size) {
+		memcpy(PRGRAM, PRGRAM_, size);
+	}
 
 private:
 	//TODO more than 8kb is only used in SOROM, SUROM and SXROM (i think)
@@ -50,6 +50,4 @@ private:
 
 	void writeRegister(int addr);
 
-	//TODO REMOVE
-	PPUMemory* mem;
 };

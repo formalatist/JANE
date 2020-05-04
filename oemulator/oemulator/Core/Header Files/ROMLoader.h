@@ -3,6 +3,8 @@
 //#include "Memory.h"
 //#include "CPU6502.h"
 #include "NES.h"
+#include "ROMInfo.h"
+
 class Memory;
 class PPUMemory;
 class CPU6502;
@@ -13,9 +15,11 @@ public:
 	//constructor
 	ROMLoader(Memory* memory_, PPUMemory* ppuMemory_);
 
-	void loadROM(byte rom[], int size, CPU6502& cpu);
+	void loadROM(byte rom[], int size, CPU6502& cpu, byte prgram[] = nullptr);
 
 	void loadROMFromFile(std::string filepath, CPU6502& cpu);
+
+	void loadROMFromROMInfo(ROMInfo ROMInfo_, CPU6502& cpu);
 
 	iNESHeader getHeader(byte rom[]);
 

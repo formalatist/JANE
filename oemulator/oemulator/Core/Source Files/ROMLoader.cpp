@@ -7,7 +7,7 @@ ROMLoader::ROMLoader(Memory* memory_, PPUMemory* ppuMemory_)
 	ppuMemory = ppuMemory_;
 }
 
-void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
+void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu, byte prgram[] = nullptr)
 {
 	const int headerSize = 16;
 	//iNES format
@@ -36,7 +36,8 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 		mapper = new Mapper0(header, rom2);
 	}
 	else if (mapperNumber == 1) {
-		mapper = new Mapper1(header, rom2, ppuMemory);
+		mapper = new Mapper1(header, rom2);
+		if (prgram != nullptr) ((Mapper1*)mapper)->setPRGRAM(prgram, s32KB); //load save if it exists
 	}
 	else if (mapperNumber == 2) {
 		mapper = new Mapper2(header, rom2);
@@ -66,11 +67,39 @@ void ROMLoader::loadROMFromFile(std::string filepath, CPU6502 & cpu)
 		std::cin.get();
 	}
 	long fileSize = getFileSize(file);
-	fileBuffer = new unsigned char[fileSize];
+	fileBuffer = new byte[fileSize];
 	fread(fileBuffer, fileSize, 1, file);
 	fclose(file);
 
 	loadROM(fileBuffer, fileSize, cpu);
+}
+
+void ROMLoader::loadROMFromROMInfo(ROMInfo ROMInfo_, CPU6502 & cpu)
+{
+	byte* romData;
+	FILE* file = NULL;
+
+	if ((file = fopen(ROMInfo_.ROMPath.c_str(), "rb")) == NULL) {
+		std::cout << "Could not open file at path: " << ROMInfo_.ROMPath << std::endl;
+		std::cin.get();
+	}
+	long fileSize = getFileSize(file);
+	romData = new byte[fileSize];
+	fread(romData, fileSize, 1, file);
+	fclose(file);
+
+	byte* prgram = nullptr;
+	if ((file = fopen(ROMInfo_.ROMName.c_str(), "rb")) == NULL) {
+		std::cout << ROMInfo_.ROMName << " has no save data" << std::endl;
+	}
+	else {
+		long saveDataSize = getFileSize(file);
+		prgram = new byte[saveDataSize];
+		fread(prgram, saveDataSize, 1, file);
+		fclose(file);
+	}
+	
+	loadROM(romData, fileSize, cpu, prgram);
 }
 
 iNESHeader ROMLoader::getHeader(byte rom[])

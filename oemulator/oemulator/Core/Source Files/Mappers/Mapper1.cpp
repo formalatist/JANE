@@ -1,8 +1,7 @@
 #include "Mappers/Mapper1.h"
 
-Mapper1::Mapper1(iNESHeader header, byte rom[], PPUMemory* mem_)
+Mapper1::Mapper1(iNESHeader header, byte rom[])
 {
-	mem = mem_;
 	//setup PRG banks
 	PRGBank1 = 0;
 	PRGBank2 = header.numPRGROMUnits-1;
@@ -77,6 +76,11 @@ void Mapper1::write(int addr, byte val)
 			}
 		}
 	}
+}
+
+void Mapper1::onExit()
+{
+	//saveToFile(PRGRAM, s32KB, )
 }
 
 void Mapper1::writeRegister(int addr)

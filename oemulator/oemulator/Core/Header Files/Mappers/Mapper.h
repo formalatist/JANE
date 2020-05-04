@@ -24,7 +24,18 @@ class Mapper {
 public:
 	virtual byte read(int addr) = 0;
 	virtual void write(int addr, byte val) = 0;
+	virtual void onExit() {
+		std::cout << "Mapper hardware shutting down" << std::endl;
+	};
 	MirrorMode mirrorMode;
+	iNESHeader header;
+
+protected:
+	void saveToFile(byte data[], int dataSize, std::string filename) {
+		FILE* file = fopen(filename.c_str(), "wb");
+		fwrite(data, 1, dataSize, file);
+		fclose(file);
+	}
 };
 
 //TODO: add support for NES 2.0 and rename this to just header
