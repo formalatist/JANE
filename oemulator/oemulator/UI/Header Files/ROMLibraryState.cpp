@@ -27,7 +27,8 @@ UI::ROMLibraryState::ROMLibraryState(UIFSM * UIFSM_, std::vector<ROMInfo> & ROMI
 				std::cout << "You clicked a button " << i << std::endl; 
 				this->FSM->changeState("Game");
 				std::cout << "Loading ROM " << ROMInfos_[i].ROMName << " from " << ROMInfos_[i].ROMPath << std::endl;
-				ROMLoader_.loadROMFromFile(ROMInfos_[i].ROMPath, *(nes_.cpu));
+				//ROMLoader_.loadROMFromFile(ROMInfos_[i].ROMPath, *(nes_.cpu));
+				ROMLoader_.loadROMFromROMInfo(ROMInfos_[i], *(nes_.cpu));
 				emulatorRunning_ = true;
 			});
 		UIElements.push_back(btn);

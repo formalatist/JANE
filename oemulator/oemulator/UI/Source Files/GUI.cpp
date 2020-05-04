@@ -91,6 +91,7 @@ int main(int argc, char** argv) {
 		IO->scrollwheelY = 0;
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
+				loader.exit();
 				run = false;
 			}
 			else if (event.type == SDL_KEYDOWN) {

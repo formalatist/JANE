@@ -1,8 +1,8 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "Mappers/Mapper1.h"
 
-Mapper1::Mapper1(iNESHeader header, byte rom[], PPUMemory* mem_)
+Mapper1::Mapper1(iNESHeader header, byte rom[], std::string ROMName_, std::string saveDir_)
 {
-	mem = mem_;
 	//setup PRG banks
 	PRGBank1 = 0;
 	PRGBank2 = header.numPRGROMUnits-1;
@@ -28,6 +28,9 @@ Mapper1::Mapper1(iNESHeader header, byte rom[], PPUMemory* mem_)
 	}
 
 	shiftRegister = 0;
+	ROMName = ROMName_;
+	saveDir = saveDir_;
+	loadPRGRAM();
 }
 
 byte Mapper1::read(int addr)
@@ -78,6 +81,8 @@ void Mapper1::write(int addr, byte val)
 		}
 	}
 }
+
+
 
 void Mapper1::writeRegister(int addr)
 {
@@ -140,5 +145,36 @@ void Mapper1::writeRegister(int addr)
 			}
 		}
 		//std::cout << "PRGBank1 and 2 is now : " << PRGBank1 << "  " << PRGBank2 << std::endl;
+	}
+}
+
+void Mapper1::onExit()
+{
+	savePRGRAM();
+}
+
+void Mapper1::savePRGRAM()
+{
+	FILE* file = NULL;
+	if ((file = fopen((saveDir + ROMName).c_str(), "wb")) == NULL) {
+		std::cout << "could not open file for saving: " << (saveDir + ROMName) << std::endl;
+	}
+	else {
+		std::cout << "saving PRGRAM" << std::endl;
+		fwrite(PRGRAM, 1, s8KB, file);
+		fclose(file);
+	}
+}
+
+void Mapper1::loadPRGRAM()
+{
+	FILE* file = NULL;
+	if ((file = fopen((saveDir + ROMName).c_str(), "rb")) == NULL) {
+		std::cout << "could not open save file: " << (saveDir + ROMName) << std::endl;
+	}
+	else {
+		std::cout << "loading PRGRAM" << std::endl;
+		fread(PRGRAM, 1, s8KB, file);
+		fclose(file);
 	}
 }

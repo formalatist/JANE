@@ -1,26 +1,26 @@
 #pragma once
 #include "Mapper.h"
 
-
-
-//TEMP, TODO GIVE ALL MAPPERS ACCESS TO CHANGE MIRROR MODE EASILY
-class PPUMemory;
 #include "NES.h"
-
-
 
 
 class Mapper1 : public Mapper {
 public:
-	Mapper1(iNESHeader header, byte rom[], PPUMemory* mem_);
+	Mapper1(iNESHeader header, byte rom[], std::string ROMName_, std::string saveDir_);
 
-	byte read(int addr);
-	void write(int addr, byte val);
+	byte read(int addr) override;
+	void write(int addr, byte val) override;
+	void onExit() override;
+
+	//FOR TESTING
+	void setPRGRAM(byte PRGRAM_[], int size) {
+		memcpy(PRGRAM, PRGRAM_, size);
+	}
 
 private:
 	//TODO more than 8kb is only used in SOROM, SUROM and SXROM (i think)
 	//32kb PRGRAM at 8kb window 0x6000-0x7fff;
-	byte PRGRAM[s32KB];
+	byte PRGRAM[s8KB];
 	//Mapped to CPU 0x8000-0xbfff and 0xc000-0xffff (16kb units)
 	byte PRGROM[0x40000];
 	int PRGBank1; //0x8000-0xbfff
@@ -50,6 +50,9 @@ private:
 
 	void writeRegister(int addr);
 
-	//TODO REMOVE
-	PPUMemory* mem;
+	std::string ROMName; //used for savedata
+	std::string saveDir;
+
+	void savePRGRAM();
+	void loadPRGRAM();
 };

@@ -5,10 +5,18 @@ ROMLoader::ROMLoader(Memory* memory_, PPUMemory* ppuMemory_)
 {
 	memory = memory_;
 	ppuMemory = ppuMemory_;
+
+	std::string pathToExe = std::experimental::filesystem::current_path().string();
+	saveDir = (pathToExe + "\\saves\\");
 }
 
-void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
+void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu, byte prgram[], std::string ROMName_)
 {
+	//first exit the current mapper
+	if (mapper) {
+		mapper->onExit();
+	}
+
 	const int headerSize = 16;
 	//iNES format
 	/*
@@ -36,7 +44,8 @@ void ROMLoader::loadROM(byte rom[], int size, CPU6502& cpu)
 		mapper = new Mapper0(header, rom2);
 	}
 	else if (mapperNumber == 1) {
-		mapper = new Mapper1(header, rom2, ppuMemory);
+		mapper = new Mapper1(header, rom2, ROMName_, saveDir);
+		if (prgram != nullptr) ((Mapper1*)mapper)->setPRGRAM(prgram, s32KB); //load save if it exists
 	}
 	else if (mapperNumber == 2) {
 		mapper = new Mapper2(header, rom2);
@@ -66,17 +75,43 @@ void ROMLoader::loadROMFromFile(std::string filepath, CPU6502 & cpu)
 		std::cin.get();
 	}
 	long fileSize = getFileSize(file);
-	fileBuffer = new unsigned char[fileSize];
+	fileBuffer = new byte[fileSize];
 	fread(fileBuffer, fileSize, 1, file);
 	fclose(file);
 
 	loadROM(fileBuffer, fileSize, cpu);
 }
 
+void ROMLoader::loadROMFromROMInfo(ROMInfo ROMInfo_, CPU6502 & cpu)
+{
+	byte* romData;
+	FILE* file = NULL;
+
+	if ((file = fopen(ROMInfo_.ROMPath.c_str(), "rb")) == NULL) {
+		std::cout << "Could not open file at path: " << ROMInfo_.ROMPath << std::endl;
+		std::cin.get();
+	}
+	long fileSize = getFileSize(file);
+	romData = new byte[fileSize];
+	fread(romData, fileSize, 1, file);
+	fclose(file);
+
+	
+	loadROM(romData, fileSize, cpu, nullptr, ROMInfo_.ROMName);
+}
+
 iNESHeader ROMLoader::getHeader(byte rom[])
 {
 	iNESHeader header = iNESHeader(rom[4], rom[5], rom[6]&1, 0, 0, 0);
 	return header;
+}
+
+void ROMLoader::exit()
+{
+	if (mapper) {
+		std::cout << "ROMLoader exiting" << std::endl;
+		mapper->onExit();
+	}
 }
 
 void ROMLoader::clearPPUReg()
