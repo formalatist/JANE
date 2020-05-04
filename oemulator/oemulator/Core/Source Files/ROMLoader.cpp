@@ -96,18 +96,8 @@ void ROMLoader::loadROMFromROMInfo(ROMInfo ROMInfo_, CPU6502 & cpu)
 	fread(romData, fileSize, 1, file);
 	fclose(file);
 
-	byte* prgram = nullptr;
-	if ((file = fopen((saveDir + ROMInfo_.ROMName).c_str(), "rb")) == NULL) {
-		std::cout << ROMInfo_.ROMName << " has no save data" << std::endl;
-	}
-	else {
-		long saveDataSize = getFileSize(file);
-		prgram = new byte[saveDataSize];
-		fread(prgram, saveDataSize, 1, file);
-		fclose(file);
-	}
 	
-	loadROM(romData, fileSize, cpu, prgram, ROMInfo_.ROMName);
+	loadROM(romData, fileSize, cpu, nullptr, ROMInfo_.ROMName);
 }
 
 iNESHeader ROMLoader::getHeader(byte rom[])

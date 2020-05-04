@@ -20,7 +20,7 @@ public:
 private:
 	//TODO more than 8kb is only used in SOROM, SUROM and SXROM (i think)
 	//32kb PRGRAM at 8kb window 0x6000-0x7fff;
-	byte PRGRAM[s32KB];
+	byte PRGRAM[s8KB];
 	//Mapped to CPU 0x8000-0xbfff and 0xc000-0xffff (16kb units)
 	byte PRGROM[0x40000];
 	int PRGBank1; //0x8000-0xbfff
@@ -52,4 +52,7 @@ private:
 
 	std::string ROMName; //used for savedata
 	std::string saveDir;
+
+	void savePRGRAM();
+	void loadPRGRAM();
 };
