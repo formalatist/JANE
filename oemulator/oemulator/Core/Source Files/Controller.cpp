@@ -1,6 +1,18 @@
 #include "Controller.h"
 
 Controller::Controller(){
+	gameController = NULL;
+	for (int i = 0; i < SDL_NumJoysticks(); i++) {
+		if (SDL_IsGameController(i)) {
+			gameController = SDL_GameControllerOpen(i);
+			if (gameController) {
+				std::cout << "Opened GameController" << SDL_GameControllerName(gameController) << std::endl;
+			}
+		}
+	}
+	if (gameController == NULL) {
+		std::cout << "could not open controller" << std::endl;
+	}
 }
 
 
@@ -32,6 +44,41 @@ void Controller::onKeyUp(SDL_Keycode keycode)
 {
 	if (keyMap.find(keycode) != keyMap.end()) {
 		releaseButton(keyMap[keycode]);
+	}
+}
+
+void Controller::onGameControllerDown(Uint8 btn)
+{
+	if (gameControllerButtonMap.find(static_cast<SDL_GameControllerButton>(btn)) != gameControllerButtonMap.end()) {
+		pushButton(gameControllerButtonMap[static_cast<SDL_GameControllerButton>(btn)]);
+	}
+}
+
+void Controller::onGameControllerUp(Uint8 btn)
+{
+	if (gameControllerButtonMap.find(static_cast<SDL_GameControllerButton>(btn)) != gameControllerButtonMap.end()) {
+		releaseButton(gameControllerButtonMap[static_cast<SDL_GameControllerButton>(btn)]);
+	}
+}
+
+void Controller::onGameControllerAxisMotion(Uint8 axis_, Sint16 value)
+{
+	//map value to [-1,1]
+	float v = value / AXIS_MAX_VALUE;
+	std::cout << v << std::endl;
+	SDL_GameControllerAxis axis = static_cast<SDL_GameControllerAxis>(axis_);
+	AxisDirection dir = v > 0 ? positive : negative;
+	if (gameControllerAxisMap.find(axis) != gameControllerAxisMap.end()) { //we have a mapping for this axis
+		if (abs(v) > AXIS_DEADZONE) {//we are outside the deadzone so we count it as input
+			pushButton(gameControllerAxisMap[axis][dir]);
+		}
+		else {
+			releaseButton(gameControllerAxisMap[axis][dir]);
+			if (v == 0) {
+				releaseButton(gameControllerAxisMap[axis][positive]);
+				releaseButton(gameControllerAxisMap[axis][negative]);
+			}
+		}
 	}
 }
 

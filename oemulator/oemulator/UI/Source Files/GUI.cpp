@@ -105,6 +105,15 @@ int main(int argc, char** argv) {
 				controller.onKeyUp(event.key.keysym.sym);
 				IO->keyboardState[event.key.keysym.sym] = false;
 			}
+			else if (event.type == SDL_CONTROLLERBUTTONDOWN) {
+				controller.onGameControllerDown(event.cbutton.button);
+			}
+			else if (event.type == SDL_CONTROLLERBUTTONUP) {
+				controller.onGameControllerUp(event.cbutton.button);
+			}
+			else if (event.type == SDL_CONTROLLERAXISMOTION) {
+				controller.onGameControllerAxisMotion(event.caxis.axis, event.caxis.value);
+			}
 			else if (event.type == SDL_MOUSEBUTTONDOWN) {
 				IO->LMBPressed = event.button.button == SDL_BUTTON_LEFT;
 				IO->RMBPressed = event.button.button == SDL_BUTTON_RIGHT;
