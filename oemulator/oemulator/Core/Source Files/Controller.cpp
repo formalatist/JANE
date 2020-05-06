@@ -3,9 +3,6 @@
 Controller::Controller(){
 }
 
-void Controller::setMemory()
-{
-}
 
 void Controller::setKeyMap(std::string filePath)
 {

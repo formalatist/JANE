@@ -15,8 +15,6 @@ class Controller {
 public:
 	Controller();
 
-	void setMemory();
-
 	void setKeyMap(std::string filePath);
 
 	void onKeyDown(SDL_Keycode keycode);
