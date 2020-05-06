@@ -15,7 +15,7 @@ class Controller {
 public:
 	Controller();
 
-	void setMemory(Memory* mem_);
+	void setMemory();
 
 	void setKeyMap(std::string filePath);
 
@@ -26,8 +26,6 @@ public:
 	void writeController(byte val);
 
 private:
-	//the memory we are cocntected to
-	Memory* mem;
 	//the current state of the puttons
 	byte state;
 	//current bit being read out by the shift register

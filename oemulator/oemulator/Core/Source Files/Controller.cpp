@@ -3,9 +3,8 @@
 Controller::Controller(){
 }
 
-void Controller::setMemory(Memory * mem_)
+void Controller::setMemory()
 {
-	mem = mem_;
 }
 
 void Controller::setKeyMap(std::string filePath)
