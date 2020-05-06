@@ -74,10 +74,6 @@ void Controller::onGameControllerAxisMotion(Uint8 axis_, Sint16 value)
 		}
 		else {
 			releaseButton(gameControllerAxisMap[axis][dir]);
-			if (v == 0) {
-				releaseButton(gameControllerAxisMap[axis][positive]);
-				releaseButton(gameControllerAxisMap[axis][negative]);
-			}
 		}
 	}
 }
