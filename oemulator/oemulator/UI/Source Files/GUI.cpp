@@ -1,5 +1,7 @@
 #define SDL_MAIN_HANDLED
 #include "GUI.h"
+#include "InputHandler.h"
+
 #include <SDL_image.h>
 
 #undef main
@@ -41,6 +43,7 @@ std::vector<ROMInfo> getROMInfos() {
 int main(int argc, char** argv) {
 	SDL_Init(SDL_INIT_EVERYTHING);
 	IMG_Init(IMG_INIT_PNG);
+	Input::InputHandler::init();
 	
 	//create the NES
 	NES nes = NES();
@@ -62,11 +65,7 @@ int main(int argc, char** argv) {
 	
 	gui.ROMInfos = getROMInfos();
 
-	int frame = 0;
-	int frameTime = 0;
-	bool run = true;
-	SDL_Event event;
-	byte input = 0;
+	
 
 	FSM<UI::UIState> *fsm = new FSM<UI::UIState>();
 
@@ -83,6 +82,10 @@ int main(int argc, char** argv) {
 	fsm->changeState("MainMenu");
 
 	char* dir;
+	int frame = 0;
+	int frameTime = 0;
+	bool run = true;
+	SDL_Event event;
 	while (run) {
 		
 		auto IO = &UI::input;
@@ -121,7 +124,7 @@ int main(int argc, char** argv) {
 			else if (event.type == SDL_MOUSEWHEEL) {
 				IO->scrollwheelY = event.wheel.y;
 			}
-			else if (event.type == SDL_DROPFILE) { // a file was droppen on the window
+			else if (event.type == SDL_DROPFILE) { // a file was dropped on the window
 				dir = event.drop.file;
 				SDL_free(dir);
 			}

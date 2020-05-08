@@ -72,8 +72,9 @@ void Controller::onGameControllerAxisMotion(Uint8 axis_, Sint16 value)
 		if (abs(v) > AXIS_DEADZONE) {//we are outside the deadzone so we count it as input
 			pushButton(gameControllerAxisMap[axis][dir]);
 		}
-		else {
-			releaseButton(gameControllerAxisMap[axis][dir]);
+		else { //value was inside deadzone, release axis
+			releaseButton(gameControllerAxisMap[axis][positive]);
+			releaseButton(gameControllerAxisMap[axis][negative]);
 		}
 	}
 }
