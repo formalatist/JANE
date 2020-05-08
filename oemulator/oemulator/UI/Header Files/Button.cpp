@@ -5,7 +5,6 @@ void UI::Button::update(const Input::InputState& input, float d)
 {
 	int mouseX, mouseY;
 	input.getMousePosition(mouseX, mouseY);
-	std::cout << "mouse: " << mouseX << "  " << mouseY << std::endl;
 	if (mouseInRect(mouseX, mouseY, rect)) {
 		if (input.isLMBPressed()) {
 			onClick();

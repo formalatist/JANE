@@ -9,8 +9,7 @@
 namespace Input {
 	class InputHandler {
 	public:
-		static const InputState& handleInput();
-
+		static const InputState& getInput(int SCREEN_SCALE);
 	private:
 		static InputState inputState;
 	};

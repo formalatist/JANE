@@ -14,11 +14,6 @@ GUI::GUI(SDL_Renderer * renderer_, int width_, int height_)
 	height = height_;
 }
 
-void GUI::draw()
-{
-	SDL_RenderPresent(renderer);
-}
-
 bool emulatorRunning = false;
 const int SCALE = 4;
 
@@ -85,7 +80,7 @@ int main(int argc, char** argv) {
 	bool run = true;
 	SDL_Event event;
 	while (run) {
-		const Input::InputState& input = Input::InputHandler::handleInput();
+		const Input::InputState& input = Input::InputHandler::getInput(SCALE);
 
 		if(input.isQuitRequested()) {//requested to quit the emulator
 			loader.exit();
@@ -117,11 +112,3 @@ int main(int argc, char** argv) {
 	return 0;
 }
 
-void GUI::showMainMenu()
-{
-}
-
-void GUI::showRebindKeys()
-{
-	
-}

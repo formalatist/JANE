@@ -3,7 +3,7 @@
 namespace Input {
 	InputState InputHandler::inputState = InputState();
 	
-	const InputState& InputHandler::handleInput()
+	const InputState& InputHandler::getInput(int SCREEN_SCALE)
 	{
 		//read events, this changes the state of buttons etc
 		SDL_Event event;
@@ -53,6 +53,9 @@ namespace Input {
 		
 		//update inputs that happen constantly, like mouse position
 		SDL_GetMouseState(&inputState.mouseX, &inputState.mouseY);
+		//adjust for the scale the emulator is running at
+		inputState.mouseX /= SCREEN_SCALE;
+		inputState.mouseY /= SCREEN_SCALE;
 
 		return inputState;
 	}
