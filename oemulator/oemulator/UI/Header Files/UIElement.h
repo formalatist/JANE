@@ -2,7 +2,6 @@
 
 #include <SDL.h>
 
-#include "UIInput.h"
 #include "InputState.h"
 #include "UIUtil.h"
 

@@ -1,6 +1,5 @@
 #include "Button.h"
 #include <iostream>
-#include "UIInput.h"
 
 void UI::Button::update(const Input::InputState& input, float d)
 {
