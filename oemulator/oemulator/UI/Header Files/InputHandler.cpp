@@ -1,31 +1,25 @@
 #include "InputHandler.h"
 
 namespace Input {
-	keycodeMap InputHandler::pressedKeys = keycodeMap();
-	keycodeMap InputHandler::heldKeys = keycodeMap();
-	InputState InputHandler::inputState = InputState(pressedKeys, heldKeys);
+	InputState InputHandler::inputState = InputState();
 	
-	void InputHandler::init()
-	{
-		
-	}
 	const InputState& InputHandler::handleInput()
 	{
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
-				//loader.exit();
-				//run = false;
+				inputState.quitRequested = true;
 			}
 			else if (event.type == SDL_KEYDOWN) {
-				pressedKeys[event.key.keysym.sym] = true;
-				heldKeys[event.key.keysym.sym] = true;
-				releasedKeys[event.key.keysym.sym] = false;
+				inputState.pressedKeys[event.key.keysym.sym] = true;
+				inputState.heldKeys[event.key.keysym.sym] = true;
+				inputState.releasedKeys[event.key.keysym.sym] = false;
 			}
 			else if (event.type == SDL_KEYUP) {
-				pressedKeys[event.key.keysym.sym] = false;
-				heldKeys[event.key.keysym.sym] = false;
-				releasedKeys[event.key.keysym.sym] = true;
+				inputState.pressedKeys[event.key.keysym.sym] = false;
+				inputState.heldKeys[event.key.keysym.sym] = false;
+				inputState.releasedKeys[event.key.keysym.sym] = true;
+				
 				//controller.onKeyUp(event.key.keysym.sym);
 				//IO->keyboardState[event.key.keysym.sym] = false;
 			}
@@ -41,9 +35,12 @@ namespace Input {
 			else if (event.type == SDL_MOUSEBUTTONDOWN) {
 				//IO->LMBPressed = event.button.button == SDL_BUTTON_LEFT;
 				//IO->RMBPressed = event.button.button == SDL_BUTTON_RIGHT;
+				inputState.heldLMB = event.button.button == SDL_BUTTON_LEFT;
+				inputState.heldRMB = event.button.button == SDL_BUTTON_RIGHT;
 			}
 			else if (event.type == SDL_MOUSEWHEEL) {
 				//IO->scrollwheelY = event.wheel.y;
+				inputState.scrollWheelDelta = event.wheel.y;
 			}
 			else if (event.type == SDL_DROPFILE) { // a file was dropped on the window
 				//dir = event.drop.file;

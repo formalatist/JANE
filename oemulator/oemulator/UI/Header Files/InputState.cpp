@@ -1,6 +1,6 @@
 #include "InputState.h"
 
-Input::InputState::InputState(const keycodeMap& pressedKeys_, const keycodeMap& heldKeys_) : pressedKeys(pressedKeys_), heldKeys(heldKeys_) {}
+Input::InputState::InputState() : pressedKeys(keycodeMap()), heldKeys(keycodeMap()) {}
 
 bool Input::InputState::isKeyPressed(SDL_Keycode key)
 {
@@ -13,4 +13,30 @@ bool Input::InputState::isKeyPressed(SDL_Keycode key)
 bool Input::InputState::isKeyHeld(SDL_Keycode key)
 {
 	return false;
+}
+
+void Input::InputState::getMousePosition(int & x, int & y)
+{
+	x = mouseX;
+	y = mouseY;
+}
+
+bool Input::InputState::isLMBHeld()
+{
+	return heldLMB;
+}
+
+bool Input::InputState::isRMBHeld()
+{
+	return heldRMB;
+}
+
+int Input::InputState::getScrollWheelDelta()
+{
+	return scrollWheelDelta;
+}
+
+bool Input::InputState::isQuitRequested()
+{
+	return quitRequested;
 }

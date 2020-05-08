@@ -11,18 +11,32 @@ namespace Input {
 		friend class InputHandler;
 
 	public:
-		InputState(const keycodeMap& pressedKeys_, const keycodeMap& heldKeys_);
+		InputState();
 
 		bool isKeyPressed(SDL_Keycode key);
 		bool isKeyHeld(SDL_Keycode key);
-		const std::vector<SDL_Keycode>& getReleasedKeys();
-		const std::vector<SDL_Keycode>& getHeldKeys();
+		void getMousePosition(int& x, int& y);
+		bool isLMBHeld();
+		bool isRMBHeld();
+		int getScrollWheelDelta();
+		bool isQuitRequested();
 
 	private:
-		const keycodeMap& pressedKeys;
-		const keycodeMap& heldKeys;
-		std::vector<SDL_Keycode>* releasedKeys;
-		//std::vector<SDL_Keycode>* heldKeys;
+		//keyboard keys state
+		keycodeMap pressedKeys;
+		keycodeMap heldKeys;
+		keycodeMap releasedKeys;
+
+		int mouseX;
+		int mouseY;
+
+		bool heldLMB;
+		bool heldRMB;
+
+		int scrollWheelDelta;
+
+		//has a quit been requested this frame
+		bool quitRequested;
 		
 	};
 }
