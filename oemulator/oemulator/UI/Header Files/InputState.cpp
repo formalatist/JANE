@@ -18,6 +18,14 @@ bool Input::InputState::isKeyHeld(SDL_Keycode key) const
 	return false;
 }
 
+bool Input::InputState::isKeyReleased(SDL_Keycode key) const
+{
+	if (heldKeys.find(key) != heldKeys.end()) {
+		return heldKeys.at(key);
+	}
+	return false;
+}
+
 void Input::InputState::getMousePosition(int & x, int & y) const
 {
 	x = mouseX;

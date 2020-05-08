@@ -15,6 +15,7 @@ namespace Input {
 
 		bool isKeyPressed(SDL_Keycode key) const;
 		bool isKeyHeld(SDL_Keycode key) const;
+		bool isKeyReleased(SDL_Keycode key) const;
 		void getMousePosition(int& x, int& y) const;
 		bool isLMBHeld() const;
 		bool isLMBPressed() const;
