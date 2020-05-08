@@ -13,13 +13,15 @@ namespace Input {
 	public:
 		InputState();
 
-		bool isKeyPressed(SDL_Keycode key);
-		bool isKeyHeld(SDL_Keycode key);
-		void getMousePosition(int& x, int& y);
-		bool isLMBHeld();
-		bool isRMBHeld();
-		int getScrollWheelDelta();
-		bool isQuitRequested();
+		bool isKeyPressed(SDL_Keycode key) const;
+		bool isKeyHeld(SDL_Keycode key) const;
+		void getMousePosition(int& x, int& y) const;
+		bool isLMBHeld() const;
+		bool isLMBPressed() const;
+		bool isRMBHeld() const;
+		bool isRMBPressed() const;
+		int getScrollWheelDelta() const;
+		bool isQuitRequested() const;
 
 	private:
 		//keyboard keys state
@@ -31,7 +33,10 @@ namespace Input {
 		int mouseY;
 
 		bool heldLMB;
+		bool pressedLMB;
+
 		bool heldRMB;
+		bool pressedRMB;
 
 		int scrollWheelDelta;
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "NES.h"
+#include "InputState.h"
 
 #include <iostream>
 #include <string>
@@ -15,6 +16,7 @@ class Controller {
 public:
 	Controller();
 
+	void update(const Input::InputState& input);
 	void setKeyMap(std::string filePath);
 
 	//keyboard input

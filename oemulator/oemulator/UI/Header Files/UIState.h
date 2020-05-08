@@ -13,7 +13,7 @@ namespace UI {
 
 		UIState(FSM<UIState> *FSM_) : FSM(FSM_) { UIElements = std::vector<UIElement*>(); }
 
-		virtual void update(float d) = 0;
+		virtual void update(const Input::InputState& input, float d) = 0;
 		virtual void draw(SDL_Renderer *renderer, int scale) = 0;
 
 	protected:

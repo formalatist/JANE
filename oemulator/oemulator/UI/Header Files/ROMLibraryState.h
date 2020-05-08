@@ -12,7 +12,7 @@ namespace UI {
 	public:
 		ROMLibraryState(UIFSM *UIFSM_, std::vector<ROMInfo> &ROMInfos_, const NES &nes_, ROMLoader &ROMLoader_, SDL_Renderer *renderer, bool &emulatorRunning_);
 
-		void update(float d) override;
+		void update(const Input::InputState& input, float d) override;
 		void draw(SDL_Renderer *renderer, int scale) override;
 
 	private:

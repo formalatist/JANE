@@ -16,11 +16,10 @@ UI::GameActiveState::GameActiveState(UIFSM * UIFSM_, SDL_Renderer *renderer_, in
 	pixels = pixels_;
 }
 
-void UI::GameActiveState::update(float d)
+void UI::GameActiveState::update(const Input::InputState& input, float d)
 {
-	auto &IO = input;
 	//stop start recording
-	if (IO.keyboardState[SDLK_r] && !recordingKeyPressed) { //TODO, r for recording should not be hardcoded
+	if (input.isKeyPressed(SDLK_r) && !recordingKeyPressed) { //TODO, r for recording should not be hardcoded
 		recordingKeyPressed = true; //cache key
 		if (isRecording) {
 			stopVideoRecording();
@@ -29,7 +28,7 @@ void UI::GameActiveState::update(float d)
 			startVideoRecording();
 		}
 	}
-	else if(!IO.keyboardState[SDLK_r]) {
+	else if(!input.isKeyPressed(SDLK_r)) {
 		recordingKeyPressed = false;
 	}
 	//if we are recording, push pixels to ffmpeg
@@ -38,7 +37,7 @@ void UI::GameActiveState::update(float d)
 	}
 
 	for (auto e : UIElements) {
-		e->update(d);
+		e->update(input, d);
 	}
 }
 

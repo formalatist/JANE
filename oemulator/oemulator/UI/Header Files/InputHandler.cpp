@@ -5,6 +5,7 @@ namespace Input {
 	
 	const InputState& InputHandler::handleInput()
 	{
+		//read events, this changes the state of buttons etc
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) {
@@ -19,9 +20,6 @@ namespace Input {
 				inputState.pressedKeys[event.key.keysym.sym] = false;
 				inputState.heldKeys[event.key.keysym.sym] = false;
 				inputState.releasedKeys[event.key.keysym.sym] = true;
-				
-				//controller.onKeyUp(event.key.keysym.sym);
-				//IO->keyboardState[event.key.keysym.sym] = false;
 			}
 			else if (event.type == SDL_CONTROLLERBUTTONDOWN) {
 				//controller.onGameControllerDown(event.cbutton.button);
@@ -33,13 +31,18 @@ namespace Input {
 				//controller.onGameControllerAxisMotion(event.caxis.axis, event.caxis.value);
 			}
 			else if (event.type == SDL_MOUSEBUTTONDOWN) {
-				//IO->LMBPressed = event.button.button == SDL_BUTTON_LEFT;
-				//IO->RMBPressed = event.button.button == SDL_BUTTON_RIGHT;
 				inputState.heldLMB = event.button.button == SDL_BUTTON_LEFT;
+				inputState.pressedLMB = event.button.button == SDL_BUTTON_LEFT;
 				inputState.heldRMB = event.button.button == SDL_BUTTON_RIGHT;
+				inputState.pressedRMB = event.button.button == SDL_BUTTON_RIGHT;
+			}
+			else if (event.type == SDL_MOUSEBUTTONUP) {
+				inputState.heldLMB = !(event.button.button == SDL_BUTTON_LEFT);
+				inputState.pressedLMB = !(event.button.button == SDL_BUTTON_LEFT);
+				inputState.heldRMB = !(event.button.button == SDL_BUTTON_RIGHT);
+				inputState.pressedRMB = !(event.button.button == SDL_BUTTON_RIGHT);
 			}
 			else if (event.type == SDL_MOUSEWHEEL) {
-				//IO->scrollwheelY = event.wheel.y;
 				inputState.scrollWheelDelta = event.wheel.y;
 			}
 			else if (event.type == SDL_DROPFILE) { // a file was dropped on the window
@@ -47,6 +50,10 @@ namespace Input {
 				//SDL_free(dir);
 			}
 		}
+		
+		//update inputs that happen constantly, like mouse position
+		SDL_GetMouseState(&inputState.mouseX, &inputState.mouseY);
+
 		return inputState;
 	}
 

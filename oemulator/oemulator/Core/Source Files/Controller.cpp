@@ -16,6 +16,18 @@ Controller::Controller(){
 }
 
 
+void Controller::update(const Input::InputState & input)
+{
+	//clear all input
+	releaseAll();
+	//set input based on whats being held this frame
+	for (const auto& value : keyMap) {
+		if (input.isKeyHeld(value.first)) {
+			pushButton(value.second);
+		}
+	}
+}
+
 void Controller::setKeyMap(std::string filePath)
 {
 	std::ifstream fileStream(filePath);
