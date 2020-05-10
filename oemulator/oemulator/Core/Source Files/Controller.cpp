@@ -26,6 +26,11 @@ void Controller::update(const Input::InputState & input)
 			pushButton(value.second);
 		}
 	}
+	for (const auto& value : gameControllerButtonMap) {
+		if (input.isControllerButtonHeld(value.first)) {
+			pushButton(value.second);
+		}
+	}
 }
 
 void Controller::setKeyMap(std::string filePath)

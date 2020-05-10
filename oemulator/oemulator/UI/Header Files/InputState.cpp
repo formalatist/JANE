@@ -1,6 +1,5 @@
 #include "InputState.h"
 
-Input::InputState::InputState() : pressedKeys(keycodeMap()), heldKeys(keycodeMap()) {}
 
 bool Input::InputState::isKeyPressed(SDL_Keycode key) const
 {
@@ -22,6 +21,30 @@ bool Input::InputState::isKeyReleased(SDL_Keycode key) const
 {
 	if (heldKeys.find(key) != heldKeys.end()) {
 		return heldKeys.at(key);
+	}
+	return false;
+}
+
+bool Input::InputState::isControllerButtonPressed(Uint8 button) const
+{
+	if (pressedControllerButtons.find(button) != pressedControllerButtons.end()) {
+		return pressedControllerButtons.at(button);
+	}
+	return false;
+}
+
+bool Input::InputState::isControllerButtonHeld(Uint8 button) const
+{
+	if (heldControllerButtons.find(button) != heldControllerButtons.end()) {
+		return heldControllerButtons.at(button);
+	}
+	return false;
+}
+
+bool Input::InputState::isAxisDirectionHeld(Input_Axisdirection dir) const
+{
+	if (heldAxisdirection.find(dir) != heldAxisdirection.end()) {
+		return heldAxisdirection.at(dir);
 	}
 	return false;
 }

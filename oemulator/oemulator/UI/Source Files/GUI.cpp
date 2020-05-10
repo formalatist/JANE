@@ -92,7 +92,9 @@ int main(int argc, char** argv) {
 			controller.update(input);
 			nes.stepSeconds(0.016667f);
 		}
-		
+		if (input.isControllerButtonPressed(SDL_CONTROLLER_BUTTON_A)) {
+			std::cout << "A pressed" << std::endl;
+		}
 		//update and draw ui
 		fsm->getState()->update(input, 0.016f);
 		fsm->getState()->draw(display.getRenderer(), SCALE);

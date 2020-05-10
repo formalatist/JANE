@@ -22,6 +22,9 @@ namespace Input {
 		for (const auto& value : inputState.releasedKeys) {
 			inputState.releasedKeys[value.first] = false;
 		}
+		for (const auto& value : inputState.pressedControllerButtons) {
+			inputState.pressedControllerButtons[value.first] = false;
+		}
 		
 		//read events, this changes the state of buttons etc
 		SDL_Event event;
@@ -30,34 +33,42 @@ namespace Input {
 				inputState.quitRequested = true;
 			}
 			else if (event.type == SDL_KEYDOWN) {
-				std::cout << "KEY EVENT###############" << std::endl;
-				inputState.pressedKeys[event.key.keysym.sym] = true;
-				inputState.heldKeys[event.key.keysym.sym] = true;
-				inputState.releasedKeys[event.key.keysym.sym] = false;
+				if(!inputState.heldKeys[event.key.keysym.sym]) { //key isnt held, this is a new event for the key
+					inputState.pressedKeys[event.key.keysym.sym] = true;
+					inputState.heldKeys[event.key.keysym.sym] = true;
+				}
 			}
 			else if (event.type == SDL_KEYUP) {
-				inputState.pressedKeys[event.key.keysym.sym] = false;
 				inputState.heldKeys[event.key.keysym.sym] = false;
 				inputState.releasedKeys[event.key.keysym.sym] = true;
 			}
 			else if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-				//controller.onGameControllerDown(event.cbutton.button);
+				inputState.pressedControllerButtons[event.cbutton.button] = true;
+				inputState.heldControllerButtons[event.cbutton.button] = true;
 			}
 			else if (event.type == SDL_CONTROLLERBUTTONUP) {
-				//controller.onGameControllerUp(event.cbutton.button);
+				inputState.heldControllerButtons[event.cbutton.button] = false;
 			}
 			else if (event.type == SDL_CONTROLLERAXISMOTION) {
 				//controller.onGameControllerAxisMotion(event.caxis.axis, event.caxis.value);
 			}
 			else if (event.type == SDL_MOUSEBUTTONDOWN) {
-				inputState.heldLMB = event.button.button == SDL_BUTTON_LEFT;
-				inputState.pressedLMB = event.button.button == SDL_BUTTON_LEFT;
-				inputState.heldRMB = event.button.button == SDL_BUTTON_RIGHT;
-				inputState.pressedRMB = event.button.button == SDL_BUTTON_RIGHT;
+				if (event.button.button == SDL_BUTTON_LEFT) {
+					inputState.heldLMB = true;
+					inputState.pressedLMB = true;
+				}
+				else if (event.button.button = SDL_BUTTON_RIGHT) {
+					inputState.heldRMB = true;
+					inputState.pressedRMB = true;
+				}
 			}
 			else if (event.type == SDL_MOUSEBUTTONUP) {
-				inputState.heldLMB = !(event.button.button == SDL_BUTTON_LEFT);
-				inputState.heldRMB = !(event.button.button == SDL_BUTTON_RIGHT);
+				if (event.button.button == SDL_BUTTON_LEFT) {
+					inputState.heldLMB = false;
+				}
+				else if (event.button.button == SDL_BUTTON_RIGHT) {
+					inputState.heldRMB = false;
+				}
 			}
 			else if (event.type == SDL_MOUSEWHEEL) {
 				inputState.scrollWheelDelta = event.wheel.y;
