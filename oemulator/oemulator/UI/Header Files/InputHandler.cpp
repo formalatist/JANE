@@ -3,13 +3,15 @@
 
 namespace Input {
 	InputState InputHandler::inputState = InputState();
-	
+	float InputHandler::AXIS_DEADZONE = 0.2f;
+	float InputHandler::AXIS_MAX_VALUE = 32767;
+
 	const InputState& InputHandler::getInput(int SCREEN_SCALE)
 	{
-		/*When handling input in SDL it is importan to note that when holding a 
-		keyboard key down, a SDL_KEYDOWN event is created every frame, but the same 
+		/*When handling input in SDL it is importan to note that when holding a
+		keyboard key down, a SDL_KEYDOWN event is created every frame, but the same
 		does not happen when, for example, holding a mouse button. These two events
-		needs to be handled diffrently so that the API can be equal for both. 
+		needs to be handled diffrently so that the API can be equal for both.
 		"isPressed" should only be true for one frame when the button was pressed,
 		same with released*/
 
@@ -25,7 +27,7 @@ namespace Input {
 		for (const auto& value : inputState.pressedControllerButtons) {
 			inputState.pressedControllerButtons[value.first] = false;
 		}
-		
+
 		//read events, this changes the state of buttons etc
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
@@ -33,7 +35,7 @@ namespace Input {
 				inputState.quitRequested = true;
 			}
 			else if (event.type == SDL_KEYDOWN) {
-				if(!inputState.heldKeys[event.key.keysym.sym]) { //key isnt held, this is a new event for the key
+				if (!inputState.heldKeys[event.key.keysym.sym]) { //key isnt held, this is a new event for the key
 					inputState.pressedKeys[event.key.keysym.sym] = true;
 					inputState.heldKeys[event.key.keysym.sym] = true;
 				}
@@ -50,6 +52,11 @@ namespace Input {
 				inputState.heldControllerButtons[event.cbutton.button] = false;
 			}
 			else if (event.type == SDL_CONTROLLERAXISMOTION) {
+				if(event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX) {
+					if (abs(event.caxis.value / AXIS_MAX_VALUE) > AXIS_DEADZONE) {
+						inputState.heldAxisdirection[event.caxis.axis];
+					}
+				}
 				//controller.onGameControllerAxisMotion(event.caxis.axis, event.caxis.value);
 			}
 			else if (event.type == SDL_MOUSEBUTTONDOWN) {
