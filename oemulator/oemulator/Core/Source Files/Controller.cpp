@@ -3,9 +3,29 @@
 Controller::Controller(){
 }
 
-void Controller::setMemory(Memory * mem_)
+
+void Controller::update(const Input::InputState & input)
 {
-	mem = mem_;
+	//clear all input
+	releaseAll();
+	//set input based on whats being held this frame
+	for (const auto& value : keyMap) {
+		if (input.isKeyHeld(value.first)) {
+			pushButton(value.second);
+		}
+	}
+	for (const auto& value : gameControllerButtonMap) {
+		if (input.isControllerButtonHeld(value.first)) {
+			pushButton(value.second);
+		}
+	}
+	for (const auto& value : gameControllerAxisMap) {
+		for (const auto& dirToByteMap : value.second) {
+			if (input.isAxisDirectionHeld(value.first, dirToByteMap.first)) {
+				pushButton(dirToByteMap.second);
+			}
+		}
+	}
 }
 
 void Controller::setKeyMap(std::string filePath)
@@ -36,6 +56,20 @@ void Controller::onKeyUp(SDL_Keycode keycode)
 {
 	if (keyMap.find(keycode) != keyMap.end()) {
 		releaseButton(keyMap[keycode]);
+	}
+}
+
+void Controller::onGameControllerDown(Uint8 btn)
+{
+	if (gameControllerButtonMap.find(static_cast<SDL_GameControllerButton>(btn)) != gameControllerButtonMap.end()) {
+		pushButton(gameControllerButtonMap[static_cast<SDL_GameControllerButton>(btn)]);
+	}
+}
+
+void Controller::onGameControllerUp(Uint8 btn)
+{
+	if (gameControllerButtonMap.find(static_cast<SDL_GameControllerButton>(btn)) != gameControllerButtonMap.end()) {
+		releaseButton(gameControllerButtonMap[static_cast<SDL_GameControllerButton>(btn)]);
 	}
 }
 

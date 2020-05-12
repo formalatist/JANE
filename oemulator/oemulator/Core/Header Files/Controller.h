@@ -1,6 +1,7 @@
 #pragma once
 
 #include "NES.h"
+#include "InputState.h"
 
 #include <iostream>
 #include <string>
@@ -15,19 +16,20 @@ class Controller {
 public:
 	Controller();
 
-	void setMemory(Memory* mem_);
-
+	void update(const Input::InputState& input);
 	void setKeyMap(std::string filePath);
 
+	//keyboard input
 	void onKeyDown(SDL_Keycode keycode);
 	void onKeyUp(SDL_Keycode keycode);
+	//controller input
+	void onGameControllerDown(Uint8 btn);
+	void onGameControllerUp(Uint8 btn);
 
 	byte readController();
 	void writeController(byte val);
 
 private:
-	//the memory we are cocntected to
-	Memory* mem;
 	//the current state of the puttons
 	byte state;
 	//current bit being read out by the shift register
@@ -46,6 +48,22 @@ private:
 		{ "DOWN", 0x20 },
 		{ "LEFT", 0x40 },
 		{ "RIGHT", 0x80 },
+	};
+	//TODO: read from file? maybe controller buttons should just be hardcoded?
+	std::map<SDL_GameControllerButton, byte> gameControllerButtonMap = {
+		{ SDL_CONTROLLER_BUTTON_A, 0x1 },
+		{ SDL_CONTROLLER_BUTTON_B, 0x2 },
+		{ SDL_CONTROLLER_BUTTON_BACK, 0x4 },
+		{ SDL_CONTROLLER_BUTTON_START, 0x8 },
+		{ SDL_CONTROLLER_BUTTON_DPAD_UP, 0x10 },
+		{ SDL_CONTROLLER_BUTTON_DPAD_DOWN, 0x20 },
+		{ SDL_CONTROLLER_BUTTON_DPAD_LEFT, 0x40 },
+		{ SDL_CONTROLLER_BUTTON_DPAD_RIGHT, 0x80 },
+	};
+
+	std::map<SDL_GameControllerAxis, std::map<Input::AxisDirection, byte>> gameControllerAxisMap = {
+		{ SDL_CONTROLLER_AXIS_LEFTX,{ { Input::positive,0x80 },{ Input::negative,0x40 }, } },
+		{ SDL_CONTROLLER_AXIS_LEFTY,{ { Input::positive,0x20 },{ Input::negative,0x10 }, } },
 	};
 
 	void pushButton(byte val);

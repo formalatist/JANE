@@ -11,7 +11,7 @@ namespace UI {
 	public:
 		MainMenuState(UIFSM *UIFSM_);
 
-		void update(float d) override;
+		void update(const Input::InputState& input, float d) override;
 		void draw(SDL_Renderer *renderer, int scale) override;
 
 	};

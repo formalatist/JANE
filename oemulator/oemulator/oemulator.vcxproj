@@ -148,6 +148,8 @@
     <ClCompile Include="UI\Header Files\GameActiveState.cpp" />
     <ClCompile Include="UI\Header Files\Image.cpp" />
     <ClCompile Include="UI\Header Files\ImageButton.cpp" />
+    <ClCompile Include="UI\Header Files\InputHandler.cpp" />
+    <ClCompile Include="UI\Header Files\InputState.cpp" />
     <ClCompile Include="UI\Header Files\MainMenuState.cpp" />
     <ClCompile Include="UI\Header Files\ROMLibraryState.cpp" />
     <ClCompile Include="UI\Source Files\GUI.cpp" />
@@ -161,7 +163,6 @@
     <ClCompile Include="Core\Source Files\PPU.cpp" />
     <ClCompile Include="Core\Source Files\PPUMemory.cpp" />
     <ClCompile Include="Core\Source Files\ROMLoader.cpp" />
-    <ClCompile Include="UI\Source Files\UIInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Header Files\Display.h" />
@@ -183,12 +184,13 @@
     <ClInclude Include="Core\Header Files\ROMLoader.h" />
     <ClInclude Include="UI\Header Files\Image.h" />
     <ClInclude Include="UI\Header Files\ImageButton.h" />
+    <ClInclude Include="UI\Header Files\InputHandler.h" />
+    <ClInclude Include="UI\Header Files\InputState.h" />
     <ClInclude Include="UI\Header Files\MainMenuState.h" />
     <ClInclude Include="UI\Header Files\Rect.h" />
     <ClInclude Include="UI\Header Files\ROMLibraryState.h" />
     <ClInclude Include="UI\Header Files\TextBox.h" />
     <ClInclude Include="UI\Header Files\UIElement.h" />
-    <ClInclude Include="UI\Header Files\UIInput.h" />
     <ClInclude Include="UI\Header Files\UIState.h" />
     <ClInclude Include="UI\Header Files\UIUtil.h" />
     <ClInclude Include="UI\Source Files\ImGui\imgui_impl_sdl.h" />

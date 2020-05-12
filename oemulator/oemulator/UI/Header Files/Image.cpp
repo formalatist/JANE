@@ -1,6 +1,6 @@
 #include "Image.h"
 
-void UI::Image::update(float d)
+void UI::Image::update(const Input::InputState& input, float d)
 {
 }
 

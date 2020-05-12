@@ -37,17 +37,17 @@ UI::ROMLibraryState::ROMLibraryState(UIFSM * UIFSM_, std::vector<ROMInfo> & ROMI
 
 //TODO: input should probably be passed to the states to make it more obvious that
 //handling inputs for a specific state happens here, having it be global makes it unclear
-void UI::ROMLibraryState::update(float d)
+void UI::ROMLibraryState::update(const Input::InputState& input, float d)
 {
-	if (input.scrollwheelY != 0) {
+	if (input.getScrollWheelDelta() != 0) {
 		//we scrolled, update all the button positions
 		for (auto e : UIElements) {
-			e->rect.y += input.scrollwheelY*15;	//MAGIC NUMBER: just to make scrolling a bit 
+			e->rect.y += input.getScrollWheelDelta()*15;	//MAGIC NUMBER: just to make scrolling a bit 
 												//faster, this functionality should be hidden inside scrollview / gridview in future
 		}
 	}
 	for (auto e : UIElements) {
-		e->update(d);
+		e->update(input, d);
 	}
 }
 

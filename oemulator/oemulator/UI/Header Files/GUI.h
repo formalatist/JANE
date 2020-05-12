@@ -18,12 +18,6 @@ class GUI {
 public:
 	GUI(SDL_Renderer *renderer, int width_, int height_);
 
-	void draw();
-
-	void showMainMenu();
-
-	void showRebindKeys();
-
 	std::vector<ROMInfo> ROMInfos;
 
 	NES nes;
