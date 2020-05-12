@@ -73,24 +73,6 @@ void Controller::onGameControllerUp(Uint8 btn)
 	}
 }
 
-void Controller::onGameControllerAxisMotion(Uint8 axis_, Sint16 value)
-{/*
-	//map value to [-1,1]
-	float v = value / AXIS_MAX_VALUE;
-	std::cout << v << std::endl;
-	SDL_GameControllerAxis axis = static_cast<SDL_GameControllerAxis>(axis_);
-	AxisDirection dir = v > 0 ? positive : negative;
-	if (gameControllerAxisMap.find(axis) != gameControllerAxisMap.end()) { //we have a mapping for this axis
-		if (abs(v) > AXIS_DEADZONE) {//we are outside the deadzone so we count it as input
-			pushButton(gameControllerAxisMap[axis][dir]);
-		}
-		else { //value was inside deadzone, release axis
-			releaseButton(gameControllerAxisMap[axis][positive]);
-			releaseButton(gameControllerAxisMap[axis][negative]);
-		}
-	}*/
-}
-
 void Controller::pushButton(byte val)
 {
 	state |= val;

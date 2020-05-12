@@ -4,24 +4,13 @@
 
 
 namespace Input {
-	typedef Uint8 Input_Axisdirection;
-	enum {
-		INPUT_LEFT_AXIS_LEFT = 0,
-		INPUT_LEFT_AXIS_RIGHT = 1,
-		INPUT_LEFT_AXIS_UP = 2,
-		INPUT_LEFT_AXIS_DOWN = 3,
-		INPUT_RIGHT_AXIS_LEFT = 4,
-		INPUT_RIGHT_AXIS_RIGHT = 5,
-		INPUT_RIGHT_AXIS_UP = 6,
-		INPUT_RIGHT_AXIS_DOWN = 7,
-	};
 	enum AxisDirection {
 		positive, negative,
 	};
 
 	typedef std::map<SDL_Keycode, bool> keycodeMap;
 	typedef std::map<Uint8, bool> controllerButtonMap;
-	typedef std::map<Input_Axisdirection, bool> axisdirectionMap;
+	typedef std::map<SDL_GameControllerAxis, std::map<AxisDirection, bool>> controllerAxisMap;
 
 	class InputState {
 		friend class InputHandler;
@@ -51,7 +40,7 @@ namespace Input {
 		controllerButtonMap heldControllerButtons;
 
 		//axisdirectionMap heldAxisdirection;
-		std::map<SDL_GameControllerAxis, std::map<AxisDirection, bool>> heldAxisDirections;
+		controllerAxisMap heldAxisDirections;
 
 		int mouseX;
 		int mouseY;

@@ -25,7 +25,6 @@ public:
 	//controller input
 	void onGameControllerDown(Uint8 btn);
 	void onGameControllerUp(Uint8 btn);
-	void onGameControllerAxisMotion(Uint8 axis_, Sint16 value);
 
 	byte readController();
 	void writeController(byte val);

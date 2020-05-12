@@ -3,7 +3,7 @@
 
 namespace Input {
 	InputState InputHandler::inputState = InputState();
-	const float InputHandler::AXIS_DEADZONE = 0.2f;
+	const float InputHandler::AXIS_DEADZONE = 0.24f;
 	const float InputHandler::AXIS_MAX_VALUE = 32767;
 	SDL_GameController* InputHandler::controller = NULL;
 	const std::vector<SDL_GameControllerAxis> InputHandler::allGameControllerAxis = {
