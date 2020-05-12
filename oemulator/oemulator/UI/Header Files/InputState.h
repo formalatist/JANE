@@ -15,6 +15,9 @@ namespace Input {
 		INPUT_RIGHT_AXIS_UP = 6,
 		INPUT_RIGHT_AXIS_DOWN = 7,
 	};
+	enum AxisDirection {
+		positive, negative,
+	};
 
 	typedef std::map<SDL_Keycode, bool> keycodeMap;
 	typedef std::map<Uint8, bool> controllerButtonMap;
@@ -29,7 +32,7 @@ namespace Input {
 		bool isKeyReleased(SDL_Keycode key) const;
 		bool isControllerButtonPressed(Uint8 button) const;
 		bool isControllerButtonHeld(Uint8 button) const;
-		bool isAxisDirectionHeld(Input_Axisdirection dir) const;
+		bool isAxisDirectionHeld(SDL_GameControllerAxis axis, AxisDirection dir) const;
 		void getMousePosition(int& x, int& y) const;
 		bool isLMBHeld() const;
 		bool isLMBPressed() const;
@@ -47,7 +50,8 @@ namespace Input {
 		controllerButtonMap pressedControllerButtons;
 		controllerButtonMap heldControllerButtons;
 
-		axisdirectionMap heldAxisdirection;
+		//axisdirectionMap heldAxisdirection;
+		std::map<SDL_GameControllerAxis, std::map<AxisDirection, bool>> heldAxisDirections;
 
 		int mouseX;
 		int mouseY;

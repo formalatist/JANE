@@ -41,13 +41,17 @@ bool Input::InputState::isControllerButtonHeld(Uint8 button) const
 	return false;
 }
 
-bool Input::InputState::isAxisDirectionHeld(Input_Axisdirection dir) const
+bool Input::InputState::isAxisDirectionHeld(SDL_GameControllerAxis axis, AxisDirection dir) const
 {
-	if (heldAxisdirection.find(dir) != heldAxisdirection.end()) {
-		return heldAxisdirection.at(dir);
+	if (heldAxisDirections.find(axis) != heldAxisDirections.end()) {
+		auto& dirToBoolMap = heldAxisDirections.at(axis);
+		if (dirToBoolMap.find(dir) != dirToBoolMap.end()) {
+			return dirToBoolMap.at(dir);
+		}
 	}
 	return false;
 }
+
 
 void Input::InputState::getMousePosition(int & x, int & y) const
 {

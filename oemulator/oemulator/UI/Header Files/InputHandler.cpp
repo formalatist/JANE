@@ -3,9 +3,17 @@
 
 namespace Input {
 	InputState InputHandler::inputState = InputState();
-	float InputHandler::AXIS_DEADZONE = 0.2f;
-	float InputHandler::AXIS_MAX_VALUE = 32767;
+	const float InputHandler::AXIS_DEADZONE = 0.2f;
+	const float InputHandler::AXIS_MAX_VALUE = 32767;
 	SDL_GameController* InputHandler::controller = NULL;
+	const std::vector<SDL_GameControllerAxis> InputHandler::allGameControllerAxis = {
+		SDL_CONTROLLER_AXIS_LEFTX,
+		SDL_CONTROLLER_AXIS_LEFTY,
+		SDL_CONTROLLER_AXIS_RIGHTX,
+		SDL_CONTROLLER_AXIS_RIGHTY,
+		SDL_CONTROLLER_AXIS_TRIGGERLEFT,
+		SDL_CONTROLLER_AXIS_TRIGGERRIGHT,
+	};
 
 	const InputState& InputHandler::getInput(int SCREEN_SCALE)
 	{
@@ -53,11 +61,7 @@ namespace Input {
 				inputState.heldControllerButtons[event.cbutton.button] = false;
 			}
 			else if (event.type == SDL_CONTROLLERAXISMOTION) {
-				if(event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX) {
-					if (abs(event.caxis.value / AXIS_MAX_VALUE) > AXIS_DEADZONE) {
-						inputState.heldAxisdirection[INPUT_LEFT_AXIS_LEFT];
-					}
-				}
+
 				//controller.onGameControllerAxisMotion(event.caxis.axis, event.caxis.value);
 			}
 			else if (event.type == SDL_MOUSEBUTTONDOWN) {
@@ -88,10 +92,9 @@ namespace Input {
 		}
 		
 		//update inputs that happen constantly, like mouse position
-		SDL_GetMouseState(&inputState.mouseX, &inputState.mouseY);
-		//adjust for the scale the emulator is running at
-		inputState.mouseX /= SCREEN_SCALE;
-		inputState.mouseY /= SCREEN_SCALE;
+		updateMouseState(SCREEN_SCALE);
+		updateControllerAxisState();
+
 
 		return inputState;
 	}
@@ -109,6 +112,32 @@ namespace Input {
 		}
 		if (controller == NULL) {
 			std::cout << "could not open controller" << std::endl;
+		}
+	}
+
+	void InputHandler::updateMouseState(int SCREEN_SCALE)
+	{
+		SDL_GetMouseState(&inputState.mouseX, &inputState.mouseY);
+		//adjust for the scale the emulator is running at
+		inputState.mouseX /= SCREEN_SCALE;
+		inputState.mouseY /= SCREEN_SCALE;
+	}
+
+	void InputHandler::updateControllerAxisState()
+	{
+		for (const auto& axis : allGameControllerAxis) {
+			Sint16 value = SDL_GameControllerGetAxis(controller, axis);
+			float normalizedValue = value / AXIS_MAX_VALUE;
+			if (normalizedValue > AXIS_DEADZONE) { //outside the deadzone in the positive direction
+				inputState.heldAxisDirections[axis][positive] = true;
+			}
+			else if (normalizedValue < -AXIS_DEADZONE) { //outside the deadzone in the negative direction
+				inputState.heldAxisDirections[axis][negative] = true;
+			}
+			else { //if the axis isnt outside the deadzone, set bot directions as "not held"
+				inputState.heldAxisDirections[axis][negative] = false;
+				inputState.heldAxisDirections[axis][positive] = false;
+			}
 		}
 	}
 
