@@ -1,6 +1,7 @@
 #pragma once
 
 #include "NES.h"
+#include "InputState.h"
 
 #include <iostream>
 #include <string>
@@ -15,6 +16,7 @@ class Controller {
 public:
 	Controller();
 
+	void update(const Input::InputState& input);
 	void setKeyMap(std::string filePath);
 
 	//keyboard input
@@ -23,7 +25,6 @@ public:
 	//controller input
 	void onGameControllerDown(Uint8 btn);
 	void onGameControllerUp(Uint8 btn);
-	void onGameControllerAxisMotion(Uint8 axis_, Sint16 value);
 
 	byte readController();
 	void writeController(byte val);
@@ -59,17 +60,13 @@ private:
 		{ SDL_CONTROLLER_BUTTON_DPAD_LEFT, 0x40 },
 		{ SDL_CONTROLLER_BUTTON_DPAD_RIGHT, 0x80 },
 	};
-	const float AXIS_MAX_VALUE = 32767;
-	const float AXIS_DEADZONE = 0.2f;
-	enum AxisDirection {positive, negative};
-	std::map<SDL_GameControllerAxis, std::map<AxisDirection, byte>> gameControllerAxisMap = {
-		{ SDL_CONTROLLER_AXIS_LEFTX,{ { positive,0x80 },{ negative,0x40 }, } },
-		{ SDL_CONTROLLER_AXIS_LEFTY,{ { positive,0x20 },{ negative,0x10 }, } },
+
+	std::map<SDL_GameControllerAxis, std::map<Input::AxisDirection, byte>> gameControllerAxisMap = {
+		{ SDL_CONTROLLER_AXIS_LEFTX,{ { Input::positive,0x80 },{ Input::negative,0x40 }, } },
+		{ SDL_CONTROLLER_AXIS_LEFTY,{ { Input::positive,0x20 },{ Input::negative,0x10 }, } },
 	};
 
 	void pushButton(byte val);
 	void releaseButton(byte val);
 	void releaseAll();
-
-	SDL_GameController* gameController;
 };

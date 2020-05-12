@@ -1,5 +1,7 @@
 #define SDL_MAIN_HANDLED
 #include "GUI.h"
+#include "InputHandler.h"
+
 #include <SDL_image.h>
 
 #undef main
@@ -10,11 +12,6 @@ GUI::GUI(SDL_Renderer * renderer_, int width_, int height_)
 	renderer = renderer_;
 	width = width_;
 	height = height_;
-}
-
-void GUI::draw()
-{
-	SDL_RenderPresent(renderer);
 }
 
 bool emulatorRunning = false;
@@ -41,6 +38,7 @@ std::vector<ROMInfo> getROMInfos() {
 int main(int argc, char** argv) {
 	SDL_Init(SDL_INIT_EVERYTHING);
 	IMG_Init(IMG_INIT_PNG);
+	Input::InputHandler::searchForAndAddGameController();
 	
 	//create the NES
 	NES nes = NES();
@@ -62,11 +60,6 @@ int main(int argc, char** argv) {
 	
 	gui.ROMInfos = getROMInfos();
 
-	int frame = 0;
-	int frameTime = 0;
-	bool run = true;
-	SDL_Event event;
-	byte input = 0;
 
 	FSM<UI::UIState> *fsm = new FSM<UI::UIState>();
 
@@ -83,64 +76,26 @@ int main(int argc, char** argv) {
 	fsm->changeState("MainMenu");
 
 	char* dir;
+	int frame = 0;
+	int frameTime = 0;
+	bool run = true;
+	SDL_Event event;
 	while (run) {
-		
-		auto IO = &UI::input;
-		IO->LMBPressed = false;
-		IO->RMBPressed = false;
-		IO->scrollwheelY = 0;
-		while (SDL_PollEvent(&event)) {
-			if (event.type == SDL_QUIT) {
-				loader.exit();
-				run = false;
-			}
-			else if (event.type == SDL_KEYDOWN) {
-				controller.onKeyDown(event.key.keysym.sym);
-				IO->keyboardState[event.key.keysym.sym] = true;
-				if (event.key.keysym.sym == SDLK_q) {
-					emulatorRunning = false;
-				}
-			}
-			else if (event.type == SDL_KEYUP) {
-				controller.onKeyUp(event.key.keysym.sym);
-				IO->keyboardState[event.key.keysym.sym] = false;
-			}
-			else if (event.type == SDL_CONTROLLERBUTTONDOWN) {
-				controller.onGameControllerDown(event.cbutton.button);
-			}
-			else if (event.type == SDL_CONTROLLERBUTTONUP) {
-				controller.onGameControllerUp(event.cbutton.button);
-			}
-			else if (event.type == SDL_CONTROLLERAXISMOTION) {
-				controller.onGameControllerAxisMotion(event.caxis.axis, event.caxis.value);
-			}
-			else if (event.type == SDL_MOUSEBUTTONDOWN) {
-				IO->LMBPressed = event.button.button == SDL_BUTTON_LEFT;
-				IO->RMBPressed = event.button.button == SDL_BUTTON_RIGHT;
-			}
-			else if (event.type == SDL_MOUSEWHEEL) {
-				IO->scrollwheelY = event.wheel.y;
-			}
-			else if (event.type == SDL_DROPFILE) { // a file was droppen on the window
-				dir = event.drop.file;
-				SDL_free(dir);
-			}
-		}
+		const Input::InputState& input = Input::InputHandler::getInput(SCALE);
 
-		//update mouseposition and LMB and RMB
-		int buttons = SDL_GetMouseState(&(IO->mouseX), &(IO->mouseY));
-		IO->mouseX /= SCALE;
-		IO->mouseY /= SCALE;
-		IO->LMBDown = (buttons & (SDL_BUTTON(SDL_BUTTON_LEFT))) == SDL_BUTTON(SDL_BUTTON_LEFT);
-		IO->RMBDown = (buttons & (SDL_BUTTON(SDL_BUTTON_RIGHT))) == SDL_BUTTON(SDL_BUTTON_RIGHT);
+		if(input.isQuitRequested()) {//requested to quit the emulator
+			loader.exit();
+			run = false;
+		}
 
 		double duration = clock();
 		if (emulatorRunning) {
+			controller.update(input);
 			nes.stepSeconds(0.016667f);
 		}
-		
+
 		//update and draw ui
-		fsm->getState()->update(0.016f);
+		fsm->getState()->update(input, 0.016f);
 		fsm->getState()->draw(display.getRenderer(), SCALE);
 
 		SDL_RenderPresent(display.getRenderer());
@@ -158,11 +113,3 @@ int main(int argc, char** argv) {
 	return 0;
 }
 
-void GUI::showMainMenu()
-{
-}
-
-void GUI::showRebindKeys()
-{
-	
-}

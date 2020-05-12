@@ -10,10 +10,10 @@ UI::MainMenuState::MainMenuState(UIFSM * UIFSM_) : UIState(UIFSM_)
 	UIElements.push_back(btn);
 }
 
-void UI::MainMenuState::update(float d)
+void UI::MainMenuState::update(const Input::InputState& input, float d)
 {
 	for (auto e : UIElements) {
-		e->update(d);
+		e->update(input, d);
 	}
 }
 

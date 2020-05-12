@@ -9,7 +9,7 @@ namespace UI {
 	public:
 		Image(SDL_Rect rect_, SDL_Texture *texture_) : UIElement(rect_), texture(texture_) {};
 
-		void update(float d) override;
+		void update(const Input::InputState& input, float d) override;
 		void draw(SDL_Renderer *renderer, int scale) override;
 
 	private:

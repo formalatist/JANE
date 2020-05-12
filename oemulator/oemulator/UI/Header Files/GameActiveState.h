@@ -13,7 +13,7 @@ namespace UI {
 	public:
 		GameActiveState(UIFSM *UIFSM_, SDL_Renderer *renderer_, int *pixels_);
 
-		void update(float d) override;
+		void update(const Input::InputState& input, float d) override;
 		void draw(SDL_Renderer *renderer, int scale) override;
 
 	private:

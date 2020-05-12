@@ -1,10 +1,11 @@
 #include "ImageButton.h"
 
-void UI::ImageButton::update(float d)
+void UI::ImageButton::update(const Input::InputState& input, float d)
 {
-	auto &IO = input;
-	if (mouseInRect(IO.mouseX, IO.mouseY, rect)) {
-		if (IO.LMBPressed) {
+	int mouseX, mouseY;
+	input.getMousePosition(mouseX, mouseY);
+	if (mouseInRect(mouseX, mouseY, rect)) {
+		if (input.isLMBPressed()) {
 			onClick();
 		}
 	}

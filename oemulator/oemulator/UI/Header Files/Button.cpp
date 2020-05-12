@@ -1,12 +1,12 @@
 #include "Button.h"
 #include <iostream>
-#include "UIInput.h"
 
-void UI::Button::update(float d)
+void UI::Button::update(const Input::InputState& input, float d)
 {
-	auto &IO = input;
-	if (mouseInRect(IO.mouseX, IO.mouseY, rect)) {
-		if (IO.LMBPressed) {
+	int mouseX, mouseY;
+	input.getMousePosition(mouseX, mouseY);
+	if (mouseInRect(mouseX, mouseY, rect)) {
+		if (input.isLMBPressed()) {
 			onClick();
 		}
 		color = SDL_Color{ 200, 150, 70, 255 };

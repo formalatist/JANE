@@ -2,7 +2,7 @@
 #include <map>
 #include <string>
 
-class SDL_Renderer;
+struct SDL_Renderer;
 class State;
 
 template <class stateT>
