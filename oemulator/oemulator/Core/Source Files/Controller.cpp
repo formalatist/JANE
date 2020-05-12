@@ -1,18 +1,6 @@
 #include "Controller.h"
 
 Controller::Controller(){
-	gameController = NULL;
-	for (int i = 0; i < SDL_NumJoysticks(); i++) {
-		if (SDL_IsGameController(i)) {
-			gameController = SDL_GameControllerOpen(i);
-			if (gameController) {
-				std::cout << "Opened GameController" << SDL_GameControllerName(gameController) << std::endl;
-			}
-		}
-	}
-	if (gameController == NULL) {
-		std::cout << "could not open controller" << std::endl;
-	}
 }
 
 

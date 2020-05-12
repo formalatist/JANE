@@ -72,6 +72,4 @@ private:
 	void pushButton(byte val);
 	void releaseButton(byte val);
 	void releaseAll();
-
-	SDL_GameController* gameController;
 };

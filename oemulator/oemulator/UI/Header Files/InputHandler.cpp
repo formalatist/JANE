@@ -5,6 +5,7 @@ namespace Input {
 	InputState InputHandler::inputState = InputState();
 	float InputHandler::AXIS_DEADZONE = 0.2f;
 	float InputHandler::AXIS_MAX_VALUE = 32767;
+	SDL_GameController* InputHandler::controller = NULL;
 
 	const InputState& InputHandler::getInput(int SCREEN_SCALE)
 	{
@@ -54,7 +55,7 @@ namespace Input {
 			else if (event.type == SDL_CONTROLLERAXISMOTION) {
 				if(event.caxis.axis == SDL_CONTROLLER_AXIS_LEFTX) {
 					if (abs(event.caxis.value / AXIS_MAX_VALUE) > AXIS_DEADZONE) {
-						inputState.heldAxisdirection[event.caxis.axis];
+						inputState.heldAxisdirection[INPUT_LEFT_AXIS_LEFT];
 					}
 				}
 				//controller.onGameControllerAxisMotion(event.caxis.axis, event.caxis.value);
@@ -93,6 +94,22 @@ namespace Input {
 		inputState.mouseY /= SCREEN_SCALE;
 
 		return inputState;
+	}
+
+	void InputHandler::searchForAndAddGameController()
+	{
+		controller = NULL;
+		for (int i = 0; i < SDL_NumJoysticks(); i++) {
+			if (SDL_IsGameController(i)) {
+				controller = SDL_GameControllerOpen(i);
+				if (controller) {
+					std::cout << "Opened GameController" << SDL_GameControllerName(controller) << std::endl;
+				}
+			}
+		}
+		if (controller == NULL) {
+			std::cout << "could not open controller" << std::endl;
+		}
 	}
 
 }

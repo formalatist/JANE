@@ -38,6 +38,7 @@ std::vector<ROMInfo> getROMInfos() {
 int main(int argc, char** argv) {
 	SDL_Init(SDL_INIT_EVERYTHING);
 	IMG_Init(IMG_INIT_PNG);
+	Input::InputHandler::searchForAndAddGameController();
 	
 	//create the NES
 	NES nes = NES();
