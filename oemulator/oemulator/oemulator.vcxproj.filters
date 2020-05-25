@@ -63,9 +63,6 @@
     <ClCompile Include="Core\Source Files\Mappers\Mapper3.cpp">
       <Filter>Source Files\NES emulator\Mappers</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="UI\Source Files\GUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

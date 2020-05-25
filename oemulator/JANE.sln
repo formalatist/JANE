@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "oemulator", "oemulator\oemulator.vcxproj", "{C8A5A4F2-9D9F-4987-9052-37E30E0404B1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JANE", "oemulator\oemulator.vcxproj", "{C8A5A4F2-9D9F-4987-9052-37E30E0404B1}"
 EndProject
 Global
 	GlobalSection(Performance) = preSolution

@@ -22,6 +22,7 @@
     <ProjectGuid>{C8A5A4F2-9D9F-4987-9052-37E30E0404B1}</ProjectGuid>
     <RootNamespace>oemulator</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>JANE</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -153,7 +154,6 @@
     <ClCompile Include="UI\Header Files\MainMenuState.cpp" />
     <ClCompile Include="UI\Header Files\ROMLibraryState.cpp" />
     <ClCompile Include="UI\Source Files\GUI.cpp" />
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="Core\Source Files\Mappers\Mapper0.cpp" />
     <ClCompile Include="Core\Source Files\Mappers\Mapper1.cpp" />
     <ClCompile Include="Core\Source Files\Mappers\Mapper2.cpp" />
