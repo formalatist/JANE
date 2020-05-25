@@ -61,8 +61,6 @@ namespace Input {
 				inputState.heldControllerButtons[event.cbutton.button] = false;
 			}
 			else if (event.type == SDL_CONTROLLERAXISMOTION) {
-
-				//controller.onGameControllerAxisMotion(event.caxis.axis, event.caxis.value);
 			}
 			else if (event.type == SDL_MOUSEBUTTONDOWN) {
 				if (event.button.button == SDL_BUTTON_LEFT) {
@@ -134,7 +132,7 @@ namespace Input {
 			else if (normalizedValue < -AXIS_DEADZONE) { //outside the deadzone in the negative direction
 				inputState.heldAxisDirections[axis][negative] = true;
 			}
-			else { //if the axis isnt outside the deadzone, set bot directions as "not held"
+			else { //if the axis isn't outside the deadzone, set both directions as "not held"
 				inputState.heldAxisDirections[axis][negative] = false;
 				inputState.heldAxisDirections[axis][positive] = false;
 			}
