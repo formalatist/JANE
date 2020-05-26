@@ -3,10 +3,13 @@
 Just Another NES Emulator is a NES emulator written in C++ using SDL2. My main goal with this project was to learn more about emulator development and secondarily to learn about C++.
 
 ## Screenshots and videos
-|  |  |
-|--|--|
-|  |  |
-
+<p align="center">
+<img src="https://i.imgur.com/VLZQfEa.png" width="75%">
+<img src="https://i.imgur.com/0EQy3Ev.png" width="75%">
+<img src="https://i.imgur.com/Tk62R41.png" width="75%">
+<img src="https://i.imgur.com/vBPlXZq.png" width="75%">
+<img src="https://i.imgur.com/45MLHMk.png" width="75%">
+</p>
  
 ## Features
 
